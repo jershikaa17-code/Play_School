@@ -123,25 +123,6 @@
   --space-8: 64px;
   --space-9: 80px;
 
-  /* Hero background — used only by the hero polygon field, deliberately
-     separate from the neutral/violet system tokens above. The facets
-     themselves stay near-neutral charcoal (--hero-gray-*); colour is
-     reserved for the glowing edge lines (--hero-blue-*/--hero-highlight). */
-  --hero-gray-950: #060607;
-  --hero-gray-900: #0a0b0d;
-  --hero-gray-800: #121316;
-  --hero-gray-700: #1b1c20;
-  --hero-gray-600: #26282d;
-  --hero-navy-950: #02040a;
-  --hero-navy-900: #050b16;
-  --hero-navy-800: #08152a;
-  --hero-navy-700: #0b1f3a;
-  --hero-blue-600: #123b73;
-  --hero-blue-500: #1d5fd1;
-  --hero-blue-400: #397bff;
-  --hero-blue-300: #6ea8ff;
-  --hero-highlight: #cfe6ff;
-
   /* Typography */
   --font-display: 'Fraunces', 'Iowan Old Style', serif;
   --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -479,8 +460,6 @@ body {
    6. Hero
    ----------------------------- */
 .hero {
-  position: relative;
-  overflow: hidden;
   padding-top: var(--space-9);
   padding-bottom: var(--space-8);
 }
@@ -511,8 +490,6 @@ body {
   .hero__heading em { animation: none; }
 }
 .hero__inner {
-  position: relative;
-  z-index: 1;
   display: grid;
   gap: var(--space-6);
 }
@@ -592,81 +569,6 @@ body {
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: var(--ls-wide);
-}
-
-/* -----------------------------
-   6c. Hero background — polygon field
-   A dark, rich-blue faceted environment behind the hero only. Three depth
-   layers (back/mid/front), each with its own slow CSS drift animation;
-   mouse parallax is applied separately (JS sets transform on an inner
-   wrapper so it never fights the CSS drift transform on the outer one).
-   ----------------------------- */
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: var(--hero-navy-950);
-}
-.hero-bg__drift { position: absolute; inset: -4%; }
-.hero-bg__parallax { position: absolute; inset: 0; transition: transform 300ms var(--ease-premium); will-change: transform; }
-.hero-bg__svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.hero-bg__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(100deg,
-    color-mix(in srgb, var(--hero-navy-950) 55%, transparent) 0%,
-    color-mix(in srgb, var(--hero-navy-950) 30%, transparent) 32%,
-    transparent 62%);
-}
-
-@keyframes heroDriftBack {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6px, -5px) scale(1.015); }
-}
-@keyframes heroDriftFront {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(9px, -10px) scale(1.04); }
-}
-.hero-bg__drift--back { animation: heroDriftBack 26s var(--ease-premium) infinite; }
-.hero-bg__drift--front { animation: heroDriftFront 17s var(--ease-premium) infinite; animation-delay: -9s; }
-
-/* Light edges */
-.hero-light { opacity: 0; }
-@keyframes heroLightTravel {
-  0%, 100% { opacity: 0; transform: translate(0, 0); }
-  45% { opacity: 0.9; transform: translate(10px, -6px); }
-  55% { opacity: 0.9; transform: translate(12px, -7px); }
-}
-@keyframes heroLightFade {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.8; }
-}
-@keyframes heroLightShift {
-  0%, 100% { opacity: 0.15; transform: translate(0, 0); }
-  50% { opacity: 0.6; transform: translate(-6px, 5px); }
-}
-@keyframes heroLightFlash {
-  0%, 92%, 100% { opacity: 0; }
-  95% { opacity: 0.7; }
-}
-.hero-light--1 { animation: heroLightTravel 19s ease-in-out infinite; }
-.hero-light--2 { animation: heroLightFade 14s ease-in-out infinite; animation-delay: -3s; }
-.hero-light--3 { animation: heroLightShift 23s ease-in-out infinite; animation-delay: -8s; }
-.hero-light--4 { animation: heroLightFlash 28s ease-in-out infinite; animation-delay: -12s; }
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg__drift--back, .hero-bg__drift--front { animation: none; }
-  .hero-bg__parallax { transition: none; transform: none !important; }
-  .hero-light { animation: none; opacity: 0.35; }
-  .hero-light--1 { opacity: 0.5; }
-}
-
-@media (max-width: 1023px) {
-  .hero-bg__tier-3 { display: none; }
-}
-@media (max-width: 767px) {
-  .hero-bg__drift--back, .hero-bg__drift--front { animation-duration: 30s; }
 }
 
 /* -----------------------------

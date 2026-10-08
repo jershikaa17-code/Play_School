@@ -65,29 +65,6 @@
     });
   });
 
-  /* ---------- hero background: subtle mouse parallax ---------- */
-  const heroSection = $('.hero');
-  const heroParallaxLayers = $$('.hero-bg__parallax');
-  if (heroSection && heroParallaxLayers.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(pointer: fine)').matches) {
-    let raf = null;
-    function applyParallax(px, py) {
-      heroParallaxLayers.forEach((layer) => {
-        const depth = Number(layer.dataset.depth) || 0;
-        layer.style.transform = `translate(${(px * depth).toFixed(2)}px, ${(py * depth).toFixed(2)}px)`;
-      });
-      raf = null;
-    }
-    heroSection.addEventListener('pointermove', (e) => {
-      const rect = heroSection.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      if (!raf) raf = requestAnimationFrame(() => applyParallax(px, py));
-    });
-    heroSection.addEventListener('pointerleave', () => {
-      if (!raf) raf = requestAnimationFrame(() => applyParallax(0, 0));
-    });
-  }
-
   /* ---------- mobile nav drawer ---------- */
   const navToggle = $('.nav-toggle');
   const navDrawer = $('#navDrawer');
