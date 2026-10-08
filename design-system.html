@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>T00 Design System — Play School</title>
+<meta name="description" content="The living design system behind the Play School playschool management product: color, typography, components, interaction and responsive behavior." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="atmosphere" aria-hidden="true">
+  <div class="atmosphere__grid"></div>
+  <div class="atmosphere__field"></div>
+</div>
+
+<!-- ============================= HEADER ============================= -->
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="#top" aria-label="T00 Design System home">
+      <span class="brand__mark"><img src="logo.png" alt="" class="brand__mark-img" /></span>
+      <span class="brand__name">T00 <span>Design System</span></span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Section navigation">
+      <ul class="primary-nav__list">
+        <li><a class="primary-nav__link" href="#foundations">Foundations</a></li>
+        <li><a class="primary-nav__link" href="#components">Components</a></li>
+        <li><a class="primary-nav__link" href="#playground">Playground</a></li>
+        <li><a class="primary-nav__link" href="#interaction-lab">Interaction</a></li>
+        <li><a class="primary-nav__link" href="#responsive">Responsive</a></li>
+        <li><a class="primary-nav__link" href="#gallery">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <label class="header-search" for="headerSearch">
+        <svg class="header-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="header-search__input" id="headerSearch" type="search" placeholder="Search the system…" aria-label="Search the design system" />
+      </label>
+      <button class="btn btn--secondary btn--sm" type="button" id="commandTrigger" aria-label="Open command palette">
+        <kbd style="font: inherit;">⌘K</kbd>
+      </button>
+      <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navDrawer">
+        <span class="nav-toggle__bars"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- mobile / tablet nav drawer -->
+<div class="drawer-backdrop" id="navDrawerBackdrop"></div>
+<nav class="nav-drawer" id="navDrawer" aria-label="Mobile navigation">
+  <div class="drawer__head">
+    <span class="brand"><span class="brand__mark"><img src="logo.png" alt="" class="brand__mark-img" /></span> T00</span>
+  </div>
+  <a class="nav-drawer__link" href="#foundations">Foundations</a>
+  <a class="nav-drawer__link" href="#components">Components</a>
+  <a class="nav-drawer__link" href="#playground">Playground</a>
+  <a class="nav-drawer__link" href="#interaction-lab">Interaction Lab</a>
+  <a class="nav-drawer__link" href="#responsive">Responsive</a>
+  <a class="nav-drawer__link" href="#gallery">Final Gallery</a>
+</nav>
+
+<main id="main">
+<div id="top"></div>
+
+<!-- ============================= HERO ============================= -->
+<section class="hero">
+  <div class="container hero__inner">
+    <div class="hero__eyebrow-row">
+      <span class="eyebrow">Design System / T00</span>
+      <span class="badge badge--neutral">v2.4.0</span>
+    </div>
+
+    <h1 class="hero__heading">The language<br>behind <em>Play&nbsp;School</em>.</h1>
+
+    <p class="hero__text">
+      A living reference for colour, typography, components, interaction and responsive
+      behavior — built for the team designing and shipping the Play School playschool
+      management product.
+    </p>
+
+    <div class="hero__pills">
+      <span class="hero__pill" data-target="#foundations" role="button" tabindex="0">Core system</span>
+      <span class="hero__pill" data-target="#components" role="button" tabindex="0">Components</span>
+      <span class="hero__pill" data-target="#interaction-lab" role="button" tabindex="0">States</span>
+      <span class="hero__pill" data-target="#responsive" role="button" tabindex="0">Responsive</span>
+    </div>
+
+    <div class="hero__stats">
+      <div class="stat-card">
+        <div class="stat-card__value">14</div>
+        <div class="stat-card__label">Colour tokens</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">11</div>
+        <div class="stat-card__label">Type styles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">48+</div>
+        <div class="stat-card__label">Components</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">4</div>
+        <div class="stat-card__label">Breakpoints</div>
+      </div>
+    </div>
+
+    <div class="glass-panel" style="margin-top: var(--space-6); padding: var(--space-3) var(--space-5); display: inline-flex; align-items: center; gap: var(--space-3); width: fit-content;">
+      <span style="width:8px; height:8px; border-radius:50%; background: var(--color-success); box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-success) 25%, transparent);"></span>
+      <span class="sample--body-sm" style="color: var(--color-text-secondary);">System status: all components live</span>
+      <span class="divider" style="width:1px; height:16px; margin:0;"></span>
+      <span class="sample--caption" style="color: var(--color-text-muted);">v1.0.0</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= FOUNDATIONS ============================= -->
+<section class="section" id="foundations">
+  <div class="container">
+
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">01 — Foundations</span>
+        <h2 class="section-head__title">Colour, type &amp; structure.</h2>
+      </div>
+      <p class="section-head__text">The primitives every surface in Play School is built from — nothing on this page uses a colour or measurement outside this set.</p>
+    </div>
+
+    <!-- COLOR -->
+    <h3 class="subhead">Colour system</h3>
+    <div class="color-grid">
+
+      <button class="swatch" type="button" data-copy="var(--color-primary)">
+        <span class="swatch__fill" style="background: var(--color-primary);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Primary</span>
+          <span class="swatch__purpose">Primary actions, brand emphasis</span>
+          <span class="swatch__var">--color-primary</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-secondary)">
+        <span class="swatch__fill" style="background: var(--color-secondary);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Secondary</span>
+          <span class="swatch__purpose">Supportive accents, charts</span>
+          <span class="swatch__var">--color-secondary</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-accent-yellow)">
+        <span class="swatch__fill" style="background: var(--color-accent-yellow);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Accent Yellow</span>
+          <span class="swatch__purpose">Floating action button, highlights</span>
+          <span class="swatch__var">--color-accent-yellow</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-background)">
+        <span class="swatch__fill" style="background: var(--color-background);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Background</span>
+          <span class="swatch__purpose">Page canvas — depth level 1</span>
+          <span class="swatch__var">--color-background</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-surface-primary)">
+        <span class="swatch__fill" style="background: var(--color-surface-primary);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Surface</span>
+          <span class="swatch__purpose">Cards &amp; panels — depth level 2</span>
+          <span class="swatch__var">--color-surface-primary</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-surface-glass)">
+        <span class="swatch__fill" style="background: var(--color-surface-glass); backdrop-filter: blur(10px);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Surface Glass</span>
+          <span class="swatch__purpose">Floating / translucent surfaces</span>
+          <span class="swatch__var">--color-surface-glass</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-text-primary)">
+        <span class="swatch__fill" style="background: var(--color-text-primary);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Text Primary</span>
+          <span class="swatch__purpose">Headings &amp; primary copy</span>
+          <span class="swatch__var">--color-text-primary</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-text-secondary)">
+        <span class="swatch__fill" style="background: var(--color-text-secondary);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Text Secondary</span>
+          <span class="swatch__purpose">Supporting &amp; body copy</span>
+          <span class="swatch__var">--color-text-secondary</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-text-muted)">
+        <span class="swatch__fill" style="background: var(--color-text-muted);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Text Muted</span>
+          <span class="swatch__purpose">Captions, metadata</span>
+          <span class="swatch__var">--color-text-muted</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-border)">
+        <span class="swatch__fill" style="background: var(--color-background); border-bottom: 1px solid var(--color-border-strong);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Border</span>
+          <span class="swatch__purpose">Dividers, outlines, strokes</span>
+          <span class="swatch__var">--color-border</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-success)">
+        <span class="swatch__fill" style="background: var(--color-success);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Success</span>
+          <span class="swatch__purpose">Confirmations, positive status</span>
+          <span class="swatch__var">--color-success</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-warning)">
+        <span class="swatch__fill" style="background: var(--color-warning);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Warning</span>
+          <span class="swatch__purpose">Needs attention, nearing limits</span>
+          <span class="swatch__var">--color-warning</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-error)">
+        <span class="swatch__fill" style="background: var(--color-error);"></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Error</span>
+          <span class="swatch__purpose">Destructive actions, failures</span>
+          <span class="swatch__var">--color-error</span>
+        </span>
+      </button>
+
+      <button class="swatch" type="button" data-copy="var(--color-focus-ring)">
+        <span class="swatch__fill" style="background: var(--color-background); display:grid; place-items:center;"><span style="width:60%; height:60%; border-radius:var(--radius-sm); outline:2px solid var(--color-focus-ring); outline-offset:3px;"></span></span>
+        <span class="swatch__copied">Copied</span>
+        <span class="swatch__body">
+          <span class="swatch__name">Focus Ring</span>
+          <span class="swatch__purpose">Keyboard focus indication</span>
+          <span class="swatch__var">--color-focus-ring</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- TYPOGRAPHY -->
+    <h3 class="subhead">Typography</h3>
+    <div class="type-list">
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Display</span><span class="type-row__specs">Fraunces · 560 · clamp(2.6–4.6rem)</span></div>
+        <div class="type-row__sample sample--display">Grow with every little step.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Heading 1</span><span class="type-row__specs">Fraunces · 560 · clamp(2–3rem)</span></div>
+        <div class="type-row__sample sample--h1">A complete language for the classroom.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Heading 2</span><span class="type-row__specs">Fraunces · 500 · clamp(1.5–2.1rem)</span></div>
+        <div class="type-row__sample sample--h2">Build with confidence.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Heading 3</span><span class="type-row__specs">Inter · 700 · clamp(1.2–1.5rem)</span></div>
+        <div class="type-row__sample sample--h3">Today's attendance summary</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Body large</span><span class="type-row__specs">Inter · 400 · 1.125rem / 1.65</span></div>
+        <div class="type-row__sample sample--body-lg">Supporting interface copy that introduces a section or highlights a key detail.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Body</span><span class="type-row__specs">Inter · 400 · 1rem / 1.5</span></div>
+        <div class="type-row__sample sample--body">Standard paragraph copy used across forms, cards and tables throughout the product.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Body small</span><span class="type-row__specs">Inter · 400 · 0.875rem</span></div>
+        <div class="type-row__sample sample--body-sm">Secondary detail used inside dense components such as tables and cards.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Caption</span><span class="type-row__specs">Inter · 400 · 0.8125rem</span></div>
+        <div class="type-row__sample sample--caption">Last updated 2 minutes ago</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Label</span><span class="type-row__specs">Inter · 600 · uppercase · wide</span></div>
+        <div class="type-row__sample sample--label">Classroom name</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Button</span><span class="type-row__specs">Inter · 600 · 0.875rem</span></div>
+        <div class="type-row__sample sample--button">Continue</div>
+      </div>
+      <div class="type-row">
+        <div class="type-row__meta"><span class="type-row__label">Overline</span><span class="type-row__specs">Inter · 700 · uppercase · widest</span></div>
+        <div class="type-row__sample sample--overline">Enrolment · Autumn term</div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- TYPOGRAPHY LAB -->
+    <h3 class="subhead">Typography lab</h3>
+    <div class="playground" style="margin-bottom: var(--space-9);">
+      <div class="playground__controls">
+        <div class="range-field">
+          <div class="range-field__row"><span>Size</span><span id="typeLabSizeOut">32px</span></div>
+          <input class="range-input" type="range" id="typeLabSize" min="16" max="64" value="32" />
+        </div>
+        <div class="range-field">
+          <div class="range-field__row"><span>Weight</span><span id="typeLabWeightOut">560</span></div>
+          <input class="range-input" type="range" id="typeLabWeight" min="400" max="700" step="10" value="560" />
+        </div>
+        <div class="range-field">
+          <div class="range-field__row"><span>Line height</span><span id="typeLabLeadingOut">1.1</span></div>
+          <input class="range-input" type="range" id="typeLabLeading" min="100" max="180" value="110" />
+        </div>
+      </div>
+      <div class="type-lab-preview">
+        <p id="typeLabPreview" style="font-family: var(--font-display); font-size: 32px; font-weight: 560; line-height: 1.1; margin:0;">Grow with every little step.</p>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <div class="foundation-split">
+      <!-- SPACING -->
+      <div>
+        <h3 class="subhead">Spacing scale</h3>
+        <div class="spacing-list">
+          <div class="spacing-row"><span class="spacing-row__token">--space-1</span><span class="spacing-row__bar" style="width:4px;"></span><span class="spacing-row__px">4px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-2</span><span class="spacing-row__bar" style="width:8px;"></span><span class="spacing-row__px">8px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-3</span><span class="spacing-row__bar" style="width:12px;"></span><span class="spacing-row__px">12px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-4</span><span class="spacing-row__bar" style="width:16px;"></span><span class="spacing-row__px">16px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-5</span><span class="spacing-row__bar" style="width:24px;"></span><span class="spacing-row__px">24px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-6</span><span class="spacing-row__bar" style="width:32px;"></span><span class="spacing-row__px">32px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-7</span><span class="spacing-row__bar" style="width:48px;"></span><span class="spacing-row__px">48px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-8</span><span class="spacing-row__bar" style="width:64px;"></span><span class="spacing-row__px">64px</span></div>
+          <div class="spacing-row"><span class="spacing-row__token">--space-9</span><span class="spacing-row__bar" style="width:80px;"></span><span class="spacing-row__px">80px</span></div>
+        </div>
+      </div>
+
+      <!-- RADIUS + ELEVATION -->
+      <div>
+        <h3 class="subhead">Radius &amp; elevation</h3>
+        <div class="radius-row" style="margin-bottom: var(--space-7);">
+          <div class="radius-demo" style="border-radius: var(--radius-sm);">sm · 8</div>
+          <div class="radius-demo" style="border-radius: var(--radius-md);">md · 12</div>
+          <div class="radius-demo" style="border-radius: var(--radius-lg);">lg · 18</div>
+          <div class="radius-demo" style="border-radius: var(--radius-xl);">xl · 26</div>
+          <div class="radius-demo" style="border-radius: var(--radius-pill);">pill</div>
+        </div>
+        <div class="elevation-row">
+          <div class="elevation-demo" style="box-shadow: var(--shadow-sm);">sm</div>
+          <div class="elevation-demo" style="box-shadow: var(--shadow-md);">md</div>
+          <div class="elevation-demo" style="box-shadow: var(--shadow-lg);">lg</div>
+          <div class="elevation-demo" style="box-shadow: var(--shadow-xl);">xl</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- GLASS / SURFACE LAB -->
+    <h3 class="subhead">Glass &amp; surface lab</h3>
+    <div class="surface-grid">
+      <div class="surface-demo surface-demo--solid">
+        <div class="surface-demo__name">Solid</div>
+        <div class="surface-demo__spec">--color-surface-secondary</div>
+      </div>
+      <div class="surface-demo surface-demo--subtle">
+        <div class="surface-demo__name">Subtle</div>
+        <div class="surface-demo__spec">60% surface, no blur</div>
+      </div>
+      <div class="surface-demo surface-demo--glass">
+        <span class="surface-demo__orb" aria-hidden="true"></span>
+        <div class="surface-demo__name">Glass</div>
+        <div class="surface-demo__spec">--color-surface-glass · blur(12px)</div>
+      </div>
+      <div class="surface-demo surface-demo--elevated-glass">
+        <span class="surface-demo__orb" aria-hidden="true"></span>
+        <div class="surface-demo__name">Elevated glass</div>
+        <div class="surface-demo__spec">blur(16px) · shadow-md</div>
+      </div>
+      <div class="surface-demo surface-demo--floating">
+        <div class="surface-demo__name">Floating</div>
+        <div class="surface-demo__spec">--color-surface-raised · shadow-xl</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================= COMPONENTS ============================= -->
+<section class="section" id="components">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">02 — Components</span>
+        <h2 class="section-head__title">Every building block.</h2>
+      </div>
+      <p class="section-head__text">Buttons, inputs, cards, tabs, filters, tables, modals and drawers — demonstrated with real states, not screenshots.</p>
+    </div>
+
+    <!-- BUTTON PLAYGROUND -->
+    <h3 class="subhead">Button playground</h3>
+    <div class="glass-panel" style="padding: var(--space-6); margin-bottom: var(--space-8);">
+      <div class="playground">
+        <div class="playground__controls">
+          <div class="playground__field">
+            <label class="field__label" for="playVariant">Variant</label>
+            <select class="select" id="playVariant">
+              <option value="primary" selected>Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="ghost">Ghost</option>
+              <option value="destructive">Destructive</option>
+            </select>
+          </div>
+          <div class="playground__field">
+            <label class="field__label" for="playSize">Size</label>
+            <select class="select" id="playSize">
+              <option value="sm">Small</option>
+              <option value="md" selected>Medium</option>
+              <option value="lg">Large</option>
+            </select>
+          </div>
+          <div class="playground__field">
+            <label class="field__label" for="playState">State</label>
+            <select class="select" id="playState">
+              <option value="default" selected>Default</option>
+              <option value="disabled">Disabled</option>
+              <option value="loading">Loading</option>
+              <option value="success">Success</option>
+            </select>
+          </div>
+        </div>
+        <div class="playground__preview">
+          <button class="btn btn--primary" id="playPreviewBtn" type="button">
+            Continue
+            <span class="btn__spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Variants</h3>
+    <div class="state-strip" style="margin-bottom: var(--space-7);">
+      <div class="state-strip__item"><button class="btn btn--primary" type="button">Primary</button><span class="state-strip__label">Primary</span></div>
+      <div class="state-strip__item"><button class="btn btn--secondary" type="button">Secondary</button><span class="state-strip__label">Secondary</span></div>
+      <div class="state-strip__item"><button class="btn btn--ghost" type="button">Ghost</button><span class="state-strip__label">Tertiary</span></div>
+      <div class="state-strip__item"><button class="btn btn--destructive" type="button">Delete</button><span class="state-strip__label">Destructive</span></div>
+      <div class="state-strip__item"><button class="btn btn--icon" type="button" aria-label="Notifications">&#9776;</button><span class="state-strip__label">Icon</span></div>
+      <div class="state-strip__item"><button class="btn btn--text" type="button">View all</button><span class="state-strip__label">Text</span></div>
+    </div>
+
+    <h3 class="subhead">States</h3>
+    <div class="state-strip">
+      <div class="state-strip__item"><button class="btn btn--primary" type="button">Default</button><span class="state-strip__label">Default</span></div>
+      <div class="state-strip__item"><button class="btn btn--primary" type="button" style="box-shadow: var(--shadow-glow-primary); transform: translateY(-1px);">Hover</button><span class="state-strip__label">Hover</span></div>
+      <div class="state-strip__item"><button class="btn btn--primary" type="button" style="outline: 2px solid var(--color-focus-ring); outline-offset: 3px;">Focus</button><span class="state-strip__label">Focus</span></div>
+      <div class="state-strip__item"><button class="btn btn--primary" type="button" disabled>Disabled</button><span class="state-strip__label">Disabled</span></div>
+      <div class="state-strip__item"><button class="btn btn--primary is-loading" type="button">Loading<span class="btn__spinner" aria-hidden="true"></span></button><span class="state-strip__label">Loading</span></div>
+      <div class="state-strip__item"><button class="btn is-success" type="button">Saved &#10003;</button><span class="state-strip__label">Success</span></div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- INPUTS -->
+    <h3 class="subhead">Inputs</h3>
+    <div class="input-grid" style="margin-bottom: var(--space-7);">
+      <div class="field">
+        <label class="field__label" for="inpEmail">Guardian email <span class="req">*</span></label>
+        <input class="input" id="inpEmail" type="email" value="folasade.osei@example.com" />
+        <span class="field__hint">We'll send enrolment updates here.</span>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="inpSearch">Search children</label>
+        <div class="input-wrap">
+          <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="input" id="inpSearch" type="search" placeholder="Search by name or room…" />
+        </div>
+      </div>
+
+      <div class="field is-error">
+        <label class="field__label" for="inpPhone">Emergency contact</label>
+        <input class="input" id="inpPhone" type="tel" value="98450" />
+        <span class="field__error">&#9888; Enter a valid 10-digit phone number</span>
+      </div>
+
+      <div class="field is-success">
+        <label class="field__label" for="inpName">Child's full name</label>
+        <input class="input" id="inpName" type="text" value="Amara Osei" />
+        <span class="field__success">&#10003; Looks good</span>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="inpRoom">Classroom</label>
+        <select class="select" id="inpRoom">
+          <option>Sunflower Room — Toddlers</option>
+          <option>Marigold Room — Pre-K</option>
+          <option>Daisy Room — Infants</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="inpPass">Portal password</label>
+        <input class="input" id="inpPass" type="password" value="supersecret" disabled />
+        <span class="field__hint">Managed by the family — disabled for staff.</span>
+      </div>
+
+      <div class="field" style="grid-column: 1 / -1;">
+        <label class="field__label" for="inpNotes">Daily notes</label>
+        <textarea class="textarea" id="inpNotes" placeholder="Nap time, meals, mood…">Had a great morning circle, ate a full lunch, napped from 1–2:30pm.</textarea>
+      </div>
+    </div>
+
+    <div class="input-grid">
+      <div>
+        <span class="field__label" style="display:block; margin-bottom: var(--space-3);">Permissions</span>
+        <div class="check-row" style="margin-bottom: var(--space-3);">
+          <input class="checkbox" id="chk1" type="checkbox" checked />
+          <label for="chk1">Allow photo sharing with guardians</label>
+        </div>
+        <div class="check-row" style="margin-bottom: var(--space-3);">
+          <input class="checkbox" id="chk2" type="checkbox" />
+          <label for="chk2">Approved for field trips</label>
+        </div>
+        <div class="check-row">
+          <input class="checkbox" id="chk3" type="checkbox" disabled />
+          <label for="chk3">Requires medication (disabled)</label>
+        </div>
+      </div>
+      <div>
+        <span class="field__label" style="display:block; margin-bottom: var(--space-3);">Term</span>
+        <div class="check-row" style="margin-bottom: var(--space-3);">
+          <input class="radio" id="rad1" type="radio" name="term" checked />
+          <label for="rad1">Autumn 2026</label>
+        </div>
+        <div class="check-row" style="margin-bottom: var(--space-3);">
+          <input class="radio" id="rad2" type="radio" name="term" />
+          <label for="rad2">Spring 2027</label>
+        </div>
+        <div class="check-row" style="margin-bottom: var(--space-5);">
+          <input class="radio" id="rad3" type="radio" name="term" disabled />
+          <label for="rad3">Summer 2027 (disabled)</label>
+        </div>
+        <span class="field__label" style="display:block; margin-bottom: var(--space-3);">Notifications</span>
+        <div class="check-row">
+          <span class="toggle"><input type="checkbox" id="tog1" checked /><span class="toggle__track"><span class="toggle__thumb"></span></span></span>
+          <label for="tog1">Daily digest email</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- CARDS -->
+    <h3 class="subhead">Cards</h3>
+    <div class="card-grid" style="margin-bottom: var(--space-8);">
+      <div class="card">
+        <span class="card__eyebrow">Basic</span>
+        <div class="card__title">Marigold Room</div>
+        <p class="card__text">Pre-K · 14 children enrolled this term.</p>
+      </div>
+
+      <div class="card card--glass">
+        <span class="card__eyebrow">Glass</span>
+        <div class="card__title">Term overview</div>
+        <p class="card__text">Autumn attendance is tracking 4% above last term.</p>
+      </div>
+
+      <div class="card card--interactive" tabindex="0" role="button">
+        <span class="card__eyebrow">Interactive</span>
+        <div class="card__title">Daisy Room</div>
+        <p class="card__text">Infants · click or press enter to open roster.</p>
+      </div>
+
+      <div class="card card--selected">
+        <span class="card__eyebrow">Selected</span>
+        <div class="card__title">Sunflower Room</div>
+        <p class="card__text">Toddlers · currently selected classroom.</p>
+      </div>
+
+      <div class="card card--disabled">
+        <span class="card__eyebrow">Disabled</span>
+        <div class="card__title">Tulip Room</div>
+        <p class="card__text">Not yet available for the Autumn term.</p>
+      </div>
+
+      <div class="card card--status">
+        <span class="card__eyebrow">Status</span>
+        <div class="card__title">Fire-drill compliance</div>
+        <p class="card__text">Completed on schedule this month.</p>
+        <div class="card__footer"><span class="badge badge--success">On track</span></div>
+      </div>
+
+      <div class="card">
+        <span class="card__eyebrow">Information</span>
+        <div class="card__title">Staff ratio</div>
+        <p class="card__text">1 teacher per 6 toddlers — within licensing limits.</p>
+        <div class="card__footer"><span class="badge badge--primary">1 : 6</span></div>
+      </div>
+
+      <div class="card card--action">
+        <div>
+          <span class="card__eyebrow">Action</span>
+          <div class="card__title">Send weekly update</div>
+        </div>
+        <button class="btn btn--secondary btn--sm" type="button">Send</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <h3 class="subhead">Tabs</h3>
+    <div class="tabs" style="margin-bottom: var(--space-8);">
+      <div class="tabs__list" role="tablist" aria-label="Roster filters">
+        <button class="tabs__tab" role="tab" id="tab-all" aria-controls="panel-all" aria-selected="true" type="button">All rooms</button>
+        <button class="tabs__tab" role="tab" id="tab-toddlers" aria-controls="panel-toddlers" aria-selected="false" type="button">Toddlers</button>
+        <button class="tabs__tab" role="tab" id="tab-prek" aria-controls="panel-prek" aria-selected="false" type="button">Pre-K</button>
+        <button class="tabs__tab" role="tab" id="tab-archived" aria-controls="panel-archived" aria-selected="false" type="button" disabled>Archived</button>
+        <div class="tabs__indicator" aria-hidden="true"></div>
+      </div>
+      <div class="tabs__panels">
+        <div class="tabs__panel" id="panel-all" role="tabpanel" aria-labelledby="tab-all" data-active="true">
+          <p class="sample--body">Showing 4 classrooms across the school — 52 children enrolled in total this term.</p>
+        </div>
+        <div class="tabs__panel" id="panel-toddlers" role="tabpanel" aria-labelledby="tab-toddlers">
+          <p class="sample--body">Sunflower Room — 16 toddlers, 3 teachers, 2 assistants.</p>
+        </div>
+        <div class="tabs__panel" id="panel-prek" role="tabpanel" aria-labelledby="tab-prek">
+          <p class="sample--body">Marigold Room — 14 pre-K children preparing for kindergarten transition.</p>
+        </div>
+        <div class="tabs__panel" id="panel-archived" role="tabpanel" aria-labelledby="tab-archived">
+          <p class="sample--body">No archived rooms for this academic year.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <h3 class="subhead">Filters</h3>
+    <div class="filter-bar" id="filterBar" style="margin-bottom: var(--space-8);">
+      <button class="btn btn--secondary btn--sm" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+        Filter
+      </button>
+      <div class="filter-dropdown">
+        <button class="btn btn--secondary btn--sm" type="button" aria-haspopup="true">Status: Any</button>
+        <div class="filter-dropdown__panel" role="menu">
+          <div class="filter-dropdown__option" data-label="Status: Active" data-value="status-active" role="menuitem">Active <span class="badge badge--success">24</span></div>
+          <div class="filter-dropdown__option" data-label="Status: Waitlisted" data-value="status-waitlist" role="menuitem">Waitlisted <span class="badge badge--warning">6</span></div>
+          <div class="filter-dropdown__option" data-label="Role: Admin" data-value="role-admin" role="menuitem">Role: Admin <span class="badge badge--primary">3</span></div>
+        </div>
+      </div>
+      <span id="filterChips" style="display:inline-flex; gap: var(--space-2); flex-wrap: wrap;">
+        <span class="chip" data-chip="status-active-default">Status: Active <span class="chip__remove" role="button" tabindex="0" aria-label="Remove filter">&times;</span></span>
+      </span>
+      <button class="btn btn--ghost btn--sm" id="filterClear" type="button">Clear all</button>
+    </div>
+
+    <!-- TABLE -->
+    <h3 class="subhead">Table</h3>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th>Child</th><th>Room</th><th>Status</th><th>Guardian</th><th>Enrolled since</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cell-primary">Amara Osei</td>
+            <td>Sunflower Room</td>
+            <td><span class="badge badge--success">Active</span></td>
+            <td>Folasade Osei</td>
+            <td class="cell-muted">08 Oct 2026</td>
+          </tr>
+          <tr>
+            <td class="cell-primary">Rhea Kapoor</td>
+            <td>Marigold Room</td>
+            <td><span class="badge badge--success">Active</span></td>
+            <td>Nikhil Kapoor</td>
+            <td class="cell-muted">02 Sep 2026</td>
+          </tr>
+          <tr>
+            <td class="cell-primary">Leo Fernandes</td>
+            <td>Daisy Room</td>
+            <td><span class="badge badge--warning">Waitlisted</span></td>
+            <td>Priya Fernandes</td>
+            <td class="cell-muted">—</td>
+          </tr>
+          <tr>
+            <td class="cell-primary">Noor Haddad</td>
+            <td>Sunflower Room</td>
+            <td><span class="badge badge--error">Inactive</span></td>
+            <td>Sara Haddad</td>
+            <td class="cell-muted">14 Jan 2026</td>
+          </tr>
+          <tr>
+            <td><span class="skeleton skeleton--title"></span></td>
+            <td><span class="skeleton skeleton--text"></span></td>
+            <td><span class="skeleton skeleton--button" style="height:20px; width:64px;"></span></td>
+            <td><span class="skeleton skeleton--text"></span></td>
+            <td><span class="skeleton skeleton--text" style="width:50%;"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- mobile stacked-card equivalent -->
+      <div class="table-card">
+        <div class="table-card__item">
+          <div class="table-card__row"><span class="table-card__label">Child</span><span class="table-card__value">Amara Osei</span></div>
+          <div class="table-card__row"><span class="table-card__label">Room</span><span class="table-card__value">Sunflower Room</span></div>
+          <div class="table-card__row"><span class="table-card__label">Status</span><span class="table-card__value"><span class="badge badge--success">Active</span></span></div>
+          <div class="table-card__row"><span class="table-card__label">Guardian</span><span class="table-card__value">Folasade Osei</span></div>
+          <div class="table-card__row"><span class="table-card__label">Enrolled since</span><span class="table-card__value">08 Oct 2026</span></div>
+        </div>
+        <div class="table-card__item">
+          <div class="table-card__row"><span class="table-card__label">Child</span><span class="table-card__value">Rhea Kapoor</span></div>
+          <div class="table-card__row"><span class="table-card__label">Room</span><span class="table-card__value">Marigold Room</span></div>
+          <div class="table-card__row"><span class="table-card__label">Status</span><span class="table-card__value"><span class="badge badge--success">Active</span></span></div>
+          <div class="table-card__row"><span class="table-card__label">Guardian</span><span class="table-card__value">Nikhil Kapoor</span></div>
+          <div class="table-card__row"><span class="table-card__label">Enrolled since</span><span class="table-card__value">02 Sep 2026</span></div>
+        </div>
+        <div class="table-card__item">
+          <div class="table-card__row"><span class="table-card__label">Child</span><span class="table-card__value">Leo Fernandes</span></div>
+          <div class="table-card__row"><span class="table-card__label">Room</span><span class="table-card__value">Daisy Room</span></div>
+          <div class="table-card__row"><span class="table-card__label">Status</span><span class="table-card__value"><span class="badge badge--warning">Waitlisted</span></span></div>
+          <div class="table-card__row"><span class="table-card__label">Guardian</span><span class="table-card__value">Priya Fernandes</span></div>
+          <div class="table-card__row"><span class="table-card__label">Enrolled since</span><span class="table-card__value">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- MODALS + DRAWERS -->
+    <h3 class="subhead">Modals</h3>
+    <div class="state-strip" style="margin-bottom: var(--space-8); justify-content: flex-start;">
+      <div class="state-strip__item"><button class="btn btn--secondary" type="button" data-open-modal="info">Default</button><span class="state-strip__label">Default</span></div>
+      <div class="state-strip__item"><button class="btn btn--secondary" type="button" data-open-modal="confirm">Confirmation</button><span class="state-strip__label">Confirmation</span></div>
+      <div class="state-strip__item"><button class="btn btn--destructive" type="button" data-open-modal="destructive">Delete room</button><span class="state-strip__label">Destructive</span></div>
+      <div class="state-strip__item"><button class="btn btn--secondary" type="button" data-open-modal="success">Success</button><span class="state-strip__label">Success</span></div>
+      <div class="state-strip__item"><button class="btn btn--secondary" type="button" data-open-modal="error">Error</button><span class="state-strip__label">Error</span></div>
+    </div>
+
+    <h3 class="subhead">Drawer</h3>
+    <button class="btn btn--primary" type="button" data-open-drawer>Open child profile</button>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- ICON LIBRARY -->
+    <h3 class="subhead">Icon library</h3>
+    <div class="icon-grid" style="margin-bottom: var(--space-8);">
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="icon-tile__label">Search</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="icon-tile__label">Plus</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="icon-tile__label">Close</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="icon-tile__label">Chevron</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="icon-tile__label">Arrow</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="icon-tile__label">Edit</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg><span class="icon-tile__label">Delete</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg><span class="icon-tile__label">Settings</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="icon-tile__label">User</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span class="icon-tile__label">Lock</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><span class="icon-tile__label">Unlock</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="icon-tile__label">Check</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span class="icon-tile__label">Warning</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span class="icon-tile__label">Error</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="icon-tile__label">Notification</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="icon-tile__label">Filter</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg><span class="icon-tile__label">Menu</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="icon-tile__label">Calendar</span></div>
+      <div class="icon-tile"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span class="icon-tile__label">More</span></div>
+    </div>
+
+    <p class="sample--body-sm" style="color: var(--color-text-muted); margin-bottom: var(--space-4);">Sizes &amp; states</p>
+    <div class="icon-strip" style="margin-bottom: var(--space-8);">
+      <div class="icon-strip__item"><span class="icon--sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="icon-tile__label">Small</span></div>
+      <div class="icon-strip__item"><span class="icon--md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="icon-tile__label">Medium</span></div>
+      <div class="icon-strip__item"><span class="icon--lg" style="color: var(--color-primary-soft);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="icon-tile__label">Hover</span></div>
+      <div class="icon-strip__item"><span class="icon--md" style="color: var(--color-text-primary);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="icon-tile__label">Active</span></div>
+      <div class="icon-strip__item icon--disabled"><span class="icon--md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span class="icon-tile__label">Disabled</span></div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- BADGES -->
+    <h3 class="subhead">Badge &amp; status system</h3>
+    <div class="badge-row" style="margin-bottom: var(--space-8);">
+      <span class="badge badge--success">Active</span>
+      <span class="badge badge--warning">Pending</span>
+      <span class="badge badge--primary">Completed</span>
+      <span class="badge badge--neutral">Draft</span>
+      <span class="badge badge--primary">In review</span>
+      <span class="badge badge--outline" style="color: var(--color-warning);">Locked</span>
+      <span class="badge badge--error">Error</span>
+      <span class="badge badge--outline" style="color: var(--color-text-muted);">Archived</span>
+      <span class="badge badge--success badge--icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Verified</span>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- AVATARS -->
+    <h3 class="subhead">Avatar system</h3>
+    <div class="input-grid" style="margin-bottom: var(--space-8);">
+      <div>
+        <div class="avatar-row" style="margin-bottom: var(--space-4);">
+          <span class="avatar avatar--lg">N<span class="avatar__status avatar__status--online"></span></span>
+          <div>
+            <div class="avatar-meta__name">Nithya</div>
+            <div class="avatar-meta__role">Admin · Active</div>
+          </div>
+        </div>
+        <div class="avatar-row">
+          <span class="avatar">AO</span>
+          <div>
+            <div class="avatar-meta__name">Amara Osei</div>
+            <div class="avatar-meta__role">Sunflower Room</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="sample--body-sm" style="color: var(--color-text-muted); margin-bottom: var(--space-3);">Sizes &amp; presence</p>
+        <div class="avatar-row" style="margin-bottom: var(--space-5);">
+          <span class="avatar avatar--sm">N</span>
+          <span class="avatar">N</span>
+          <span class="avatar avatar--lg">N</span>
+          <span class="avatar">N<span class="avatar__status avatar__status--offline"></span></span>
+        </div>
+        <p class="sample--body-sm" style="color: var(--color-text-muted); margin-bottom: var(--space-3);">Team group</p>
+        <div class="avatar-group">
+          <span class="avatar">N</span>
+          <span class="avatar" style="background: linear-gradient(145deg, var(--color-secondary), var(--color-primary));">AO</span>
+          <span class="avatar" style="background: linear-gradient(145deg, var(--color-accent-yellow), var(--color-secondary));">RK</span>
+          <span class="avatar" style="background: var(--color-surface-raised); color: var(--color-text-muted); font-size: var(--fs-caption);">+6</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- DROPDOWN / POPOVER -->
+    <h3 class="subhead">Dropdown &amp; popover</h3>
+    <div class="popover" id="actionsPopover" style="margin-bottom: var(--space-8);">
+      <button class="btn btn--secondary" type="button" aria-haspopup="true" aria-expanded="false">
+        More actions
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="popover__panel" role="menu">
+        <button class="popover__item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Edit</button>
+        <button class="popover__item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Duplicate</button>
+        <button class="popover__item" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archive</button>
+        <button class="popover__item" role="menuitem" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>Settings</button>
+        <div class="popover__divider"></div>
+        <button class="popover__item popover__item--danger" role="menuitem" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Delete</button>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- BREADCRUMBS -->
+    <h3 class="subhead">Breadcrumbs</h3>
+    <nav class="breadcrumbs" aria-label="Breadcrumb" style="margin-bottom: var(--space-8);">
+      <a class="breadcrumbs__link" href="#gallery">Dashboard</a>
+      <span class="breadcrumbs__sep">/</span>
+      <a class="breadcrumbs__link" href="#gallery">Users</a>
+      <span class="breadcrumbs__sep">/</span>
+      <span class="breadcrumbs__current" aria-current="page">Nithya</span>
+    </nav>
+
+    <!-- PAGINATION -->
+    <h3 class="subhead">Pagination</h3>
+    <nav class="pagination" id="pagination" aria-label="Table pages" style="margin-bottom: var(--space-8);">
+      <button class="pagination__btn" type="button" data-page="prev" aria-label="Previous page" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <button class="pagination__btn" type="button" data-page="1" aria-current="true">1</button>
+      <button class="pagination__btn" type="button" data-page="2">2</button>
+      <button class="pagination__btn" type="button" data-page="3">3</button>
+      <button class="pagination__btn" type="button" data-page="4">4</button>
+      <button class="pagination__btn" type="button" data-page="5">5</button>
+      <button class="pagination__btn" type="button" data-page="next" aria-label="Next page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </nav>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- TOOLTIPS -->
+    <h3 class="subhead">Tooltip system</h3>
+    <div class="icon-strip" style="margin-bottom: var(--space-8);">
+      <span class="tooltip-wrap">
+        <button class="btn btn--icon" type="button" aria-label="Info, tooltip on top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="tooltip tooltip--top" role="tooltip">Shown on top</span>
+      </span>
+      <span class="tooltip-wrap">
+        <button class="btn btn--icon" type="button" aria-label="Info, tooltip on bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="tooltip tooltip--bottom" role="tooltip">Shown below</span>
+      </span>
+      <span class="tooltip-wrap">
+        <button class="btn btn--icon" type="button" aria-label="Info, tooltip on left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="tooltip tooltip--left" role="tooltip">Shown left</span>
+      </span>
+      <span class="tooltip-wrap">
+        <button class="btn btn--icon" type="button" aria-label="Info, tooltip on right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+        <span class="tooltip tooltip--right" role="tooltip">Shown right</span>
+      </span>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- PROGRESS -->
+    <h3 class="subhead">Progress system</h3>
+    <div class="input-grid reveal" style="margin-bottom: var(--space-8);">
+      <div>
+        <p class="sample--body-sm" style="margin-bottom: var(--space-3);">Linear — classroom capacity</p>
+        <div class="progress-linear"><div class="progress-linear__bar" id="progressLinear" data-target="80"></div></div>
+        <div class="progress-meta"><span>16 of 20 seats</span><span>80%</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap: var(--space-5);">
+        <div class="progress-circle">
+          <svg viewBox="0 0 96 96"><circle class="progress-circle__track" cx="48" cy="48" r="40"/><circle class="progress-circle__value" id="progressCircle" data-target="96" cx="48" cy="48" r="40"/></svg>
+          <span class="progress-circle__label" id="progressCircleLabel">0%</span>
+        </div>
+        <div>
+          <div class="card__title">Attendance rate</div>
+          <p class="card__text">Autumn term, all rooms combined.</p>
+        </div>
+      </div>
+    </div>
+    <div class="input-grid" style="margin-bottom: var(--space-8);">
+      <div class="progress-upload">
+        <span class="progress-upload__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
+        <div class="progress-upload__body">
+          <div class="progress-upload__name">Autumn-enrolment-forms.pdf</div>
+          <div class="progress-linear" style="margin-top: 8px;"><div class="progress-linear__bar progress-linear__bar--success" id="progressUpload" data-target="62"></div></div>
+          <div class="progress-upload__meta">Uploading · 62%</div>
+        </div>
+      </div>
+      <div>
+        <p class="sample--body-sm" style="margin-bottom: var(--space-3);">Step progress</p>
+        <div class="step-progress">
+          <div class="step-progress__seg is-active"><span data-target="100"></span></div>
+          <div class="step-progress__seg is-active"><span data-target="100"></span></div>
+          <div class="step-progress__seg"><span data-target="40"></span></div>
+          <div class="step-progress__seg"><span data-target="0"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <!-- STEPPER -->
+    <h3 class="subhead">Stepper</h3>
+    <div class="stepper" id="stepper">
+      <button class="stepper__step is-complete" type="button" data-step="1">
+        <span class="stepper__dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="stepper__label">Account</span>
+      </button>
+      <button class="stepper__step is-current" type="button" data-step="2">
+        <span class="stepper__dot">02</span>
+        <span class="stepper__label">Details</span>
+      </button>
+      <button class="stepper__step" type="button" data-step="3">
+        <span class="stepper__dot">03</span>
+        <span class="stepper__label">Review</span>
+      </button>
+      <button class="stepper__step" type="button" data-step="4">
+        <span class="stepper__dot">04</span>
+        <span class="stepper__label">Complete</span>
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================= PLAYGROUND ============================= -->
+<section class="section" id="playground">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">03 — Component Playground</span>
+        <h2 class="section-head__title">Pick it apart, live.</h2>
+      </div>
+      <p class="section-head__text">Choose a component, then its variant, size and state — the preview updates instantly. This is the system as a real tool, not a reference.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: var(--space-6);">
+      <div class="playground">
+        <div class="playground__controls">
+          <div class="playground__field">
+            <label class="field__label" for="pgComponent">Component</label>
+            <select class="select" id="pgComponent">
+              <option value="button" selected>Button</option>
+              <option value="input">Input</option>
+              <option value="badge">Badge</option>
+              <option value="card">Card</option>
+              <option value="toggle">Toggle</option>
+            </select>
+          </div>
+          <div class="playground__field">
+            <label class="field__label" for="pgVariant">Variant</label>
+            <select class="select" id="pgVariant"></select>
+          </div>
+          <div class="playground__field">
+            <label class="field__label" for="pgSize">Size</label>
+            <select class="select" id="pgSize"></select>
+          </div>
+          <div class="playground__field">
+            <label class="field__label" for="pgState">State</label>
+            <select class="select" id="pgState"></select>
+          </div>
+          <button class="favorite-btn" type="button" id="pgFavorite" data-pin-id="Component Playground">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+            Pin this
+          </button>
+        </div>
+        <div class="playground__preview" id="pgPreview">
+          <button class="btn btn--primary" id="pgPreviewEl" type="button">Continue<span class="btn__spinner" aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= INTERACTION LAB ============================= -->
+<section class="section" id="interaction-lab">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">04 — Interaction Lab</span>
+        <h2 class="section-head__title">Every state, demonstrated.</h2>
+      </div>
+      <p class="section-head__text">Loading, empty, error, success, locked — the states that make a product feel considered under real-world conditions.</p>
+    </div>
+
+    <h3 class="subhead">Hover, focus &amp; active — try them</h3>
+    <div class="state-strip" style="margin-bottom: var(--space-8); justify-content: flex-start;">
+      <div class="state-strip__item"><div class="card card--interactive" tabindex="0" role="button" style="width:140px;"><span class="card__eyebrow">Hover me</span><div class="card__title">Elevates</div></div><span class="state-strip__label">Hover</span></div>
+      <div class="state-strip__item"><div class="card card--interactive" tabindex="0" role="button" style="width:140px;"><span class="card__eyebrow">Tab to me</span><div class="card__title">Focus ring</div></div><span class="state-strip__label">Focus</span></div>
+      <div class="state-strip__item"><button class="btn btn--primary" type="button" style="width:140px;">Press me</button><span class="state-strip__label">Active</span></div>
+    </div>
+
+    <div class="card-grid" style="margin-bottom: var(--space-8);">
+      <div class="card">
+        <span class="card__eyebrow">Loading</span>
+        <div class="card__title" style="margin-bottom: var(--space-3);">Skeleton card</div>
+        <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-3);">
+          <span class="skeleton skeleton--avatar"></span>
+          <span style="flex:1; display:flex; flex-direction:column; gap:8px;">
+            <span class="skeleton skeleton--title"></span>
+            <span class="skeleton skeleton--text"></span>
+          </span>
+        </div>
+        <span class="skeleton skeleton--button"></span>
+      </div>
+
+      <div class="locked-card card">
+        <span class="card__eyebrow">Locked</span>
+        <div class="card__title">Payroll &amp; billing</div>
+        <p class="card__text">Only workspace owners can view this section.</p>
+        <span class="locked-card__badge badge badge--warning">Restricted</span>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+        <span class="card__eyebrow" style="margin-bottom:var(--space-2);">Empty</span>
+        <div class="state-panel__icon" aria-hidden="true" style="margin-bottom: var(--space-3);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div class="card__title">Nothing here yet</div>
+        <p class="card__text">Once a child is enrolled, their profile will appear here.</p>
+        <button class="btn btn--primary btn--sm" style="margin-top: var(--space-4);" type="button">Enrol a child</button>
+      </div>
+    </div>
+
+    <div class="input-grid" style="margin-bottom: var(--space-8);">
+      <div class="inline-error">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Invoice #1042 failed to send — the guardian's email bounced.
+      </div>
+      <div class="inline-success">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        Attendance for Sunflower Room submitted successfully.
+      </div>
+    </div>
+
+    <div class="state-panel state-panel--error" style="margin-bottom: var(--space-8);">
+      <div class="state-panel__icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="state-panel__title">We couldn't load this page</div>
+      <p class="state-panel__text">A network error interrupted the request. Your data is safe — try again.</p>
+      <div class="state-panel__action"><button class="btn btn--secondary" type="button">Retry</button></div>
+    </div>
+
+    <h3 class="subhead">Notifications</h3>
+    <div class="state-strip" style="justify-content: flex-start;">
+      <div class="state-strip__item"><button class="btn btn--secondary btn--sm" type="button" data-toast="success">Trigger success</button></div>
+      <div class="state-strip__item"><button class="btn btn--secondary btn--sm" type="button" data-toast="error">Trigger error</button></div>
+      <div class="state-strip__item"><button class="btn btn--secondary btn--sm" type="button" data-toast="warning">Trigger warning</button></div>
+      <div class="state-strip__item"><button class="btn btn--secondary btn--sm" type="button" data-toast="info">Trigger info</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= COMPOSITIONS ============================= -->
+<section class="section" id="compositions">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">05 — Real-world compositions</span>
+        <h2 class="section-head__title">Not screens. Proof.</h2>
+      </div>
+      <p class="section-head__text">Miniature, fully-styled interfaces showing how the tokens and components above hold together under real product pressure.</p>
+    </div>
+
+    <div class="comp-grid">
+      <!-- Dashboard preview -->
+      <div class="app-preview reveal">
+        <div class="app-preview__bar"><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__title">Dashboard</span></div>
+        <div class="app-preview__body">
+          <div class="app-preview__greeting">Good morning, Nithya</div>
+          <div class="app-preview__metrics">
+            <div class="app-preview__metric"><b>₹4.8L</b><span>Revenue</span></div>
+            <div class="app-preview__metric"><b>312</b><span>Users</span></div>
+            <div class="app-preview__metric"><b>58</b><span>Orders</span></div>
+            <div class="app-preview__metric"><b>+12%</b><span>Growth</span></div>
+          </div>
+          <div>
+            <p class="sample--body-sm" style="color: var(--color-text-muted); margin-bottom: var(--space-2);">Recent activity</p>
+            <div class="app-preview__row"><span class="avatar avatar--sm">N</span><span class="app-preview__row-text"><b>Nithya</b><span>Approved the Marigold Room budget</span></span></div>
+            <div class="app-preview__row"><span class="avatar avatar--sm">AO</span><span class="app-preview__row-text"><b>Amara's profile</b><span>Updated by Folasade Osei</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User management preview -->
+      <div class="app-preview reveal">
+        <div class="app-preview__bar"><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__title">Users</span></div>
+        <div class="app-preview__body">
+          <div class="app-preview__toolbar">
+            <div class="input-wrap" style="flex:1;">
+              <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="input" style="height:36px;" type="search" placeholder="Search users…" />
+            </div>
+            <button class="btn btn--secondary btn--sm" type="button">Filter</button>
+            <button class="btn btn--primary btn--sm" type="button">Add user</button>
+          </div>
+          <div class="app-preview__list">
+            <div class="app-preview__row">
+              <span class="avatar avatar--sm">N<span class="avatar__status avatar__status--online"></span></span>
+              <span class="app-preview__row-text"><b>Nithya</b><span>Admin</span></span>
+              <span class="badge badge--success">Active</span>
+            </div>
+            <div class="app-preview__row">
+              <span class="avatar avatar--sm" style="background: linear-gradient(145deg, var(--color-secondary), var(--color-primary));">RK</span>
+              <span class="app-preview__row-text"><b>Rhea Kapoor</b><span>Teacher</span></span>
+              <span class="badge badge--success">Active</span>
+            </div>
+            <div class="app-preview__row">
+              <span class="avatar avatar--sm" style="background: var(--color-surface-raised); color: var(--color-text-muted);">LF</span>
+              <span class="app-preview__row-text"><b>Leo Fernandes</b><span>Guardian</span></span>
+              <span class="badge badge--warning">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings preview -->
+      <div class="app-preview reveal">
+        <div class="app-preview__bar"><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__title">Settings</span></div>
+        <div class="app-preview__body">
+          <div class="avatar-row" style="margin-bottom: var(--space-2);">
+            <span class="avatar">N</span>
+            <div><div class="avatar-meta__name">Nithya</div><div class="avatar-meta__role">Workspace owner</div></div>
+          </div>
+          <div>
+            <div class="app-preview__settings-item"><span>Profile</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="app-preview__settings-item"><span>Notifications</span><span class="toggle"><input type="checkbox" checked disabled/><span class="toggle__track"><span class="toggle__thumb"></span></span></span></div>
+            <div class="app-preview__settings-item"><span>Security</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="app-preview__settings-item"><span>Appearance</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity preview -->
+      <div class="app-preview reveal">
+        <div class="app-preview__bar"><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__dot"></span><span class="app-preview__title">Activity</span></div>
+        <div class="app-preview__body">
+          <div class="app-preview__activity-item">
+            <span class="app-preview__activity-dot"></span>
+            <span class="app-preview__activity-text"><b>Nithya</b> created a project <b>Autumn enrolment</b></span>
+            <span class="app-preview__activity-time">2m ago</span>
+          </div>
+          <div class="app-preview__activity-item">
+            <span class="app-preview__activity-dot" style="background: var(--color-secondary);"></span>
+            <span class="app-preview__activity-text"><b>Nithya</b> updated billing settings</span>
+            <span class="app-preview__activity-time">1h ago</span>
+          </div>
+          <div class="app-preview__activity-item">
+            <span class="app-preview__activity-dot" style="background: var(--color-success);"></span>
+            <span class="app-preview__activity-text"><b>Nithya</b> approved Leo Fernandes' waitlist request</span>
+            <span class="app-preview__activity-time">Yesterday</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= NOTIFICATION CENTER ============================= -->
+<section class="section section--tight" id="notifications">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">06 — Notification center</span>
+        <h2 class="section-head__title">Nothing missed.</h2>
+      </div>
+      <p class="section-head__text">A dismissible, prioritised feed — unread items stay weighted until they're read.</p>
+    </div>
+
+    <div class="notif-panel">
+      <div class="notif-panel__head">
+        <span class="card__title">Notifications</span>
+        <button class="btn btn--text" type="button" id="notifMarkAll">Mark all as read</button>
+      </div>
+      <div class="notif-item is-unread">
+        <span class="notif-item__icon notif-item__icon--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="notif-item__body">
+          <span class="notif-item__title">Nithya, your changes have been saved.</span>
+          <span class="notif-item__text">The Autumn term schedule is now live for all rooms.</span>
+          <span class="notif-item__time">2 minutes ago</span>
+        </span>
+        <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </div>
+      <div class="notif-item is-unread">
+        <span class="notif-item__icon notif-item__icon--warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></span>
+        <span class="notif-item__body">
+          <span class="notif-item__title">Sunflower Room is nearly full.</span>
+          <span class="notif-item__text">18 of 20 seats are now enrolled for the Autumn term.</span>
+          <span class="notif-item__time">1 hour ago</span>
+        </span>
+        <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </div>
+      <div class="notif-item">
+        <span class="notif-item__icon notif-item__icon--error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+        <span class="notif-item__body">
+          <span class="notif-item__title">Invoice #1042 failed to send.</span>
+          <span class="notif-item__text">The guardian's email address bounced — verify and retry.</span>
+          <span class="notif-item__time">Yesterday</span>
+        </span>
+        <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </div>
+      <div class="notif-item">
+        <span class="notif-item__icon notif-item__icon--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>
+        <span class="notif-item__body">
+          <span class="notif-item__title">New message from Priya Fernandes.</span>
+          <span class="notif-item__text">Replied in the Daisy Room waitlist thread.</span>
+          <span class="notif-item__time">2 days ago</span>
+        </span>
+        <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss notification"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= RESPONSIVE ============================= -->
+<section class="section" id="responsive">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">07 — Responsive preview</span>
+        <h2 class="section-head__title">Four viewports, one system.</h2>
+      </div>
+      <p class="section-head__text">Switch the frame below to see how the roster card adapts from desktop down to a 360px phone.</p>
+    </div>
+
+    <div class="preview-controls">
+      <button class="btn btn--primary btn--sm" type="button" data-size="1440">1440</button>
+      <button class="btn btn--secondary btn--sm" type="button" data-size="1024">1024</button>
+      <button class="btn btn--secondary btn--sm" type="button" data-size="768">768</button>
+      <button class="btn btn--secondary btn--sm" type="button" data-size="360">360</button>
+    </div>
+
+    <div class="preview-stage">
+      <div>
+        <div class="device-frame" id="deviceFrame" data-size="1440">
+          <div class="device-frame__bar">
+            <span class="device-frame__dot"></span><span class="device-frame__dot"></span><span class="device-frame__dot"></span>
+          </div>
+          <div class="device-frame__body">
+            <div class="card card--glass" style="margin-bottom: var(--space-4);">
+              <span class="card__eyebrow">Classroom</span>
+              <div class="card__title">Sunflower Room — Toddlers</div>
+              <p class="card__text">16 of 20 seats filled for the Autumn term.</p>
+              <div class="card__footer">
+                <span class="badge badge--success">On track</span>
+                <button class="btn btn--secondary btn--sm" type="button">View roster</button>
+              </div>
+            </div>
+            <div class="card">
+              <span class="card__eyebrow">Status</span>
+              <div class="card__title">Upcoming: Parent-teacher day</div>
+              <p class="card__text">Scheduled for 14 Oct 2026 — 32 slots booked.</p>
+            </div>
+          </div>
+        </div>
+        <div class="device-frame__label" id="deviceFrameLabel">1440px viewport</div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-block: var(--space-9);"></div>
+
+    <h3 class="subhead">Mobile component preview — what changes at 360px</h3>
+    <div class="transform-grid">
+      <div class="transform-card">
+        <div class="transform-card__title">Table → stacked cards</div>
+        <div class="transform-pair">
+          <div class="transform-pair__before">
+            <span class="transform-pair__label">Desktop</span>
+            <div class="mini-table">
+              <div><span>Child</span><span>Status</span></div>
+              <div><span>Amara Osei</span><span>Active</span></div>
+              <div><span>Rhea Kapoor</span><span>Active</span></div>
+            </div>
+          </div>
+          <svg class="transform-pair__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="transform-pair__after">
+            <span class="transform-pair__label">360px</span>
+            <div class="mini-card-stack">
+              <div>Amara Osei · Active</div>
+              <div>Rhea Kapoor · Active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="transform-card">
+        <div class="transform-card__title">Modal → full-screen sheet</div>
+        <div class="transform-pair">
+          <div class="transform-pair__before">
+            <span class="transform-pair__label">Desktop</span>
+            <div class="mini-frame">Centered glass dialog</div>
+          </div>
+          <svg class="transform-pair__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="transform-pair__after">
+            <span class="transform-pair__label">360px</span>
+            <div class="mini-frame mini-frame--sheet" style="padding-top: var(--space-4);">Bottom sheet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="transform-card">
+        <div class="transform-card__title">Navigation → hamburger drawer</div>
+        <div class="transform-pair">
+          <div class="transform-pair__before">
+            <span class="transform-pair__label">Desktop</span>
+            <div class="mini-frame">Foundations · Components · Playground</div>
+          </div>
+          <svg class="transform-pair__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="transform-pair__after">
+            <span class="transform-pair__label">360px</span>
+            <div class="mini-frame">☰ Menu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="transform-card">
+        <div class="transform-card__title">Primary action → floating button</div>
+        <div class="transform-pair">
+          <div class="transform-pair__before">
+            <span class="transform-pair__label">Desktop</span>
+            <div class="mini-frame">+ Add new child</div>
+          </div>
+          <svg class="transform-pair__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="transform-pair__after">
+            <span class="transform-pair__label">360px</span>
+            <div class="mini-frame"><span class="mini-fab"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= FINAL GALLERY ============================= -->
+<section class="section" id="gallery">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">08 — Final gallery</span>
+        <h2 class="section-head__title">The system, assembled.</h2>
+      </div>
+      <p class="section-head__text">A composed view of the components above, working together as a real product screen would use them.</p>
+    </div>
+
+    <div class="gallery-mock">
+      <div class="gallery-mock__top">
+        <span class="brand"><span class="brand__mark"><img src="logo.png" alt="" class="brand__mark-img" /></span> Play School</span>
+        <div style="display:flex; gap: var(--space-3); align-items:center;">
+          <span class="badge badge--primary">Autumn term</span>
+          <button class="btn btn--primary btn--sm" type="button">New enrolment</button>
+          <span class="avatar avatar--sm">N<span class="avatar__status avatar__status--online"></span></span>
+        </div>
+      </div>
+      <div class="gallery-mock__grid">
+        <aside class="gallery-mock__side">
+          <a class="nav-drawer__link is-active" href="#gallery">Dashboard</a>
+          <a class="nav-drawer__link" href="#gallery">Classrooms</a>
+          <a class="nav-drawer__link" href="#gallery">Children</a>
+          <a class="nav-drawer__link" href="#gallery">Staff</a>
+          <a class="nav-drawer__link" href="#gallery">Billing</a>
+        </aside>
+        <div class="gallery-mock__main">
+          <div class="gallery-mock__row">
+            <div class="stat-card"><div class="stat-card__value">52</div><div class="stat-card__label">Children enrolled</div></div>
+            <div class="stat-card"><div class="stat-card__value">9</div><div class="stat-card__label">Teaching staff</div></div>
+            <div class="stat-card"><div class="stat-card__value">96%</div><div class="stat-card__label">Attendance rate</div></div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Child</th><th>Room</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="cell-primary">Amara Osei</td><td>Sunflower Room</td><td><span class="badge badge--success">Active</span></td></tr>
+                <tr><td class="cell-primary">Rhea Kapoor</td><td>Marigold Room</td><td><span class="badge badge--success">Active</span></td></tr>
+                <tr><td class="cell-primary">Leo Fernandes</td><td>Daisy Room</td><td><span class="badge badge--warning">Waitlisted</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap: var(--space-4); width:100%;">
+    <span>&copy; <span id="currentYear">2026</span> Play School · T00 Design System</span>
+    <span>Built with glass, depth &amp; restraint.</span>
+  </div>
+</footer>
+
+<!-- ============================= OVERLAYS ============================= -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Child profile">
+  <div class="drawer__head">
+    <h3 class="drawer__title">Amara Osei</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body">
+    <div class="card">
+      <span class="card__eyebrow">Classroom</span>
+      <div class="card__title">Sunflower Room — Toddlers</div>
+      <p class="card__text">Enrolled since 08 Oct 2026.</p>
+    </div>
+    <div class="field">
+      <label class="field__label" for="drawerNotes">Daily notes</label>
+      <textarea class="textarea" id="drawerNotes">Had a great morning circle, ate a full lunch, napped from 1–2:30pm.</textarea>
+    </div>
+    <div class="check-row">
+      <span class="toggle"><input type="checkbox" id="drawerToggle" checked /><span class="toggle__track"><span class="toggle__thumb"></span></span></span>
+      <label for="drawerToggle">Share photos with guardian</label>
+    </div>
+  </div>
+  <div class="modal__actions">
+    <button class="btn btn--ghost" type="button" data-close-drawer>Cancel</button>
+    <button class="btn btn--primary" type="button" data-close-drawer>Save changes</button>
+  </div>
+</aside>
+
+<div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+<div class="command-backdrop" id="commandBackdrop" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
+  <div class="command-palette">
+    <div class="command-palette__input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="command-palette__input" id="commandInput" type="text" placeholder="Search components, colours, states…" autocomplete="off" />
+      <span class="command-palette__kbd">Esc</span>
+    </div>
+    <div class="command-palette__list" id="commandList" role="listbox"></div>
+  </div>
+</div>
+
+<button class="fab" type="button" aria-label="Add new child">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<script src="script.js"></script>
+</body>
+</html>
