@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <div class="hero__eyebrow-row" style="margin-bottom: var(--space-2);">
+    <span class="eyebrow">Autumn term</span>
+  </div>
+  <h1 style="font-family: var(--font-display); font-weight: 560; font-size: var(--fs-h1); margin-bottom: var(--space-6);">Good morning, Nithya</h1>
+
+  <div class="hero__stats" style="margin-top: 0; margin-bottom: var(--space-7);">
+    <div class="stat-card"><div class="stat-card__value">52</div><div class="stat-card__label">Children enrolled</div></div>
+    <div class="stat-card"><div class="stat-card__value">9</div><div class="stat-card__label">Teaching staff</div></div>
+    <div class="stat-card"><div class="stat-card__value">96%</div><div class="stat-card__label">Attendance rate</div></div>
+    <div class="stat-card"><div class="stat-card__value">5</div><div class="stat-card__label">Waitlisted</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Child</th><th>Room</th><th>Status</th><th>Guardian</th></tr></thead>
+      <tbody>
+        <tr><td class="cell-primary">Amara Osei</td><td>Sunflower Room</td><td><span class="badge badge--success">Active</span></td><td>Folasade Osei</td></tr>
+        <tr><td class="cell-primary">Rhea Kapoor</td><td>Marigold Room</td><td><span class="badge badge--success">Active</span></td><td>Nikhil Kapoor</td></tr>
+        <tr><td class="cell-primary">Leo Fernandes</td><td>Daisy Room</td><td><span class="badge badge--warning">Waitlisted</span></td><td>Priya Fernandes</td></tr>
+        <tr><td class="cell-primary">Noor Haddad</td><td>Sunflower Room</td><td><span class="badge badge--error">Inactive</span></td><td>Sara Haddad</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: var(--space-6); color: var(--color-text-muted); font-size: var(--fs-caption);">
+    Try a broken link to see the 404 experience — e.g.
+    <a href="missing-page.html" style="color: var(--color-primary-soft);">missing-page.html</a>
+    or an <a href="record.html?type=Child&id=C-9999" style="color: var(--color-primary-soft);">invalid record</a>.
+  </p>
+</div>
+
+<script src="store.js"></script>
+<script src="shell.js"></script>
+<script>
+  PlayShell.login();
+  var appContent = PlayShell.mount('dashboard', 'Dashboard');
+  var pageContent = document.getElementById('pageContent');
+  pageContent.hidden = false;
+  appContent.appendChild(pageContent);
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page not found — Play School</title>
+<meta name="description" content="We couldn't find that page. Head back to your dashboard or search for a record." />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="notfound.css" />
+</head>
+<body>
+
+<!-- Guest (logged-out) frame — hidden/removed by notfound.js when logged in -->
+<div class="notfound-guest-shell">
+  <header class="notfound-bare-header" id="notfoundBareHeader">
+    <span class="brand">
+      <span class="brand__mark"><img src="logo.png" alt="" class="brand__mark-img" /></span>
+      <span class="brand__name">Play <span>School</span></span>
+    </span>
+  </header>
+
+  <main class="notfound-guest-main">
+    <!-- notfound.js moves #notfoundContent here, or into the app shell, depending on auth -->
+    <div class="notfound" id="notfoundContent" hidden>
+      <div class="notfound__illustration" aria-hidden="true">
+        <svg viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 162H206" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+          <path d="M66 162V84C66 56.9396 88.0558 35 115 35C141.944 35 164 56.9396 164 84V162" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M66 162V130" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          <path d="M164 162V130" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          <path d="M34 150C50 128 70 118 88 108" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 9" opacity="0.6"/>
+          <circle class="nf-waypoint" cx="34" cy="150" r="3.5" fill="currentColor" opacity="0.5"/>
+          <circle class="nf-waypoint" cx="58" cy="132" r="3.5" fill="currentColor" opacity="0.7"/>
+          <circle class="nf-waypoint nf-waypoint--last" cx="88" cy="108" r="5" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="notfound__code-group">
+        <div class="notfound__code">404</div>
+        <span class="notfound__underline"></span>
+      </div>
+
+      <h1 class="notfound__heading">We couldn't find that page</h1>
+      <p class="notfound__helper">The link may be broken or the page may have moved.</p>
+
+      <div class="notfound__actions">
+        <a class="btn btn--accent notfound__btn" id="nfDashboardBtn" href="dashboard.html">Go to dashboard</a>
+        <button class="btn btn--secondary notfound__btn" id="nfBackBtn" type="button">Go back</button>
+      </div>
+
+      <div class="notfound__search">
+        <span class="notfound__search-label">Global search</span>
+        <div class="notfound__search-field">
+          <label class="visually-hidden" for="nfSearchInput">Search records</label>
+          <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:var(--space-4); top:50%; transform:translateY(-50%); width:16px; height:16px;" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            class="input notfound__search-input"
+            style="padding-left: var(--space-7);"
+            id="nfSearchInput"
+            type="search"
+            placeholder="Search records…"
+            autocomplete="off"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="nfSearchDropdown"
+            aria-autocomplete="list"
+          />
+          <div class="search-dropdown" id="nfSearchDropdown" role="listbox" aria-label="Search results" hidden></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="store.js"></script>
+<script src="shell.js"></script>
+<script src="notfound.js"></script>
+</body>
+</html>

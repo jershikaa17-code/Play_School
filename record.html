@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Record — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <nav class="breadcrumbs" style="margin-bottom: var(--space-6);" aria-label="Breadcrumb">
+    <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current" id="recordBreadcrumb" aria-current="page">Record</span>
+  </nav>
+  <div class="card card--glass" style="max-width: 480px;">
+    <span class="card__eyebrow" id="recordType">Record</span>
+    <div class="card__title" id="recordName" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);"></div>
+    <p class="card__text" id="recordSecondary" style="margin-top: var(--space-3);"></p>
+    <div class="card__footer">
+      <span class="badge badge--success" id="recordStatus"></span>
+      <span class="sample--caption" id="recordId" style="color: var(--color-text-muted);"></span>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="shell.js"></script>
+<script>
+  PlayShell.login();
+  var params = new URLSearchParams(window.location.search);
+  var record = window.PlayStore.getById(params.get('id'));
+
+  if (!record) {
+    window.location.replace('404.html');
+  } else {
+    var appContent = PlayShell.mount('', record.name);
+    var pageContent = document.getElementById('pageContent');
+    document.getElementById('recordType').textContent = record.type;
+    document.getElementById('recordName').textContent = record.name;
+    document.getElementById('recordSecondary').textContent = window.PlayStore.secondaryLine(record);
+    document.getElementById('recordStatus').textContent = record.status;
+    document.getElementById('recordId').textContent = record.id;
+    document.getElementById('recordBreadcrumb').textContent = record.name;
+    pageContent.hidden = false;
+    appContent.appendChild(pageContent);
+  }
+</script>
+</body>
+</html>
