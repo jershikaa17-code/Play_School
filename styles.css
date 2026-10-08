@@ -399,8 +399,8 @@ body {
   height: 100%;
   object-fit: contain;
 }
-.brand__name { font-size: 0.95rem; }
-.brand__name span { color: var(--color-text-muted); font-weight: 500; }
+.brand__name { font-family: var(--font-display); font-weight: 560; font-size: 1.05rem; letter-spacing: var(--ls-tight); }
+.brand__name span { font-style: italic; font-weight: 460; color: var(--color-text-muted); }
 
 .primary-nav { display: flex; }
 .primary-nav__list {
