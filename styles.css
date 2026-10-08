@@ -776,6 +776,15 @@ body {
 }
 .btn--destructive:hover { background: var(--color-error); color: var(--raw-white); }
 
+.btn--accent {
+  background: linear-gradient(145deg, var(--color-accent-yellow), var(--color-accent-yellow-strong));
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-sm);
+}
+.btn--accent:hover { box-shadow: var(--shadow-glow-yellow); transform: translateY(-1px); }
+.btn--accent:active { transform: translateY(0) scale(0.99); }
+.btn--accent:disabled { background: var(--color-surface-glass-light); color: var(--color-text-muted); box-shadow: none; }
+
 .btn--icon {
   width: var(--control-h-md); height: var(--control-h-md); padding: 0; border-radius: 50%;
   background: var(--color-surface-glass-light); border-color: var(--color-border);

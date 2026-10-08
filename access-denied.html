@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Access denied — Play School</title>
+<meta name="description" content="You don't have access to this page. Request access from your school director." />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="access-denied.css" />
+</head>
+<body>
+
+<div class="ad-atmosphere" aria-hidden="true"></div>
+
+<template id="adTemplate">
+  <div class="ad-wrap">
+    <div class="ad-card">
+      <div class="ad-icon" aria-hidden="true">
+        <svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M28 4 L48 12 V26 C48 39 39 47 28 52 C17 47 8 39 8 26 V12 Z" />
+          <rect x="20" y="26" width="16" height="13" rx="3" />
+          <path d="M23 26v-5a5 5 0 0 1 10 0v5" />
+        </svg>
+      </div>
+
+      <h1 class="ad-heading">You don't have access to this page</h1>
+      <p class="ad-text" id="adText"></p>
+
+      <div class="ad-actions">
+        <button class="btn btn--accent ad-btn" id="adRequestBtn" type="button">Request access</button>
+        <button class="btn btn--secondary ad-btn" id="adBackBtn" type="button">Back to dashboard</button>
+      </div>
+
+      <div class="ad-meta">Need this urgently? Reach out to your school director directly.</div>
+    </div>
+  </div>
+</template>
+
+<div class="modal-backdrop" id="adModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Request access">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <h3 class="modal__title">Request access to <span id="adModalPageName">this page</span></h3>
+    <p class="modal__text">Let your director know why you need it — this step is optional.</p>
+    <div class="field" style="margin-top: var(--space-4);">
+      <label class="field__label" for="adReason">Reason <span style="font-weight:500; color: var(--color-text-muted); text-transform:none; letter-spacing:0;">(optional)</span></label>
+      <textarea class="textarea" id="adReason" maxlength="300" placeholder="E.g. I need to check this term's fee schedule…"></textarea>
+      <div class="ad-reason-row">
+        <span></span>
+        <span class="ad-reason-count" id="adReasonCount">0 / 300</span>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="adSendBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-region" id="adToastRegion" aria-live="polite"></div>
+
+<script src="store.js"></script>
+<script src="shell.js"></script>
+<script src="access-denied.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+/* ==========================================================================
+   PLAY SCHOOL — Access denied / no permission
+   Depends on tokens + base reset from styles.css, and shell.css for the
+   logged-in application frame. Reuses .modal / .toast-region / .btn as-is.
+   ========================================================================== */
+
+.ad-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ad-atmosphere::before,
+.ad-atmosphere::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.45;
+}
+.ad-atmosphere::before {
+  width: 420px; height: 420px;
+  top: -120px; right: -100px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-error) 35%, transparent), transparent 70%);
+}
+.ad-atmosphere::after {
+  width: 360px; height: 360px;
+  bottom: -140px; left: -80px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 40%, transparent), transparent 70%);
+}
+
+.ad-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-7);
+}
+
+.ad-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-7);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-glass-strong);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  overflow: hidden;
+}
+.ad-card::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: 50%;
+  width: 140%; height: 140%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at top, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 60%);
+  pointer-events: none;
+}
+
+.ad-card > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: adIn 600ms var(--ease-premium) forwards;
+  position: relative;
+}
+.ad-icon { animation-delay: 40ms; }
+.ad-heading { animation-delay: 140ms; }
+.ad-text { animation-delay: 220ms; }
+.ad-actions { animation-delay: 320ms; }
+.ad-meta { animation-delay: 400ms; }
+@keyframes adIn { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .ad-card > * { opacity: 1; transform: none; animation: none; }
+}
+
+.ad-icon {
+  width: 96px; height: 96px;
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--space-2);
+}
+.ad-icon::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-error) 30%, transparent), transparent 70%);
+  filter: blur(10px);
+  animation: adGlow 5s ease-in-out infinite;
+}
+@keyframes adGlow {
+  0%, 100% { opacity: 0.55; transform: scale(0.95); }
+  50% { opacity: 0.85; transform: scale(1.05); }
+}
+.ad-icon svg { position: relative; width: 56px; height: 56px; color: var(--color-text-primary); }
+
+.ad-heading {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  color: var(--color-text-primary);
+}
+.ad-text {
+  font-size: var(--fs-body);
+  color: var(--color-text-secondary);
+  line-height: var(--lh-relaxed);
+  max-width: 42ch;
+}
+.ad-text b { color: var(--color-text-primary); font-weight: 600; }
+
+.ad-actions {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+.ad-btn { min-width: 168px; }
+
+.ad-meta {
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+  width: 100%;
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Request-access modal extras ---------- */
+.ad-reason-row { display: flex; justify-content: space-between; margin-top: var(--space-1); }
+.ad-reason-count { font-size: var(--fs-caption); color: var(--color-text-muted); }
+
+@media (max-width: 1023px) {
+  .ad-card { max-width: 460px; padding: var(--space-7) var(--space-6); }
+}
+
+@media (max-width: 767px) {
+  .ad-wrap { padding-block: var(--space-5); padding-inline: var(--space-4); }
+  .ad-card { margin-inline: 16px; max-width: none; width: calc(100% - 32px); padding: var(--space-6) var(--space-5); gap: var(--space-3); }
+  .ad-icon { width: 72px; height: 72px; }
+  .ad-icon svg { width: 42px; height: 42px; }
+  .ad-heading { font-size: var(--fs-h3); }
+  .ad-actions { flex-direction: column; }
+  .ad-btn { width: 100%; min-width: 0; }
+}

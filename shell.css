@@ -87,6 +87,33 @@
   justify-content: center;
 }
 
+/* ---------- Notification bell ---------- */
+.app-bell__panel {
+  right: 0;
+  left: auto;
+  width: 320px;
+  padding: 0;
+  overflow: hidden;
+}
+.app-bell__panel #appBellList { max-height: 320px; overflow-y: auto; }
+.app-bell__badge {
+  position: absolute;
+  top: -2px; right: -2px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-error);
+  color: var(--raw-white);
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--color-surface-glass-strong);
+}
+.app-bell__badge[hidden] { display: none; }
+.app-bell { position: relative; }
+.app-bell .btn--icon { position: relative; }
+
 @media (max-width: 1023px) {
   .app-sidebar { transform: translateX(-100%); box-shadow: var(--shadow-xl); }
   .app-sidebar.is-open { transform: translateX(0); }
@@ -97,4 +124,5 @@
   .app-content { padding: var(--space-6) var(--space-4); }
   .app-header { padding: var(--space-3) var(--space-4); }
   .app-header__title { font-size: var(--fs-body-lg); }
+  .app-bell__panel { width: calc(100vw - 2 * var(--space-4)); right: calc(-1 * var(--space-4) + 2px); }
 }

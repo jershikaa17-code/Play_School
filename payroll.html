@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payroll — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <div class="card card--glass" style="max-width: 480px;">
+    <span class="card__eyebrow">Payroll</span>
+    <div class="card__title" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);">Autumn term payroll</div>
+    <p class="card__text" style="margin-top: var(--space-3);">Staff payments for this term have been processed. Full payroll tooling lives here.</p>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="shell.js"></script>
+<script>
+  /* Guarded page: only Admin / Director roles may view Payroll.
+     Role is simulated via ?role= for this static demo — defaults to Teacher
+     so visiting /payroll.html directly demonstrates the redirect out of the box. */
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var role = params.get('role') || 'Teacher';
+    var allowed = ['Admin', 'Director'];
+    if (allowed.indexOf(role) === -1) {
+      window.location.replace('access-denied.html?role=' + encodeURIComponent(role) + '&page=Payroll');
+      return;
+    }
+    PlayShell.login();
+    var appContent = PlayShell.mount('billing', 'Payroll');
+    var pageContent = document.getElementById('pageContent');
+    pageContent.hidden = false;
+    appContent.appendChild(pageContent);
+  })();
+</script>
+</body>
+</html>
