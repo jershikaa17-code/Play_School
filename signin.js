@@ -425,22 +425,16 @@
       beginSubmit();
 
       window.setTimeout(() => {
-        const match = DEMO_USERS.find((u) =>
-          u.match.toLowerCase() === emailVal.trim().toLowerCase() && u.password === passwordVal
-        );
+        // Demo mode: any password is accepted for any valid-looking email —
+        // there is no real backend to authenticate against. If the email
+        // matches a configured demo account, honor its first-time/returning
+        // routing; otherwise default to the returning-user destination.
+        const known = DEMO_USERS.find((u) => u.match.toLowerCase() === emailVal.trim().toLowerCase());
+        const firstTime = known ? known.firstTime : false;
 
-        if (match) {
-          clearLockoutState();
-          if (window.PlayShell) window.PlayShell.login();
-          window.location.href = match.firstTime ? ROUTES.s03 : ROUTES.s04;
-          return;
-        }
-
-        endSubmit();
-        passwordInput.value = '';
-        $('signinErrorText').textContent = d.errorCredentials;
-        $('signinErrorAlert').hidden = false;
-        registerFailedAttempt();
+        clearLockoutState();
+        if (window.PlayShell) window.PlayShell.login();
+        window.location.href = firstTime ? ROUTES.s03 : ROUTES.s04;
       }, 950);
     });
   }
@@ -452,14 +446,6 @@
     btn.disabled = true;
     $('signinSubmitLabel').textContent = STRINGS[lang].signingIn;
   }
-  function endSubmit() {
-    isSubmitting = false;
-    const btn = $('signinSubmit');
-    btn.classList.remove('is-loading');
-    btn.disabled = isLockedOut() || SCHOOL_CONFIG.status === 'suspended';
-    $('signinSubmitLabel').textContent = STRINGS[lang].signIn;
-  }
-
   /* ---------- Toast (self-contained; this page has no app shell loaded) ---------- */
   function showToast(type, title) {
     const region = $('signinToastRegion');
