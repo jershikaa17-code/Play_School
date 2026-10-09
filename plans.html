@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plans &amp; upgrade — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="plans.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <div class="plans-head">
+    <span class="eyebrow">Plans &amp; billing</span>
+    <h1 class="plans-head__heading">Choose the plan that fits your school</h1>
+    <p class="plans-head__text" id="plansIntroText">Every plan includes the same core records — upgrade whenever your team is ready for more.</p>
+  </div>
+
+  <div class="plans-grid" id="plansGrid"></div>
+
+  <div class="plan-confirm" id="planConfirm" hidden>
+    <span class="badge badge--success">Plan updated</span>
+    <span class="plan-confirm__text" id="planConfirmText"></span>
+    <a class="btn btn--primary" id="planConfirmLink" href="#">Return to module</a>
+  </div>
+</div>
+
+<div class="toast-region" id="plansToastRegion" aria-live="polite"></div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="plans.js"></script>
+</body>
+</html>

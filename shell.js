@@ -61,7 +61,9 @@
     return Math.round(hrs / 24) + 'd ago';
   }
 
-  const NAV_ITEMS = [
+  /* Fallback used only if modules.js wasn't loaded on a page — keeps the
+     sidebar working, just without module lock state. */
+  const FALLBACK_NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html' },
     { id: 'classrooms', label: 'Classrooms', href: 'dashboard.html#classrooms' },
     { id: 'children', label: 'Children', href: 'dashboard.html#children' },
@@ -69,10 +71,23 @@
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
   ];
 
+  function resolveNavItems() {
+    if (!window.PlayModules) return FALLBACK_NAV_ITEMS;
+    const plan = window.PlayModules.getCurrentPlan();
+    return window.PlayModules.MODULES.map((m) => ({
+      id: m.id,
+      label: m.navLabel,
+      href: m.href,
+      locked: !window.PlayModules.isUnlocked(m, plan),
+    }));
+  }
+
   function shellMarkup(activeId, title) {
-    const links = NAV_ITEMS.map(
-      (item) => `<a class="app-sidebar__link${item.id === activeId ? ' is-active' : ''}" href="${item.href}">${item.label}</a>`
-    ).join('');
+    const links = resolveNavItems().map((item) => `
+      <a class="app-sidebar__link${item.id === activeId ? ' is-active' : ''}${item.locked ? ' is-locked' : ''}" href="${item.href}">
+        <span class="app-sidebar__link-label">${item.label}</span>
+        ${item.locked ? `<span class="app-sidebar__link-lock" aria-label="Locked — requires a plan upgrade" title="Locked — requires a plan upgrade">${window.PlayModules.LOCK_ICON}</span>` : ''}
+      </a>`).join('');
     return `
       <div class="app-shell">
         <div class="drawer-backdrop" id="appSidebarBackdrop"></div>

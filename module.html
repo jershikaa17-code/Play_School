@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Module — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="module.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden></div>
+
+<template id="lockedTemplate">
+  <div class="card card--glass card--floating module-hero">
+    <div class="module-hero__icon" id="moduleIcon" aria-hidden="true"></div>
+    <div class="module-hero__body">
+      <span class="eyebrow module-hero__eyebrow" id="moduleEyebrow">Premium module</span>
+      <h1 class="module-hero__heading" id="moduleHeading"></h1>
+      <p class="module-hero__text" id="moduleText"></p>
+      <div class="module-hero__actions" id="moduleActions"></div>
+    </div>
+  </div>
+
+  <section class="module-section">
+    <div class="module-section__head">
+      <span class="eyebrow">What you get</span>
+      <h2 class="module-section__title">Everything included in this module</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-list" id="moduleFeaturesA"></div>
+      <div class="feature-list" id="moduleFeaturesB"></div>
+    </div>
+  </section>
+
+  <section class="module-section">
+    <div class="module-section__head">
+      <span class="eyebrow">Plan comparison</span>
+      <h2 class="module-section__title">What upgrading unlocks</h2>
+    </div>
+    <div class="plan-compare">
+      <div class="plan-card plan-card--current">
+        <span class="plan-card__eyebrow">Current plan</span>
+        <div class="plan-card__name" id="currentPlanName"></div>
+        <p class="plan-card__text">What your school has today.</p>
+        <div class="plan-card__list" id="currentPlanList"></div>
+      </div>
+      <div class="plan-compare__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="plan-card plan-card--required">
+        <span class="badge badge--accent plan-card__badge" id="recommendedBadge" hidden>Recommended</span>
+        <span class="plan-card__eyebrow">Required plan</span>
+        <div class="plan-card__name" id="requiredPlanName" style="color: var(--raw-white);"></div>
+        <p class="plan-card__text">Unlocks this module for your whole team.</p>
+        <div class="plan-card__list" id="requiredPlanList"></div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<template id="unlockedTemplate">
+  <div class="module-unlocked-banner">
+    <span class="badge badge--success">Included in your plan</span>
+  </div>
+  <div class="card card--glass" style="max-width: 640px;">
+    <span class="card__eyebrow" id="unlockedEyebrow">Module</span>
+    <div class="card__title" id="unlockedTitle" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);"></div>
+    <p class="card__text" id="unlockedText" style="margin-top: var(--space-3);"></p>
+  </div>
+  <section class="module-section">
+    <div class="module-section__head">
+      <span class="eyebrow">Included</span>
+      <h2 class="module-section__title">What's live for your team</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-list" id="unlockedFeaturesA"></div>
+      <div class="feature-list" id="unlockedFeaturesB"></div>
+    </div>
+  </section>
+</template>
+
+<div class="modal-backdrop" id="contactModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Talk to us">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+    </div>
+    <h3 class="modal__title">Talk to us about <span id="contactModuleName">this module</span></h3>
+    <p class="modal__text">Tell us a bit more and our team will follow up at a time that suits you.</p>
+
+    <form id="contactForm" novalidate>
+      <div class="input-grid" style="margin-top: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="contactName">Name</label>
+          <input class="input" id="contactName" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label class="field__label" for="contactEmail">Email</label>
+          <input class="input" id="contactEmail" type="email" autocomplete="email" required />
+        </div>
+      </div>
+      <div class="field" style="margin-top: var(--space-4);">
+        <label class="field__label" for="contactMessage">Message</label>
+        <textarea class="textarea" id="contactMessage" maxlength="500" required></textarea>
+      </div>
+      <div class="field" style="margin-top: var(--space-4);">
+        <label class="field__label" for="contactTime">Preferred contact time</label>
+        <select class="select" id="contactTime">
+          <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
+          <option value="Afternoon (12pm–4pm)">Afternoon (12pm–4pm)</option>
+          <option value="Evening (4pm–7pm)">Evening (4pm–7pm)</option>
+        </select>
+      </div>
+      <p class="field__error" id="contactFormError" hidden></p>
+    </form>
+
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="contactSubmitBtn">
+        <span class="btn__spinner" aria-hidden="true"></span>
+        <span id="contactSubmitLabel">Submit request</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-region" id="moduleToastRegion" aria-live="polite"></div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="module.js"></script>
+</body>
+</html>
