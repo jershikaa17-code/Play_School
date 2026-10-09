@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — Play School</title>
+<meta name="description" content="Sign in to your Play School staff account." />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="signin.css" />
+</head>
+<body>
+
+<div class="signin-shell">
+  <section class="signin-brand" aria-hidden="true">
+    <div class="signin-brand__inner">
+      <div class="signin-brand__logo">
+        <img src="logo.png" alt="" />
+        <span id="signinSchoolName">Play School</span>
+      </div>
+      <img class="signin-brand__art" src="login.jpg" alt="" aria-hidden="true" />
+      <p class="signin-brand__tagline" id="signinTagline"></p>
+    </div>
+  </section>
+
+  <section class="signin-form-panel">
+    <div class="signin-form-wrap">
+      <span class="eyebrow" id="signinEyebrow"></span>
+      <h1 class="signin-heading" id="signinHeading"></h1>
+      <p class="signin-subtitle" id="signinSubtitle"></p>
+
+      <div class="inline-warning" id="signinSuspendedNotice" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span id="signinSuspendedText"></span>
+      </div>
+
+      <div class="inline-error" id="signinErrorAlert" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="signinErrorText"></span>
+      </div>
+
+      <div class="inline-error" id="signinLockoutAlert" role="alert" aria-live="assertive" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>
+          <span id="signinLockoutText"></span>
+          <span class="signin-lockout__timer" id="signinLockoutTimer"></span>
+        </span>
+      </div>
+
+      <form id="signinForm" novalidate>
+        <div class="field">
+          <label class="field__label" id="signinEmailLabel" for="signinEmail"></label>
+          <input class="input" id="signinEmail" type="text" autocomplete="username" />
+          <p class="field__error" id="signinEmailError" hidden></p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" id="signinPasswordLabel" for="signinPassword"></label>
+          <div class="input-wrap input-wrap--password">
+            <input class="input" id="signinPassword" type="password" autocomplete="current-password" />
+            <button type="button" class="input-wrap__toggle" id="signinPasswordToggle" aria-pressed="false">
+              <svg id="signinEyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="field__error" id="signinPasswordError" hidden></p>
+        </div>
+
+        <div class="signin-row">
+          <label class="check-row" for="signinRemember" style="cursor:pointer;">
+            <input type="checkbox" class="checkbox" id="signinRemember" />
+            <span id="signinRememberLabel" class="signin-row__remember-label"></span>
+          </label>
+          <a href="#" class="btn btn--text" id="signinForgot"></a>
+        </div>
+
+        <button class="btn btn--accent signin-submit" type="submit" id="signinSubmit">
+          <span class="btn__spinner" aria-hidden="true"></span>
+          <span id="signinSubmitLabel"></span>
+        </button>
+      </form>
+
+      <div class="signin-sso" id="signinSsoBlock" hidden>
+        <div class="signin-divider-row">
+          <span class="divider"></span>
+          <span id="signinOrText"></span>
+          <span class="divider"></span>
+        </div>
+        <button class="btn btn--secondary signin-sso__btn" type="button" id="signinSsoBtn"></button>
+      </div>
+
+      <footer class="signin-footer">
+        <div class="popover signin-lang" id="signinLangPopover">
+          <button class="signin-lang__trigger" type="button" id="signinLangTrigger" aria-haspopup="true" aria-expanded="false">
+            <span class="signin-flag" id="signinLangFlag" aria-hidden="true"></span>
+            <span id="signinLangName">English</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="popover__panel signin-lang__panel" role="menu" aria-label="Language">
+            <button class="popover__item" type="button" data-lang="en" role="menuitem"><span class="signin-flag" data-flag="en" aria-hidden="true"></span><span>English</span></button>
+            <button class="popover__item" type="button" data-lang="ar" role="menuitem"><span class="signin-flag" data-flag="ar" aria-hidden="true"></span><span>العربية</span></button>
+            <button class="popover__item" type="button" data-lang="hi" role="menuitem"><span class="signin-flag" data-flag="hi" aria-hidden="true"></span><span>हिन्दी</span></button>
+            <button class="popover__item" type="button" data-lang="ta" role="menuitem"><span class="signin-flag" data-flag="ta" aria-hidden="true"></span><span>தமிழ்</span></button>
+            <button class="popover__item" type="button" data-lang="ml" role="menuitem"><span class="signin-flag" data-flag="ml" aria-hidden="true"></span><span>മലയാളം</span></button>
+          </div>
+        </div>
+        <div class="signin-footer__links">
+          <a href="#" id="signinPrivacyLink"></a>
+          <a href="#" id="signinHelpLink"></a>
+        </div>
+      </footer>
+    </div>
+  </section>
+</div>
+
+<div class="toast-region" id="signinToastRegion" aria-live="polite"></div>
+
+<script src="shell.js"></script>
+<script src="signin.js"></script>
+</body>
+</html>

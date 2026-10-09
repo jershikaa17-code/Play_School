@@ -1,0 +1,266 @@
+/* ==========================================================================
+   PLAY SCHOOL — Staff sign-in (standalone, no app shell)
+   Depends on tokens + base reset + components from styles.css. The right
+   panel is intentionally light (var(--raw-white)) per spec, while reusing
+   every existing component (.input/.btn/.checkbox/.popover/...) unchanged —
+   those are self-contained and already look correct on a light surface.
+   ========================================================================== */
+
+html, body { height: 100%; }
+body { overflow: hidden; }
+.signin-shell {
+  height: 100vh;
+  display: flex;
+}
+
+/* ---------- Branding panel ---------- */
+.signin-brand {
+  flex: 1 1 50%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  background: var(--color-background);
+}
+.signin-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 25% 20%, color-mix(in srgb, var(--color-primary) 22%, transparent), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 85%, color-mix(in srgb, var(--color-accent-yellow) 10%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.signin-brand__inner {
+  position: relative;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+.signin-brand__inner > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: signinBrandIn 650ms var(--ease-premium) forwards;
+}
+.signin-brand__logo { animation-delay: 40ms; }
+.signin-brand__tagline { animation-delay: 300ms; }
+@keyframes signinBrandIn { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .signin-brand__inner > * { opacity: 1; transform: none; animation: none; }
+}
+
+.signin-brand__logo { display: flex; align-items: center; gap: var(--space-4); }
+.signin-brand__logo img { width: 64px; height: 64px; border-radius: var(--radius-md); flex-shrink: 0; }
+.signin-brand__logo span {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: var(--fs-h2);
+  color: var(--raw-white);
+}
+.signin-brand__tagline {
+  font-size: var(--fs-body-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--lh-relaxed);
+  max-width: 32ch;
+}
+
+/* Hand-drawn brand sketch — inverted to white-on-black, tinted blue via
+   sepia+hue-rotate (the standard pure-CSS way to recolor a grayscale image),
+   then screen-blended so the black dissolves into the panel and only a
+   glowing blue line drawing reads, with a slow breathing glow for motion. */
+.signin-brand__art {
+  width: 100%;
+  max-width: 230px;
+  height: auto;
+  margin-left: var(--space-6);
+  filter: invert(1) sepia(1) saturate(6) hue-rotate(185deg) brightness(1.05) contrast(1.05);
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(ellipse 72% 82% at 50% 42%, #000 50%, transparent 90%);
+  mask-image: radial-gradient(ellipse 72% 82% at 50% 42%, #000 50%, transparent 90%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(14px);
+  animation: signinArtIn 650ms var(--ease-premium) 160ms forwards,
+             signinArtGlow 4.5s ease-in-out 850ms infinite;
+}
+@keyframes signinArtIn { to { opacity: 0.8; transform: translateY(0); } }
+@keyframes signinArtGlow {
+  0%, 100% { opacity: 0.6; transform: translateY(0); }
+  50% { opacity: 0.95; transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signin-brand__art { animation: none; opacity: 0.8; transform: none; }
+}
+
+/* ---------- Form panel ---------- */
+.signin-form-panel {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  overflow-y: auto;
+  background: var(--raw-white);
+  --signin-text-primary: var(--raw-ink-950);
+  --signin-text-secondary: var(--raw-ink-500);
+  --signin-text-muted: var(--raw-ink-400);
+  --signin-border: var(--raw-ink-100);
+}
+.signin-form-wrap {
+  width: 100%;
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: signinFormIn 600ms var(--ease-premium) 80ms forwards;
+}
+@keyframes signinFormIn { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .signin-form-wrap { opacity: 1; transform: none; animation: none; }
+}
+
+.signin-form-wrap .eyebrow { color: var(--signin-text-muted); }
+.signin-heading {
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-snug);
+  color: var(--signin-text-primary);
+}
+.signin-subtitle {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-size: var(--fs-body);
+  color: var(--signin-text-secondary);
+}
+
+.signin-form-wrap .inline-error,
+.signin-form-wrap .inline-warning { margin-bottom: var(--space-5); align-items: flex-start; }
+.signin-form-wrap .inline-error svg,
+.signin-form-wrap .inline-warning svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.signin-lockout__timer { display: block; font-weight: 700; margin-top: 2px; }
+
+#signinForm { display: flex; flex-direction: column; gap: var(--space-5); }
+.signin-form-wrap .field__label { color: var(--signin-text-primary); }
+.signin-form-wrap .field__error { color: var(--color-error); }
+.signin-form-wrap .input { height: var(--control-h-lg); }
+
+.input-wrap--password { position: relative; }
+.input-wrap--password .input { padding-right: var(--space-8); }
+.input-wrap__toggle {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px; height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  color: var(--signin-text-muted);
+  cursor: pointer;
+  transition: color var(--dur-normal) var(--ease-premium), background var(--dur-normal) var(--ease-premium);
+}
+.input-wrap__toggle:hover { color: var(--signin-text-primary); background: var(--signin-border); }
+.input-wrap__toggle svg { width: 18px; height: 18px; }
+[dir="rtl"] .input-wrap--password .input { padding-right: var(--space-4); padding-left: var(--space-8); }
+[dir="rtl"] .input-wrap__toggle { right: auto; left: var(--space-3); }
+
+.signin-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.signin-row .check-row label,
+.signin-row__remember-label { color: var(--signin-text-secondary); font-size: var(--fs-body-sm); }
+.signin-form-wrap .btn--text { color: var(--color-primary); font-size: var(--fs-body-sm); }
+.signin-form-wrap .btn--text:hover { color: var(--color-primary-strong); }
+
+.signin-submit { width: 100%; height: var(--control-h-lg); }
+
+.signin-sso { margin-top: var(--space-5); }
+.signin-divider-row { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5); }
+.signin-divider-row .divider { flex: 1; margin: 0; }
+.signin-divider-row span:not(.divider) { font-size: var(--fs-caption); color: var(--signin-text-muted); text-transform: uppercase; letter-spacing: var(--ls-wide); }
+.signin-sso__btn {
+  width: 100%;
+  height: var(--control-h-lg);
+  background: var(--raw-white);
+  color: var(--signin-text-primary);
+  border-color: var(--signin-border);
+}
+.signin-sso__btn:hover { border-color: var(--raw-ink-200); background: var(--raw-ink-50); }
+
+.signin-footer {
+  margin-top: var(--space-7);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--signin-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.signin-footer__links { display: flex; gap: var(--space-5); }
+.signin-footer__links a { font-size: var(--fs-body-sm); color: var(--signin-text-secondary); transition: color var(--dur-normal) var(--ease-premium); }
+.signin-footer__links a:hover { color: var(--signin-text-primary); }
+
+.signin-lang__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: none;
+  border: 1px solid var(--signin-border);
+  color: var(--signin-text-secondary);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--dur-normal) var(--ease-premium), background var(--dur-normal) var(--ease-premium);
+}
+.signin-lang__trigger:hover { border-color: var(--raw-ink-200); background: var(--raw-ink-50); }
+.signin-lang__trigger svg { width: 14px; height: 14px; color: var(--signin-text-muted); transition: transform var(--dur-normal) var(--ease-premium); }
+.signin-flag { display: inline-flex; width: 18px; height: 13px; border-radius: 2px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 1px var(--signin-border); }
+.signin-flag svg { display: block; width: 100%; height: 100%; }
+.signin-lang.is-open .signin-lang__trigger svg { transform: rotate(180deg); }
+.signin-lang__panel { left: 0; right: auto; min-width: 160px; }
+.signin-lang__panel .popover__item[aria-current="true"] { background: var(--color-surface-glass-light); color: var(--color-text-primary); }
+[dir="rtl"] .signin-lang__panel { left: auto; right: 0; }
+[dir="rtl"] .signin-lang__panel .popover__item { text-align: right; }
+
+/* ---------- Tablet / mobile ---------- */
+@media (min-width: 1024px) {
+  /* `.signin-shell` uses flex-direction: row (the default) deliberately —
+     combined with dir="rtl" that already renders the first DOM child
+     (brand panel) on the right and the second (form) on the left, which is
+     the required mirrored layout. Adding row-reverse here would cancel
+     that out and restore an LTR-looking order. */
+  [dir="rtl"] .signin-brand__inner { align-items: flex-end; text-align: right; }
+}
+
+@media (max-width: 1023px) {
+  .signin-shell { flex-direction: column; min-height: 100vh; }
+  .signin-brand {
+    flex: none;
+    height: 120px;
+    padding: var(--space-4) var(--space-5);
+    justify-content: flex-start;
+  }
+  .signin-brand__inner { flex-direction: row; align-items: center; gap: var(--space-3); max-width: none; }
+  .signin-brand__tagline,
+  .signin-brand__art { display: none; }
+  .signin-brand__inner > * { animation: none; opacity: 1; transform: none; }
+  .signin-form-panel { flex: 1; padding: var(--space-6) var(--space-5); align-items: flex-start; }
+  .signin-form-wrap { padding-top: var(--space-2); }
+}
+
+@media (max-width: 767px) {
+  .signin-brand { height: 96px; padding-inline: var(--space-4); }
+  .signin-brand__logo img { width: 44px; height: 44px; }
+  .signin-brand__logo span { font-size: var(--fs-h3); }
+  .signin-form-panel { padding: var(--space-5) var(--space-4); }
+  .signin-heading { font-size: var(--fs-h2); }
+  .signin-footer { flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Welcome — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+
+<!-- S03 fallback: this project has no dedicated first-time-user onboarding
+     flow yet. Point ROUTES.s03 in signin.js at the real S03 page once it
+     exists instead of this placeholder. -->
+<div id="pageContent" hidden>
+  <div class="card card--glass" style="max-width: 520px;">
+    <span class="card__eyebrow">Welcome to Play School</span>
+    <div class="card__title" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);">Let's get your classroom set up</div>
+    <p class="card__text" style="margin-top: var(--space-3);">This is your first time signing in. From your dashboard you can add classrooms, invite staff, and enrol children whenever you're ready.</p>
+    <div class="card__footer">
+      <a class="btn btn--accent" href="dashboard.html">Go to dashboard</a>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script>
+  PlayShell.login();
+  var appContent = PlayShell.mount('', 'Welcome');
+  appContent.classList.add('app-content--center');
+  var pageContent = document.getElementById('pageContent');
+  pageContent.hidden = false;
+  appContent.appendChild(pageContent);
+</script>
+</body>
+</html>

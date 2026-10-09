@@ -1313,6 +1313,15 @@ body {
   color: var(--color-success);
   font-size: var(--fs-body-sm);
 }
+.inline-warning {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+  color: var(--color-warning);
+  font-size: var(--fs-body-sm);
+}
 
 .locked-card { position: relative; overflow: hidden; }
 .locked-card::before {
