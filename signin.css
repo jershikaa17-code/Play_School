@@ -7,10 +7,15 @@
    ========================================================================== */
 
 html, body { height: 100%; }
-body { overflow: hidden; }
 .signin-shell {
   height: 100vh;
   display: flex;
+}
+/* No-scroll only applies at the desktop breakpoint where content is sized
+   to fit exactly — tablet/mobile stack content and may legitimately need
+   to scroll (see the max-width: 1023px override further down). */
+@media (min-width: 1024px) {
+  body { overflow: hidden; }
 }
 
 /* ---------- Branding panel ---------- */
@@ -183,14 +188,17 @@ body { overflow: hidden; }
 .signin-divider-row { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5); }
 .signin-divider-row .divider { flex: 1; margin: 0; }
 .signin-divider-row span:not(.divider) { font-size: var(--fs-caption); color: var(--signin-text-muted); text-transform: uppercase; letter-spacing: var(--ls-wide); }
-.signin-sso__btn {
-  width: 100%;
-  height: var(--control-h-lg);
+.signin-sso__btn { width: 100%; height: var(--control-h-lg); }
+
+/* `.btn--secondary` is themed for the dark app shell (light text/translucent
+   fill) and is nearly invisible on this page's white panel — repaint it for
+   any secondary button used here (SSO, resend, etc). */
+.signin-form-wrap .btn--secondary {
   background: var(--raw-white);
   color: var(--signin-text-primary);
   border-color: var(--signin-border);
 }
-.signin-sso__btn:hover { border-color: var(--raw-ink-200); background: var(--raw-ink-50); }
+.signin-form-wrap .btn--secondary:hover { border-color: var(--raw-ink-200); background: var(--raw-ink-50); }
 
 .signin-footer {
   margin-top: var(--space-7);

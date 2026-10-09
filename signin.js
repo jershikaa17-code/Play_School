@@ -210,6 +210,13 @@
     wireLangDropdown();
     wireForm();
     resumeLockoutIfAny();
+
+    // Pre-fill after a password reset (S02) hands back ?email=
+    const prefillEmail = params.get('email');
+    if (prefillEmail) {
+      $('signinEmail').value = prefillEmail;
+      $('signinPassword').focus();
+    }
   }
 
   /* ---------- i18n / RTL ---------- */
