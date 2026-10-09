@@ -9,6 +9,25 @@
 
   const AUTH_KEY = 'ps_auth';
   const NOTIFS_KEY = 'ps_notifications';
+  const DEMO_ROLE_KEY = 'ps_demo_role';
+  const DEMO_ROLES = ['Director', 'Admin', 'Teacher'];
+
+  /** Demo role-switching — stands in for real multi-user auth. Pages that
+      already role-gate via ?role= in the URL are untouched; this is the
+      shared, persisted role source new pages (like the dashboard) read. */
+  function getDemoRole() {
+    try {
+      const r = localStorage.getItem(DEMO_ROLE_KEY);
+      return DEMO_ROLES.indexOf(r) !== -1 ? r : 'Admin';
+    } catch (e) { return 'Admin'; }
+  }
+  function setDemoRole(role) {
+    if (DEMO_ROLES.indexOf(role) === -1) return;
+    try { localStorage.setItem(DEMO_ROLE_KEY, role); } catch (e) { /* storage unavailable */ }
+    const roleEl = document.getElementById('appProfileRole');
+    if (roleEl) roleEl.textContent = role;
+    window.dispatchEvent(new CustomEvent('ps:rolechange', { detail: { role } }));
+  }
 
   function isLoggedIn() {
     try { return localStorage.getItem(AUTH_KEY) === '1'; } catch (e) { return false; }
@@ -179,11 +198,17 @@
             <span class="brand__name">Play <span>School</span></span>
           </a>
           <nav class="app-sidebar__nav" aria-label="Primary">${links}</nav>
-          <div class="app-sidebar__footer">
-            <span class="avatar avatar--sm">N<span class="avatar__status avatar__status--online"></span></span>
-            <div>
-              <div class="avatar-meta__name">Nithya</div>
-              <div class="avatar-meta__role">Admin</div>
+          <div class="popover app-sidebar__footer-popover" id="appProfileMenu">
+            <button class="app-sidebar__footer" id="appProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="avatar avatar--sm">N<span class="avatar__status avatar__status--online"></span></span>
+              <div>
+                <div class="avatar-meta__name">Nithya</div>
+                <div class="avatar-meta__role" id="appProfileRole">${getDemoRole()}</div>
+              </div>
+            </button>
+            <div class="popover__panel app-sidebar__footer-panel" role="menu" aria-label="Switch demo role">
+              <div class="app-sidebar__footer-panel-label">Demo role</div>
+              ${DEMO_ROLES.map((r) => `<button class="popover__item" type="button" data-role="${r}" role="menuitem">${r}</button>`).join('')}
             </div>
           </div>
         </aside>
@@ -303,9 +328,28 @@
 
     wireBell();
     wireConnectivity();
+    wireProfileMenu();
 
     return document.getElementById('appContent');
   }
 
-  window.PlayShell = { isLoggedIn, login, logout, mount, addNotification, getNotifications, markAllNotificationsRead, toast };
+  function wireProfileMenu() {
+    const wrap = document.getElementById('appProfileMenu');
+    if (!wrap) return;
+    const trigger = document.getElementById('appProfileTrigger');
+    const close = () => { wrap.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); };
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = !wrap.classList.contains('is-open');
+      wrap.classList.toggle('is-open', willOpen);
+      trigger.setAttribute('aria-expanded', String(willOpen));
+    });
+    wrap.querySelectorAll('[data-role]').forEach((btn) => {
+      btn.addEventListener('click', () => { setDemoRole(btn.dataset.role); close(); });
+    });
+    document.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  }
+
+  window.PlayShell = { isLoggedIn, login, logout, mount, addNotification, getNotifications, markAllNotificationsRead, toast, getDemoRole, setDemoRole };
 })();

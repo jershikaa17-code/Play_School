@@ -6,50 +6,215 @@
 <title>Dashboard — Play School</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
 
 <div id="pageContent" hidden>
-  <div class="hero__eyebrow-row" style="margin-bottom: var(--space-2);">
-    <span class="eyebrow">Autumn term</span>
-  </div>
-  <h1 style="font-family: var(--font-display); font-weight: 560; font-size: var(--fs-h1); margin-bottom: var(--space-6);">Good morning, Nithya</h1>
 
-  <div class="hero__stats" style="margin-top: 0; margin-bottom: var(--space-7);">
-    <div class="stat-card"><div class="stat-card__value">52</div><div class="stat-card__label">Children enrolled</div></div>
-    <div class="stat-card"><div class="stat-card__value">9</div><div class="stat-card__label">Teaching staff</div></div>
-    <div class="stat-card"><div class="stat-card__value">96%</div><div class="stat-card__label">Attendance rate</div></div>
-    <div class="stat-card"><div class="stat-card__value">5</div><div class="stat-card__label">Waitlisted</div></div>
-  </div>
-
-  <div class="table-wrap">
-    <table class="table">
-      <thead><tr><th>Child</th><th>Room</th><th>Status</th><th>Guardian</th></tr></thead>
-      <tbody>
-        <tr><td class="cell-primary">Amara Osei</td><td>Sunflower Room</td><td><span class="badge badge--success">Active</span></td><td>Folasade Osei</td></tr>
-        <tr><td class="cell-primary">Rhea Kapoor</td><td>Marigold Room</td><td><span class="badge badge--success">Active</span></td><td>Nikhil Kapoor</td></tr>
-        <tr><td class="cell-primary">Leo Fernandes</td><td>Daisy Room</td><td><span class="badge badge--warning">Waitlisted</span></td><td>Priya Fernandes</td></tr>
-        <tr><td class="cell-primary">Noor Haddad</td><td>Sunflower Room</td><td><span class="badge badge--error">Inactive</span></td><td>Sara Haddad</td></tr>
-      </tbody>
-    </table>
+  <div id="dashSkeleton">
+    <div class="skeleton" style="height:28px; width:220px; margin-bottom:var(--space-6);"></div>
+    <div class="dash-grid">
+      <div class="dash-span-3"><div class="skeleton skeleton-kpi"></div></div>
+      <div class="dash-span-3"><div class="skeleton skeleton-kpi"></div></div>
+      <div class="dash-span-3"><div class="skeleton skeleton-kpi"></div></div>
+      <div class="dash-span-3"><div class="skeleton skeleton-kpi"></div></div>
+      <div class="dash-span-6"><div class="skeleton skeleton-widget"></div></div>
+      <div class="dash-span-6"><div class="skeleton skeleton-widget"></div></div>
+    </div>
   </div>
 
-  <p style="margin-top: var(--space-6); color: var(--color-text-muted); font-size: var(--fs-caption);">
-    Try a broken link to see the 404 experience — e.g.
-    <a href="missing-page.html" style="color: var(--color-primary-soft);">missing-page.html</a>
-    or an <a href="record.html?type=Child&id=C-9999" style="color: var(--color-primary-soft);">invalid record</a>.
-  </p>
+  <div id="dashReal" hidden>
+    <div id="dashEmergency"></div>
+
+    <div class="dash-greeting">
+      <div>
+        <h1 class="dash-greeting__heading" id="dashGreetingHeading"></h1>
+        <div class="dash-greeting__date" id="dashGreetingDate"></div>
+      </div>
+      <div style="display:flex; align-items:center; gap: var(--space-4);">
+        <span class="dash-status-chip" id="dashStatusChip"></span>
+        <a href="#" class="btn btn--text" id="dashCustomiseLink">Customise</a>
+      </div>
+    </div>
+
+    <div class="dash-quick-actions" id="dashQuickActions"></div>
+
+    <div class="dash-grid" id="dashGrid"></div>
+  </div>
+
+</div>
+
+<!-- Customise widgets modal -->
+<div class="modal-backdrop" id="customiseModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Customise dashboard">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Customise dashboard</h3>
+    <p class="modal__text">Choose which widgets appear on your dashboard. Emergency alerts always stay visible.</p>
+    <div id="customiseList" style="margin-top: var(--space-5);"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="customiseSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mark attendance modal -->
+<div class="modal-backdrop" id="attendanceModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Mark attendance">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Mark attendance</h3>
+    <form id="attendanceForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="attChild">Child</label>
+        <select class="select" id="attChild"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="attStatus">Status</label>
+        <select class="select" id="attStatus">
+          <option value="Present">Present</option>
+          <option value="Absent">Absent</option>
+          <option value="Late">Late</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="attendanceSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add enquiry modal -->
+<div class="modal-backdrop" id="enquiryModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add enquiry">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add enquiry</h3>
+    <form id="enquiryForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="enqName">Parent / guardian name</label>
+        <input class="input" id="enqName" type="text" />
+        <p class="field__error" id="err-enqName" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="enqContact">Email or phone</label>
+        <input class="input" id="enqContact" type="text" />
+        <p class="field__error" id="err-enqContact" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="enqNote">Note</label>
+        <textarea class="textarea" id="enqNote" style="min-height:72px;"></textarea>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="enquirySubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Record payment modal -->
+<div class="modal-backdrop" id="paymentModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Record payment">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Record payment</h3>
+    <form id="paymentForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="payChild">Child</label>
+        <select class="select" id="payChild"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="payAmount">Amount</label>
+        <input class="input" id="payAmount" type="number" min="0" step="0.01" />
+        <p class="field__error" id="err-payAmount" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="payStatus">Status</label>
+        <select class="select" id="payStatus">
+          <option value="Paid">Paid</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="paymentSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Log incident modal -->
+<div class="modal-backdrop" id="incidentModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log incident">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Log incident</h3>
+    <form id="incidentForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="incDescription">What happened</label>
+        <textarea class="textarea" id="incDescription" style="min-height:72px;"></textarea>
+        <p class="field__error" id="err-incDescription" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="incSeverity">Severity</label>
+        <select class="select" id="incSeverity">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="incidentSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- New announcement modal -->
+<div class="modal-backdrop" id="announcementModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="New announcement">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">New announcement</h3>
+    <form id="announcementForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="annTitle">Title</label>
+        <input class="input" id="annTitle" type="text" />
+        <p class="field__error" id="err-annTitle" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="annMessage">Message</label>
+        <textarea class="textarea" id="annMessage" style="min-height:72px;"></textarea>
+        <p class="field__error" id="err-annMessage" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="annAudience">Audience</label>
+        <select class="select" id="annAudience">
+          <option value="All">Everyone</option>
+          <option value="Staff">Staff only</option>
+          <option value="Guardians">Guardians only</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="announcementSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Publish</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="store.js"></script>
 <script src="modules.js"></script>
 <script src="shell.js"></script>
-<script>
-  PlayShell.login();
-  var appContent = PlayShell.mount('dashboard', 'Dashboard');
-  var pageContent = document.getElementById('pageContent');
-  pageContent.hidden = false;
-  appContent.appendChild(pageContent);
-</script>
+<script src="dashboard.js"></script>
 </body>
 </html>
