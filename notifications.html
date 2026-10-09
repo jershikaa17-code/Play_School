@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notifications — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="notifications.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <div class="notif-page-header">
+    <div>
+      <h1 class="notif-page-header__heading">Notifications</h1>
+      <p class="notif-page-header__text">Stay up to date with activity across your school.</p>
+    </div>
+    <div class="notif-page-header__actions">
+      <button class="btn btn--secondary btn--sm notif-filter-btn" id="notifFilterBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        Filter
+      </button>
+      <button class="btn btn--secondary btn--sm" id="notifMarkAllBtn" type="button">Mark all as read</button>
+      <a class="btn btn--text" href="notification-settings.html">Notification settings</a>
+    </div>
+  </div>
+
+  <div class="notif-tabs" id="notifTabs" role="tablist">
+    <button class="notif-tab is-active" type="button" data-tab="all" role="tab">All</button>
+    <button class="notif-tab" type="button" data-tab="unread" role="tab">Unread <span class="notif-tab__count" id="notifUnreadCount"></span></button>
+    <button class="notif-tab" type="button" data-tab="mentions" role="tab">Mentions</button>
+    <span class="notif-tab__indicator" id="notifTabIndicator"></span>
+  </div>
+
+  <div class="notif-bulkbar" id="notifBulkBar" hidden>
+    <span class="notif-bulkbar__count" id="notifBulkCount"></span>
+    <div class="notif-bulkbar__actions">
+      <button class="btn btn--secondary btn--sm" id="notifBulkRead" type="button">Mark read</button>
+      <button class="btn btn--destructive btn--sm" id="notifBulkDelete" type="button">Delete</button>
+    </div>
+  </div>
+
+  <div class="notif-layout">
+    <aside class="notif-filters" id="notifFilters">
+      <div class="notif-filters__head">
+        <span class="notif-filters__title">Filters</span>
+        <button class="notif-filters__clear" id="notifClearFilters" type="button">Clear</button>
+      </div>
+      <div class="notif-filters__group">
+        <div class="notif-filters__label">Module</div>
+        <div id="notifModuleChecks"></div>
+      </div>
+      <div class="notif-filters__group">
+        <div class="notif-filters__label">Date range</div>
+        <div class="notif-filters__dates">
+          <input class="input" id="notifDateStart" type="date" aria-label="Start date" />
+          <input class="input" id="notifDateEnd" type="date" aria-label="End date" />
+          <p class="field__error" id="notifDateError" hidden></p>
+        </div>
+      </div>
+    </aside>
+
+    <div>
+      <div id="notifSelectAllRow" style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-3); padding-inline: var(--space-4);" hidden>
+        <input type="checkbox" class="checkbox" id="notifSelectAll" />
+        <label for="notifSelectAll" style="font-size: var(--fs-caption); color: var(--color-text-muted);">Select all</label>
+      </div>
+      <div id="notifList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile filter bottom sheet -->
+<div class="sheet-backdrop" id="filterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filter notifications">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Filters</div>
+    <div class="notif-filters__group">
+      <div class="notif-filters__label">Module</div>
+      <div id="notifModuleChecksMobile"></div>
+    </div>
+    <div class="notif-filters__group">
+      <div class="notif-filters__label">Date range</div>
+      <div class="notif-filters__dates">
+        <input class="input" id="notifDateStartMobile" type="date" aria-label="Start date" />
+        <input class="input" id="notifDateEndMobile" type="date" aria-label="End date" />
+        <p class="field__error" id="notifDateErrorMobile" hidden></p>
+      </div>
+    </div>
+    <div class="sheet__actions">
+      <button class="btn btn--ghost" id="filterSheetClear" type="button">Clear</button>
+      <button class="btn btn--accent" id="filterSheetApply" type="button">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk delete confirmation -->
+<div class="modal-backdrop" id="bulkDeleteModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Delete notifications">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title" id="bulkDeleteTitle">Delete notifications?</h3>
+    <p class="modal__text">This removes them from your notification history. This can't be undone.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="bulkDeleteConfirm">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="notifications.js"></script>
+</body>
+</html>

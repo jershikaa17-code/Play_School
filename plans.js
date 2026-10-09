@@ -110,6 +110,9 @@
         title: 'Plan updated',
         text: `${role} upgraded the school to the ${tier} plan.`,
         forRole: 'Director',
+        module: null,
+        mention: false,
+        recordRoute: 'plans.html',
       });
     } catch (e) { /* non-fatal — notification is a courtesy, not the source of truth */ }
 

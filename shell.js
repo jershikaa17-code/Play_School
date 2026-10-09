@@ -47,8 +47,13 @@
   function saveNotifications(list) {
     try { localStorage.setItem(NOTIFS_KEY, JSON.stringify(list)); } catch (e) { /* storage unavailable */ }
   }
-  /** Adds a notification. `forRole` is informational only in this demo (no real multi-user auth). */
-  function addNotification({ title, text, forRole }) {
+  /** Adds a notification. `forRole` is informational only in this demo (no
+      real multi-user auth). `module` is a modules.js catalogue id or null
+      for general/system notifications. `mention` marks notifications
+      addressed directly at the viewing role (vs. general activity).
+      `recordRoute` is the real destination to open on click, or null if
+      there isn't one yet. */
+  function addNotification({ title, text, forRole, module, mention, recordRoute }) {
     const list = getNotifications();
     list.unshift({
       id: 'N-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -57,6 +62,9 @@
       forRole: forRole || 'Director',
       time: new Date().toISOString(),
       read: false,
+      module: module || null,
+      mention: !!mention,
+      recordRoute: recordRoute || null,
     });
     saveNotifications(list);
     renderBell();
@@ -66,9 +74,26 @@
     saveNotifications(getNotifications().map((n) => ({ ...n, read: true })));
     renderBell();
   }
+  function markNotificationRead(id, read) {
+    saveNotifications(getNotifications().map((n) => (n.id === id ? { ...n, read: read !== false } : n)));
+    renderBell();
+  }
+  function markNotificationsRead(ids, read) {
+    const idSet = new Set(ids);
+    saveNotifications(getNotifications().map((n) => (idSet.has(n.id) ? { ...n, read: read !== false } : n)));
+    renderBell();
+  }
   function dismissNotification(id) {
     saveNotifications(getNotifications().filter((n) => n.id !== id));
     renderBell();
+  }
+  function deleteNotifications(ids) {
+    const idSet = new Set(ids);
+    saveNotifications(getNotifications().filter((n) => !idSet.has(n.id)));
+    renderBell();
+  }
+  function getUnreadCount() {
+    return getNotifications().filter((n) => !n.read).length;
   }
   /* ---------- shared toast utility ---------- */
   const TOAST_ICONS = { success: '&#10003;', error: '&#9888;', warning: '&#9888;', info: '&#9432;' };
@@ -246,6 +271,10 @@
     `;
   }
 
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
   function renderBell() {
     const list = getNotifications();
     const badge = document.getElementById('appBellBadge');
@@ -257,31 +286,45 @@
 
     if (!list.length) {
       listEl.innerHTML = '<div class="search-dropdown__empty">No notifications yet.</div>';
-      return;
+    } else {
+      listEl.innerHTML = list
+        .slice(0, 10)
+        .map(
+          (n) => `
+          <div class="notif-item${n.read ? '' : ' is-unread'}" data-id="${n.id}" style="padding: var(--space-3) var(--space-4); cursor: pointer;" tabindex="0" role="button">
+            <span class="notif-item__icon notif-item__icon--info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </span>
+            <span class="notif-item__body">
+              <span class="notif-item__title">${escapeHtml(n.title)}</span>
+              <span class="notif-item__text">${escapeHtml(n.text)}</span>
+              <span class="notif-item__time">${timeAgo(n.time)}</span>
+            </span>
+            <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
+          </div>`
+        )
+        .join('');
     }
-    listEl.innerHTML = list
-      .slice(0, 8)
-      .map(
-        (n) => `
-        <div class="notif-item${n.read ? '' : ' is-unread'}" data-id="${n.id}" style="padding: var(--space-3) var(--space-4);">
-          <span class="notif-item__icon notif-item__icon--info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          </span>
-          <span class="notif-item__body">
-            <span class="notif-item__title">${n.title}</span>
-            <span class="notif-item__text">${n.text}</span>
-            <span class="notif-item__time">${timeAgo(n.time)}</span>
-          </span>
-          <span class="notif-item__dismiss" role="button" tabindex="0" aria-label="Dismiss">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </span>
-        </div>`
-      )
-      .join('');
+    listEl.innerHTML += `<a href="notifications.html" class="popover__item" style="justify-content:center; border-top:1px solid var(--color-border-subtle); border-radius:0; font-weight:700;">View all</a>`;
+
+    listEl.querySelectorAll('.notif-item').forEach((row) => {
+      const id = row.dataset.id;
+      const openRow = (e) => {
+        if (e.target.closest('.notif-item__dismiss')) return;
+        const n = getNotifications().find((x) => x.id === id);
+        if (!n) return;
+        markNotificationRead(id, true);
+        if (n.recordRoute) window.location.href = n.recordRoute;
+      };
+      row.addEventListener('click', openRow);
+      row.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRow(e); } });
+    });
     listEl.querySelectorAll('.notif-item__dismiss').forEach((btn) => {
-      const dismiss = () => dismissNotification(btn.closest('.notif-item').dataset.id);
+      const dismiss = (e) => { e.stopPropagation(); dismissNotification(btn.closest('.notif-item').dataset.id); };
       btn.addEventListener('click', dismiss);
-      btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(); } });
+      btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(e); } });
     });
   }
 
@@ -351,5 +394,10 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   }
 
-  window.PlayShell = { isLoggedIn, login, logout, mount, addNotification, getNotifications, markAllNotificationsRead, toast, getDemoRole, setDemoRole };
+  window.PlayShell = {
+    isLoggedIn, login, logout, mount, toast, getDemoRole, setDemoRole,
+    addNotification, getNotifications, markAllNotificationsRead,
+    markNotificationRead, markNotificationsRead, dismissNotification,
+    deleteNotifications, getUnreadCount,
+  };
 })();

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notification settings — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <nav class="breadcrumbs" style="margin-bottom: var(--space-6);" aria-label="Breadcrumb">
+    <a class="breadcrumbs__link" href="notifications.html">Notifications</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current" aria-current="page">Settings</span>
+  </nav>
+
+  <div class="card card--glass" style="max-width: 560px;">
+    <span class="card__eyebrow">Notification settings</span>
+    <div class="card__title" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);">Choose what you hear about</div>
+    <p class="card__text" style="margin-top: var(--space-3);">These preferences control which activity creates a notification for you.</p>
+
+    <div id="prefsList" style="margin-top: var(--space-6); display:flex; flex-direction:column; gap: var(--space-4);"></div>
+
+    <div class="card__footer">
+      <span class="sample--caption" style="color: var(--color-text-muted); font-size: var(--fs-caption);">Saved automatically</span>
+      <button class="btn btn--accent" id="prefsSaveBtn" type="button">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="notification-settings.js"></script>
+</body>
+</html>

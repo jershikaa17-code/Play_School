@@ -116,6 +116,8 @@
         title: 'Access request',
         text: `A ${role} requested access to ${page}${reason ? ' — "' + reason + '"' : ''}.`,
         forRole: 'Director',
+        module: null,
+        mention: true,
       });
     });
   }

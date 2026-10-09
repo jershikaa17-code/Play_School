@@ -120,7 +120,7 @@
       const key = 'ps_ratio_notified_' + r.name;
       if (r.exceeded) {
         if (!localStorage.getItem(key)) {
-          window.PlayShell.addNotification({ title: 'Class ratio exceeded', text: `${r.name} is at ${r.children}:${r.staff} (limit 1:${r.limit}).`, forRole: 'Director' });
+          window.PlayShell.addNotification({ title: 'Class ratio exceeded', text: `${r.name} is at ${r.children}:${r.staff} (limit 1:${r.limit}).`, forRole: 'Director', module: null, mention: true, recordRoute: 'dashboard.html#widget-ratio' });
           try { localStorage.setItem(key, '1'); } catch (e) { /* storage unavailable */ }
         }
       } else {
@@ -470,10 +470,19 @@
       const child = activeChildren().find((c) => c.id === $('attChild').value);
       if (!child) return;
       submitWithLoading('attendanceSubmit', () => {
-        window.PlayStore.addRecord({ id: 'ATT-' + Date.now().toString(36), type: 'Attendance', childId: child.id, childName: child.name, status: $('attStatus').value, date: todayStr() });
+        const status = $('attStatus').value;
+        window.PlayStore.addRecord({ id: 'ATT-' + Date.now().toString(36), type: 'Attendance', childId: child.id, childName: child.name, status, date: todayStr() });
         closeModal('attendanceModalBackdrop');
         renderGrid();
-        window.PlayShell.toast('success', 'Attendance saved', `${child.name} marked ${$('attStatus').value.toLowerCase()}.`);
+        window.PlayShell.toast('success', 'Attendance saved', `${child.name} marked ${status.toLowerCase()}.`);
+        if (status !== 'Present') {
+          window.PlayShell.addNotification({
+            title: 'Attendance updated',
+            text: `${child.name} marked ${status.toLowerCase()} today.`,
+            module: 'attendance',
+            recordRoute: 'dashboard.html#children',
+          });
+        }
       });
     });
   }
@@ -492,6 +501,12 @@
         closeModal('enquiryModalBackdrop');
         renderGrid();
         window.PlayShell.toast('success', 'Enquiry added', `${name} has been added to your enquiries.`);
+        window.PlayShell.addNotification({
+          title: 'New enquiry',
+          text: `${name} submitted a new enquiry.`,
+          module: null,
+          recordRoute: 'dashboard.html#widget-enquiries',
+        });
       });
     });
   }
@@ -508,11 +523,21 @@
       setFieldError('payAmount', null);
       const child = activeChildren().find((c) => c.id === $('payChild').value);
       submitWithLoading('paymentSubmit', () => {
-        window.PlayStore.addRecord({ id: 'PAY-' + Date.now().toString(36), type: 'Payment', childName: child ? child.name : 'Unknown', amount, status: $('payStatus').value, date: todayStr() });
+        const payStatus = $('payStatus').value;
+        const childName = child ? child.name : 'Unknown';
+        window.PlayStore.addRecord({ id: 'PAY-' + Date.now().toString(36), type: 'Payment', childName, amount, status: payStatus, date: todayStr() });
         $('payAmount').value = '';
         closeModal('paymentModalBackdrop');
         renderGrid();
-        window.PlayShell.toast('success', 'Payment recorded', `$${amount.toFixed(2)} logged as ${$('payStatus').value.toLowerCase()}.`);
+        window.PlayShell.toast('success', 'Payment recorded', `$${amount.toFixed(2)} logged as ${payStatus.toLowerCase()}.`);
+        if (payStatus === 'Paid') {
+          window.PlayShell.addNotification({
+            title: 'Payment received',
+            text: `$${amount.toFixed(2)} received from ${childName}.`,
+            module: 'billing',
+            recordRoute: 'payroll.html',
+          });
+        }
       });
     });
   }
@@ -523,11 +548,19 @@
       if (!desc) { setFieldError('incDescription', 'Please describe what happened.'); return; }
       setFieldError('incDescription', null);
       submitWithLoading('incidentSubmit', () => {
-        window.PlayStore.addRecord({ id: 'INC-' + Date.now().toString(36), type: 'Incident', description: desc, severity: $('incSeverity').value, status: 'Open', date: todayStr() });
+        const severity = $('incSeverity').value;
+        window.PlayStore.addRecord({ id: 'INC-' + Date.now().toString(36), type: 'Incident', description: desc, severity, status: 'Open', date: todayStr() });
         $('incDescription').value = '';
         closeModal('incidentModalBackdrop');
         renderGrid();
         window.PlayShell.toast('success', 'Incident logged', 'The incident has been recorded.');
+        window.PlayShell.addNotification({
+          title: 'Incident logged',
+          text: `${severity} severity: ${desc}`,
+          module: 'health-safety',
+          mention: severity === 'High',
+          recordRoute: 'dashboard.html#widget-incidents',
+        });
       });
     });
   }
@@ -541,11 +574,18 @@
       if (!message) { setFieldError('annMessage', 'Message is required.'); ok = false; } else setFieldError('annMessage', null);
       if (!ok) return;
       submitWithLoading('announcementSubmit', () => {
-        window.PlayStore.addRecord({ id: 'ANN-' + Date.now().toString(36), type: 'Announcement', title, message, audience: $('annAudience').value, date: todayStr() });
+        const audience = $('annAudience').value;
+        window.PlayStore.addRecord({ id: 'ANN-' + Date.now().toString(36), type: 'Announcement', title, message, audience, date: todayStr() });
         $('annTitle').value = ''; $('annMessage').value = '';
         closeModal('announcementModalBackdrop');
         renderGrid();
         window.PlayShell.toast('success', 'Announcement published', `"${title}" was published.`);
+        window.PlayShell.addNotification({
+          title: 'New announcement',
+          text: title,
+          module: 'communication',
+          recordRoute: 'dashboard.html#widget-announcements',
+        });
       });
     });
   }

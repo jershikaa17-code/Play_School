@@ -177,6 +177,9 @@
         title: 'Upgrade request',
         text: `${role} requested access to ${mod.name} (requires ${mod.requiredPlan}).`,
         forRole: 'Director',
+        module: mod.id,
+        mention: true,
+        recordRoute: `module.html?id=${mod.id}&role=${encodeURIComponent(role)}`,
       });
       markAskSent(mod.id);
       setAskSentState(btn);
@@ -289,6 +292,9 @@
             title: 'Contact request',
             text: `${payload.name} asked to be contacted about ${activeModule ? activeModule.name : 'a module'}.`,
             forRole: 'Director',
+            module: activeModule ? activeModule.id : null,
+            mention: true,
+            recordRoute: activeModule ? `module.html?id=${activeModule.id}&role=Director` : null,
           });
         }
         closeContactModal();
