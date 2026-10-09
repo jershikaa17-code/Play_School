@@ -3,36 +3,305 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Welcome — Play School</title>
+<title>Set up your school — Play School</title>
 <link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="onboarding.css" />
 </head>
 <body>
 
-<!-- S03 fallback: this project has no dedicated first-time-user onboarding
-     flow yet. Point ROUTES.s03 in signin.js at the real S03 page once it
-     exists instead of this placeholder. -->
-<div id="pageContent" hidden>
-  <div class="card card--glass" style="max-width: 520px;">
-    <span class="card__eyebrow">Welcome to Play School</span>
-    <div class="card__title" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);">Let's get your classroom set up</div>
-    <p class="card__text" style="margin-top: var(--space-3);">This is your first time signing in. From your dashboard you can add classrooms, invite staff, and enrol children whenever you're ready.</p>
-    <div class="card__footer">
-      <a class="btn btn--accent" href="dashboard.html">Go to dashboard</a>
+<div class="wiz-shell">
+  <header class="wiz-header">
+    <div class="wiz-header__brand">
+      <img src="logo.png" alt="" />
+      <span class="wiz-header__title">Setting up <b>Play School</b></span>
+    </div>
+    <div class="wiz-header__actions">
+      <button class="btn btn--ghost btn--sm" id="wizSaveExit" type="button">Save &amp; exit</button>
+    </div>
+  </header>
+
+  <nav class="wiz-stepper" id="wizStepper" aria-label="Onboarding steps"></nav>
+  <div class="wiz-mobile-stepper" id="wizMobileStepper">
+    <div class="wiz-mobile-stepper__label" id="wizMobileLabel"></div>
+    <div class="wiz-mobile-stepper__bar"><div class="wiz-mobile-stepper__bar-fill" id="wizMobileBarFill"></div></div>
+  </div>
+
+  <main class="wiz-main">
+    <div class="wiz-card card card--glass" id="wizCard">
+
+      <!-- STEP 1 — School details -->
+      <section class="wiz-step-panel" data-step="1">
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 1 of 7</span>
+        <h1 class="wiz-step-panel__heading">Tell us about your school</h1>
+        <p class="wiz-step-panel__text">We'll use this to personalise the app and your family-facing materials.</p>
+
+        <form class="wiz-form" id="formSchool" novalidate>
+          <div class="field wiz-logo-field">
+            <div class="wiz-logo-preview" id="schoolLogoPreview">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M3 9.5 12 4l9 5.5-9 5.5-9-5.5Z"/><path d="M7 12v5c0 1.1 2.2 2 5 2s5-.9 5-2v-5"/></svg>
+            </div>
+            <div style="flex:1;">
+              <label class="field__label" for="schoolLogo">School logo (optional)</label>
+              <input class="input" id="schoolLogo" type="file" accept="image/*" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="schoolName">School name <span class="req">*</span></label>
+            <input class="input" id="schoolName" type="text" autocomplete="organization" />
+            <p class="field__error" id="err-schoolName" hidden></p>
+          </div>
+          <div class="wiz-row">
+            <div class="field">
+              <label class="field__label" for="schoolEmail">School email <span class="req">*</span></label>
+              <input class="input" id="schoolEmail" type="email" autocomplete="email" />
+              <p class="field__error" id="err-schoolEmail" hidden></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="schoolPhone">School phone <span class="req">*</span></label>
+              <input class="input" id="schoolPhone" type="tel" autocomplete="tel" />
+              <p class="field__error" id="err-schoolPhone" hidden></p>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="schoolAddress">School address <span class="req">*</span></label>
+            <textarea class="textarea" id="schoolAddress" style="min-height:72px;"></textarea>
+            <p class="field__error" id="err-schoolAddress" hidden></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="schoolLanguage">Preferred language</label>
+            <select class="select" id="schoolLanguage">
+              <option value="English">English</option>
+              <option value="Arabic">Arabic</option>
+              <option value="Hindi">Hindi</option>
+              <option value="Tamil">Tamil</option>
+              <option value="Malayalam">Malayalam</option>
+            </select>
+          </div>
+        </form>
+      </section>
+
+      <!-- STEP 2 — Admin profile -->
+      <section class="wiz-step-panel" data-step="2" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 2 of 7</span>
+        <h1 class="wiz-step-panel__heading">Your admin profile</h1>
+        <p class="wiz-step-panel__text">You're already signed in — we just need a couple of details for your profile.</p>
+
+        <form class="wiz-form" id="formAdmin" novalidate>
+          <div class="field">
+            <label class="field__label" for="adminName">Full name <span class="req">*</span></label>
+            <input class="input" id="adminName" type="text" autocomplete="name" />
+            <p class="field__error" id="err-adminName" hidden></p>
+          </div>
+          <div class="wiz-row">
+            <div class="field">
+              <label class="field__label" for="adminEmail">Email <span class="req">*</span></label>
+              <input class="input" id="adminEmail" type="email" autocomplete="email" />
+              <p class="field__error" id="err-adminEmail" hidden></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="adminPhone">Phone (optional)</label>
+              <input class="input" id="adminPhone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- STEP 3 — Academic year -->
+      <section class="wiz-step-panel" data-step="3" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 3 of 7</span>
+        <h1 class="wiz-step-panel__heading">Set your academic year</h1>
+        <p class="wiz-step-panel__text">This controls term dates across attendance, billing and reports.</p>
+
+        <form class="wiz-form" id="formYear" novalidate>
+          <div class="field">
+            <label class="field__label" for="yearName">Academic year name <span class="req">*</span></label>
+            <input class="input" id="yearName" type="text" placeholder="e.g. 2026–2027" />
+            <p class="field__error" id="err-yearName" hidden></p>
+          </div>
+          <div class="wiz-row">
+            <div class="field">
+              <label class="field__label" for="yearStart">Start date <span class="req">*</span></label>
+              <input class="input" id="yearStart" type="date" />
+              <p class="field__error" id="err-yearStart" hidden></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="yearEnd">End date <span class="req">*</span></label>
+              <input class="input" id="yearEnd" type="date" />
+              <p class="field__error" id="err-yearEnd" hidden></p>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- STEP 4 — Classes -->
+      <section class="wiz-step-panel" data-step="4" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 4 of 7</span>
+        <h1 class="wiz-step-panel__heading">Set up your classes</h1>
+        <p class="wiz-step-panel__text">Add the rooms or classes your team will use day to day. You can add more later.</p>
+
+        <div class="wiz-add-row" style="margin-top: var(--space-7);">
+          <div class="field">
+            <label class="field__label" for="classNameInput">Class name</label>
+            <input class="input" id="classNameInput" type="text" placeholder="e.g. Sunflower Room" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="classAgeInput">Age group</label>
+            <input class="input" id="classAgeInput" type="text" placeholder="e.g. 3–4 years" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="classTeacherInput">Teacher (optional)</label>
+            <input class="input" id="classTeacherInput" type="text" placeholder="e.g. Rhea Kapoor" />
+          </div>
+          <button class="btn btn--secondary" id="addClassBtn" type="button">Add class</button>
+        </div>
+        <p class="field__error" id="err-class" hidden style="margin-top: var(--space-2);"></p>
+
+        <div class="wiz-list" id="classList"></div>
+      </section>
+
+      <!-- STEP 5 — Staff -->
+      <section class="wiz-step-panel" data-step="5" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 5 of 7</span>
+        <h1 class="wiz-step-panel__heading">Invite your staff</h1>
+        <p class="wiz-step-panel__text">Optional — add a few team members now, or skip and do this later.</p>
+
+        <div class="wiz-add-row" style="margin-top: var(--space-7);">
+          <div class="field">
+            <label class="field__label" for="staffNameInput">Name</label>
+            <input class="input" id="staffNameInput" type="text" placeholder="e.g. Priya Fernandes" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="staffEmailInput">Email</label>
+            <input class="input" id="staffEmailInput" type="email" placeholder="name@example.com" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="staffRoleInput">Role</label>
+            <select class="select" id="staffRoleInput">
+              <option value="Teacher">Teacher</option>
+              <option value="Assistant">Assistant</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <button class="btn btn--secondary" id="addStaffBtn" type="button">Add staff</button>
+        </div>
+        <p class="field__error" id="err-staff" hidden style="margin-top: var(--space-2);"></p>
+
+        <div class="wiz-list" id="staffList"></div>
+        <a href="#" class="btn btn--text wiz-skip" id="skipStaff">Skip for now</a>
+      </section>
+
+      <!-- STEP 6 — Preferences -->
+      <section class="wiz-step-panel" data-step="6" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 6 of 7</span>
+        <h1 class="wiz-step-panel__heading">A few preferences</h1>
+        <p class="wiz-step-panel__text">Sensible defaults are already selected — change anything that doesn't fit.</p>
+
+        <form class="wiz-form" id="formPrefs" novalidate>
+          <div class="wiz-row">
+            <div class="field">
+              <label class="field__label" for="prefLanguage">Default language</label>
+              <select class="select" id="prefLanguage">
+                <option value="English">English</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Malayalam">Malayalam</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="prefDateFormat">Date format</label>
+              <select class="select" id="prefDateFormat">
+                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              </select>
+            </div>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" class="checkbox" id="prefNotifyEmail" checked />
+            <label for="prefNotifyEmail">Email notifications for attendance &amp; billing</label>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" class="checkbox" id="prefNotifyApp" checked />
+            <label for="prefNotifyApp">In-app notifications</label>
+          </div>
+        </form>
+        <a href="#" class="btn btn--text wiz-skip" id="skipPrefs">Skip for now</a>
+      </section>
+
+      <!-- STEP 7 — Review -->
+      <section class="wiz-step-panel" data-step="7" hidden>
+        <span class="eyebrow wiz-step-panel__eyebrow">Step 7 of 7</span>
+        <h1 class="wiz-step-panel__heading">Review &amp; finish</h1>
+        <p class="wiz-step-panel__text">Here's everything you've set up. You can jump back to any section to make changes.</p>
+
+        <div id="reviewSections" style="margin-top: var(--space-6);"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="wiz-footer">
+    <button class="btn btn--secondary" id="wizBack" type="button">Back</button>
+    <button class="btn btn--accent wiz-footer__next" id="wizNext" type="button">
+      <span class="btn__spinner" aria-hidden="true"></span>
+      <span id="wizNextLabel">Next</span>
+    </button>
+  </footer>
+</div>
+
+<!-- Remove confirmation modal -->
+<div class="modal-backdrop" id="removeModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Remove confirmation">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title" id="removeModalTitle">Remove this item?</h3>
+    <p class="modal__text" id="removeModalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="removeModalConfirm">Remove</button>
     </div>
   </div>
 </div>
 
+<!-- No-classes warning modal -->
+<div class="modal-backdrop" id="noClassModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="No classes added">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="modal__title">No classes added yet</h3>
+    <p class="modal__text">We recommend adding at least one class before daily use — it's needed for attendance, billing and reports. You can still continue and add one later.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Add a class</button>
+      <button class="btn btn--secondary" type="button" id="noClassContinue">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save & exit / unsaved changes modal -->
+<div class="modal-backdrop" id="exitModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Unsaved changes">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h3 class="modal__title">You have unsaved changes</h3>
+    <p class="modal__text">This step hasn't finished saving yet. You can save your progress and exit, or continue setting up.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Continue setup</button>
+      <button class="btn btn--accent" type="button" id="exitModalSave">Save &amp; exit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-region" id="wizToastRegion" aria-live="polite"></div>
+
 <script src="store.js"></script>
-<script src="modules.js"></script>
 <script src="shell.js"></script>
-<script>
-  PlayShell.login();
-  var appContent = PlayShell.mount('', 'Welcome');
-  appContent.classList.add('app-content--center');
-  var pageContent = document.getElementById('pageContent');
-  pageContent.hidden = false;
-  appContent.appendChild(pageContent);
-</script>
+<script src="onboarding.js"></script>
 </body>
 </html>

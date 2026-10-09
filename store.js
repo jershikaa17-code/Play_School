@@ -23,12 +23,56 @@
     { id: 'S-3002', type: 'Staff', name: 'Rhea Kapoor', relation: 'Teacher · Marigold Room', status: 'Active' },
   ];
 
+  /* ---------- persisted additions (classes, staff, etc. added post-seed) ----------
+     The static `records` above is the seed dataset. Anything added at runtime
+     (e.g. by the onboarding wizard) is appended to the same live array so every
+     existing consumer (search, dashboard, record pages) sees it immediately,
+     and mirrored to localStorage so it survives a refresh. */
+  const EXTRA_RECORDS_KEY = 'ps_extra_records';
+  function loadExtraRecords() {
+    try { return JSON.parse(localStorage.getItem(EXTRA_RECORDS_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function saveExtraRecords(list) {
+    try { localStorage.setItem(EXTRA_RECORDS_KEY, JSON.stringify(list)); } catch (e) { /* storage unavailable */ }
+  }
+  records.push(...loadExtraRecords());
+
+  function addRecord(record) {
+    records.push(record);
+    const extras = loadExtraRecords();
+    extras.push(record);
+    saveExtraRecords(extras);
+    return record;
+  }
+  function removeRecord(id) {
+    const idx = records.findIndex((r) => normalize(r.id) === normalize(id));
+    if (idx !== -1) records.splice(idx, 1);
+    saveExtraRecords(loadExtraRecords().filter((r) => normalize(r.id) !== normalize(id)));
+  }
+  function getByType(type) {
+    return records.filter((r) => r.type === type);
+  }
+
+  /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
+     Single settings object — the de facto "S58 Settings" store for this demo,
+     since no dedicated settings page/backend exists yet. */
+  const SETTINGS_KEY = 'ps_app_settings';
+  function getSettings() {
+    try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function saveSettings(partial) {
+    const next = Object.assign({}, getSettings(), partial);
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(next)); } catch (e) { /* storage unavailable */ }
+    return next;
+  }
+
   function normalize(str) {
     return String(str || '').toLowerCase();
   }
 
   function secondaryLine(record) {
     if (record.type === 'Child') return `${record.room} · ${record.status}`;
+    if (record.type === 'Class') return [record.ageGroup, record.teacherName].filter(Boolean).join(' · ');
     if (record.type === 'Guardian') return record.relation;
     return record.relation;
   }
@@ -51,5 +95,10 @@
     search,
     getById,
     secondaryLine,
+    addRecord,
+    removeRecord,
+    getByType,
+    getSettings,
+    saveSettings,
   };
 })();
