@@ -24,6 +24,21 @@
       <span class="sample--caption" id="recordId" style="color: var(--color-text-muted);"></span>
     </div>
   </div>
+
+  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);">
+    <span class="card__eyebrow">Notes</span>
+    <div class="field" style="margin-top: var(--space-3);">
+      <label class="field__label" for="recordNotes" style="text-transform: none; letter-spacing: 0;">Private notes for this record</label>
+      <textarea class="textarea" id="recordNotes" placeholder="Add an observation or reminder…"></textarea>
+    </div>
+    <div class="card__footer">
+      <span class="sample--caption" id="recordNotesMeta" style="color: var(--color-text-muted);"></span>
+      <button class="btn btn--primary btn--sm" id="recordNotesSaveBtn" type="button">
+        <span class="btn__spinner" aria-hidden="true"></span>
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="store.js"></script>
@@ -47,6 +62,48 @@
     document.getElementById('recordBreadcrumb').textContent = record.name;
     pageContent.hidden = false;
     appContent.appendChild(pageContent);
+
+    /* Notes save — the whole app is local-only (no backend), so every save
+       here already is a local save. "Saved on this device" is therefore an
+       accurate message regardless of connectivity, and the button is never
+       disabled for being offline. */
+    (function wireNotes() {
+      var NOTES_KEY = 'ps_notes_' + record.id;
+      var textarea = document.getElementById('recordNotes');
+      var meta = document.getElementById('recordNotesMeta');
+      var saveBtn = document.getElementById('recordNotesSaveBtn');
+      var isSaving = false;
+
+      function readSaved() {
+        try { return JSON.parse(localStorage.getItem(NOTES_KEY) || 'null'); } catch (e) { return null; }
+      }
+      var saved = readSaved();
+      if (saved) {
+        textarea.value = saved.text || '';
+        meta.textContent = 'Saved ' + new Date(saved.time).toLocaleString();
+      }
+
+      saveBtn.addEventListener('click', function () {
+        if (isSaving) return;
+        isSaving = true;
+        saveBtn.classList.add('is-loading');
+        saveBtn.disabled = true;
+
+        window.setTimeout(function () {
+          try {
+            var entry = { text: textarea.value, time: new Date().toISOString() };
+            localStorage.setItem(NOTES_KEY, JSON.stringify(entry));
+            meta.textContent = 'Saved ' + new Date(entry.time).toLocaleString();
+            window.PlayShell.toast('info', 'Saved on this device', 'Your notes are stored locally on this device.');
+          } catch (e) {
+            window.PlayShell.toast('error', "Couldn't save your notes", 'Your text is still here — please try again.');
+          }
+          isSaving = false;
+          saveBtn.classList.remove('is-loading');
+          saveBtn.disabled = false;
+        }, 350);
+      });
+    })();
   }
 </script>
 </body>

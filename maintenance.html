@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Planned maintenance — Play School</title>
+<meta name="description" content="Play School is temporarily unavailable for planned maintenance. Please try again shortly." />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="maintenance.css" />
+</head>
+<body>
+
+<div class="maintenance-shell">
+  <header class="maintenance-bare-header">
+    <span class="brand">
+      <span class="brand__mark"><img src="logo.png" alt="" class="brand__mark-img" /></span>
+      <span class="brand__name">Play <span>School</span></span>
+    </span>
+  </header>
+
+  <main class="maintenance-main">
+    <div class="maintenance">
+      <div class="maintenance__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852 1 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path>
+        </svg>
+      </div>
+
+      <span class="eyebrow maintenance__eyebrow">Planned maintenance</span>
+      <h1 class="maintenance__heading">We'll be back shortly</h1>
+      <p class="maintenance__text" id="maintenanceMessage"></p>
+      <div class="maintenance__meta" id="maintenanceMeta" hidden></div>
+
+      <div class="maintenance__actions">
+        <button class="btn btn--primary maintenance__btn" id="retryBtn" type="button">
+          <span class="btn__spinner" aria-hidden="true"></span>
+          <span id="retryLabel">Retry connection</span>
+        </button>
+      </div>
+
+      <p class="maintenance__note">You can try again in a few minutes — there's nothing else you need to do. Your data is safe.</p>
+    </div>
+  </main>
+</div>
+
+<script src="maintenance.js"></script>
+</body>
+</html>

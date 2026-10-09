@@ -51,6 +51,88 @@
     saveNotifications(getNotifications().filter((n) => n.id !== id));
     renderBell();
   }
+  /* ---------- shared toast utility ---------- */
+  const TOAST_ICONS = { success: '&#10003;', error: '&#9888;', warning: '&#9888;', info: '&#9432;' };
+  function toast(type, title, text) {
+    const region = document.getElementById('appToastRegion');
+    if (!region) return;
+    const el = document.createElement('div');
+    el.className = `toast toast--${type}`;
+    el.setAttribute('role', 'status');
+    el.innerHTML = `
+      <span class="toast__icon">${TOAST_ICONS[type] || TOAST_ICONS.info}</span>
+      <span><div class="toast__title"></div>${text ? '<div class="toast__text"></div>' : ''}</span>
+      <span class="toast__close" role="button" tabindex="0" aria-label="Dismiss notification">&times;</span>
+    `;
+    el.querySelector('.toast__title').textContent = title;
+    if (text) el.querySelector('.toast__text').textContent = text;
+    region.appendChild(el);
+    const remove = () => { el.classList.add('is-leaving'); setTimeout(() => el.remove(), 220); };
+    const timer = setTimeout(remove, 5000);
+    const closeBtn = el.querySelector('.toast__close');
+    closeBtn.addEventListener('click', () => { clearTimeout(timer); remove(); });
+    closeBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); clearTimeout(timer); remove(); } });
+  }
+
+  /* ---------- connectivity banner (offline / back-online) ---------- */
+  const WIFI_OFF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>';
+  const WIFI_ON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  let connectivityWired = false;
+  let connectivityState = null; // 'offline' | 'online' | null
+  let backOnlineTimer = null;
+  let wasOffline = false;
+
+  function offlineMessage() {
+    return window.innerWidth < 768
+      ? 'Offline — changes saved on device'
+      : "You're offline. Changes will be saved on this device.";
+  }
+
+  function setConnectivityBanner(state, text) {
+    const banner = document.getElementById('connectivityBanner');
+    if (!banner) return;
+    connectivityState = state;
+    banner.classList.remove('connectivity-banner--offline', 'connectivity-banner--online');
+    if (!state) {
+      banner.classList.remove('is-visible');
+      return;
+    }
+    banner.classList.add('connectivity-banner--' + state, 'is-visible');
+    document.getElementById('connectivityBannerIcon').innerHTML = state === 'offline' ? WIFI_OFF_ICON : WIFI_ON_ICON;
+    document.getElementById('connectivityBannerText').textContent = text;
+  }
+
+  function wireConnectivity() {
+    if (connectivityWired) return;
+    connectivityWired = true;
+
+    if (!navigator.onLine) {
+      wasOffline = true;
+      setConnectivityBanner('offline', offlineMessage());
+    }
+
+    window.addEventListener('offline', () => {
+      if (backOnlineTimer) { clearTimeout(backOnlineTimer); backOnlineTimer = null; }
+      wasOffline = true;
+      setConnectivityBanner('offline', offlineMessage());
+    });
+
+    window.addEventListener('online', () => {
+      if (!wasOffline) return;
+      wasOffline = false;
+      setConnectivityBanner('online', 'Back online');
+      backOnlineTimer = setTimeout(() => {
+        setConnectivityBanner(null);
+        backOnlineTimer = null;
+      }, 3200);
+    });
+
+    window.addEventListener('resize', () => {
+      if (connectivityState === 'offline') setConnectivityBanner('offline', offlineMessage());
+    });
+  }
+
   function timeAgo(iso) {
     const diffMs = Date.now() - new Date(iso).getTime();
     const mins = Math.round(diffMs / 60000);
@@ -106,6 +188,10 @@
           </div>
         </aside>
         <div class="app-main">
+          <div class="connectivity-banner" id="connectivityBanner" role="status" aria-live="polite">
+            <span class="connectivity-banner__icon" id="connectivityBannerIcon" aria-hidden="true"></span>
+            <span class="connectivity-banner__text" id="connectivityBannerText"></span>
+          </div>
           <header class="app-header">
             <button class="app-header__toggle" id="appSidebarToggle" aria-label="Open navigation" aria-expanded="false" type="button">
               <span class="nav-toggle__bars"><span></span><span></span><span></span></span>
@@ -131,6 +217,7 @@
           <main class="app-content" id="appContent"></main>
         </div>
       </div>
+      <div class="toast-region" id="appToastRegion" aria-live="polite"></div>
     `;
   }
 
@@ -215,9 +302,10 @@
     if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
     wireBell();
+    wireConnectivity();
 
     return document.getElementById('appContent');
   }
 
-  window.PlayShell = { isLoggedIn, login, logout, mount, addNotification, getNotifications, markAllNotificationsRead };
+  window.PlayShell = { isLoggedIn, login, logout, mount, addNotification, getNotifications, markAllNotificationsRead, toast };
 })();

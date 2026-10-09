@@ -96,6 +96,44 @@
   justify-content: center;
 }
 
+/* ---------- Connectivity banner ---------- */
+.connectivity-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-inline: var(--space-6);
+  border-bottom: 1px solid transparent;
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  transition: max-height var(--dur-overlay) var(--ease-premium),
+              opacity var(--dur-overlay) var(--ease-premium),
+              padding-block var(--dur-overlay) var(--ease-premium);
+}
+.connectivity-banner.is-visible { max-height: 64px; opacity: 1; padding-block: var(--space-3); }
+.connectivity-banner--offline {
+  background: color-mix(in srgb, var(--color-warning) 14%, var(--color-surface));
+  border-bottom-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+.connectivity-banner--offline .connectivity-banner__icon { color: var(--color-warning); }
+.connectivity-banner--online {
+  background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface));
+  border-bottom-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+.connectivity-banner--online .connectivity-banner__icon { color: var(--color-success); }
+.connectivity-banner__icon { width: 18px; height: 18px; flex-shrink: 0; }
+.connectivity-banner__icon svg { width: 100%; height: 100%; }
+.connectivity-banner__text { color: var(--color-text-primary); }
+@media (prefers-reduced-motion: reduce) {
+  .connectivity-banner { transition: none; }
+}
+@media (max-width: 767px) {
+  .connectivity-banner { padding-inline: var(--space-4); font-size: var(--fs-caption); }
+  .connectivity-banner.is-visible { padding-block: var(--space-2); max-height: 56px; }
+}
+
 /* ---------- Notification bell ---------- */
 .app-bell__panel {
   right: 0;
