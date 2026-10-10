@@ -8,9 +8,9 @@
 
   const records = [
     {
-      id: 'C-1001', type: 'Child', name: 'Amara Osei', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
+      id: 'C-1001', type: 'Child', name: 'Amara Osei', preferredName: 'Ami', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
       dob: '2023-06-10', startDate: '2025-09-02',
-      alerts: [{ type: 'allergy', detail: 'Severe peanut allergy — EpiPen in office', allergen: 'peanuts' }],
+      alerts: [{ id: 'AL-10011', type: 'allergy', detail: 'Severe peanut allergy — EpiPen in office', allergen: 'peanuts' }],
       authorizedPickups: [
         { id: 'PU-10011', name: 'Folasade Osei', relation: 'Mother', restricted: false, passcode: '4821' },
         { id: 'PU-10012', name: 'Kwame Osei', relation: 'Father', restricted: false, passcode: null },
@@ -19,7 +19,7 @@
     {
       id: 'C-1002', type: 'Child', name: 'Rhea Kapoor', room: 'Marigold Room', status: 'Active', guardianId: 'G-2002',
       dob: '2024-02-10', startDate: '2026-02-10',
-      alerts: [{ type: 'dietary', detail: 'Vegetarian diet only — no meat or fish' }],
+      alerts: [{ id: 'AL-10021', type: 'dietary', detail: 'Vegetarian diet only — no meat or fish' }],
       authorizedPickups: [
         { id: 'PU-10021', name: 'Nikhil Kapoor', relation: 'Father', restricted: false, passcode: null },
       ],
@@ -35,15 +35,15 @@
     {
       id: 'C-1004', type: 'Child', name: 'Noor Haddad', room: 'Sunflower Room', status: 'Withdrawn', guardianId: 'G-2004',
       dob: '2022-08-15', startDate: '2024-09-01', withdrawnDate: '2026-01-14', withdrawnReason: 'Family relocated out of the district.',
-      alerts: [{ type: 'medical', detail: 'Asthma — rescue inhaler kept in classroom cabinet' }],
+      alerts: [{ id: 'AL-10041', type: 'medical', detail: 'Asthma — rescue inhaler kept in classroom cabinet' }],
       authorizedPickups: [
         { id: 'PU-10041', name: 'Sara Haddad', relation: 'Mother', restricted: false, passcode: null },
       ],
     },
     {
-      id: 'C-1005', type: 'Child', name: 'Ananya Raj', room: 'Marigold Room', status: 'Active', guardianId: 'G-2005',
+      id: 'C-1005', type: 'Child', name: 'Ananya Raj', preferredName: 'Ana', room: 'Marigold Room', status: 'Active', guardianId: 'G-2005',
       dob: '2022-11-10', startDate: '2025-01-13',
-      alerts: [{ type: 'custody', detail: 'Only Aanya Kumar and the listed grandparents may collect Ananya — see custody order on file' }],
+      alerts: [{ id: 'AL-10051', type: 'custody', detail: 'Only Aanya Kumar and the listed grandparents may collect Ananya — see custody order on file' }],
       authorizedPickups: [
         { id: 'PU-10051', name: 'Aanya Kumar', relation: 'Mother', restricted: false, passcode: '7730' },
         { id: 'PU-10052', name: 'Meena Kumar', relation: 'Grandmother', restricted: false, passcode: null },
@@ -72,6 +72,16 @@
     { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active', startTime: '08:00' },
     { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active', startTime: '08:15' },
     { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active', startTime: '08:30' },
+
+    /* ---------- sample payments + incident ----------
+       Payment records are matched to a child by name (the existing
+       convention — see dashboard.js's "Record payment" quick action, which
+       has no childId field to reuse). Incident records gain an optional
+       childId so the Child Profile's Incidents tab can show real matches;
+       existing/new general incidents simply omit it. */
+    { id: 'PAY-9001', type: 'Payment', childName: 'Amara Osei', amount: 450, status: 'Paid', date: '2026-09-01' },
+    { id: 'PAY-9002', type: 'Payment', childName: 'Amara Osei', amount: 450, status: 'Pending', date: '2026-10-01' },
+    { id: 'INC-9001', type: 'Incident', childId: 'C-1001', description: 'Minor scrape on knee during outdoor play — cleaned and bandaged.', severity: 'Low', status: 'Closed', date: '2026-09-20' },
 
     /* ---------- weekly menu template ----------
        One record per weekday (0=Sunday … 6=Saturday), each item tagged with

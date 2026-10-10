@@ -90,7 +90,23 @@
     window.setTimeout(() => {
       $('childSkeleton').hidden = true;
       render();
+      maybeHandleDeepLinkAction();
     }, 500);
+  }
+
+  /** Lets other pages (the Child Profile) trigger an existing workflow here
+      instead of duplicating it — e.g. children.html?action=edit&id=C-1001. */
+  function maybeHandleDeepLinkAction() {
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get('action');
+    const id = params.get('id');
+    if (!action || !id) return;
+    const child = allChildren().find((c) => c.id === id);
+    if (!child) return;
+    if (action === 'edit') openChildFormModal(child);
+    else if (action === 'move') openMoveClassModal([child]);
+    else if (action === 'withdraw') openWithdrawModal(child);
+    else if (action === 'message') openMessageComposer([child]);
   }
 
   function getViewPref(r) {

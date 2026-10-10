@@ -7,47 +7,208 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="shell.css" />
 <link rel="stylesheet" href="dashboard.css" />
+<link rel="stylesheet" href="record.css" />
 </head>
 <body>
 
 <div id="pageContent" hidden>
-  <nav class="breadcrumbs" style="margin-bottom: var(--space-6);" aria-label="Breadcrumb">
-    <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
-    <span class="breadcrumbs__sep">/</span>
-    <span class="breadcrumbs__current" id="recordBreadcrumb" aria-current="page">Record</span>
-  </nav>
-  <div class="card card--glass" style="max-width: 480px;">
-    <span class="card__eyebrow" id="recordType">Record</span>
-    <div class="card__title" id="recordName" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);"></div>
-    <p class="card__text" id="recordSecondary" style="margin-top: var(--space-3);"></p>
-    <div class="card__footer">
-      <span class="badge badge--success" id="recordStatus"></span>
-      <span class="sample--caption" id="recordId" style="color: var(--color-text-muted);"></span>
+
+  <!-- ============ generic record view (Guardian / Staff) ============ -->
+  <div id="genericView" hidden>
+    <nav class="breadcrumbs" style="margin-bottom: var(--space-6);" aria-label="Breadcrumb">
+      <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+      <span class="breadcrumbs__sep">/</span>
+      <span class="breadcrumbs__current" id="recordBreadcrumb" aria-current="page">Record</span>
+    </nav>
+    <div class="card card--glass" style="max-width: 480px;">
+      <span class="card__eyebrow" id="recordType">Record</span>
+      <div class="card__title" id="recordName" style="font-size: var(--fs-h2); font-family: var(--font-display); margin-top: var(--space-2);"></div>
+      <p class="card__text" id="recordSecondary" style="margin-top: var(--space-3);"></p>
+      <div class="card__footer">
+        <span class="badge badge--success" id="recordStatus"></span>
+        <span class="sample--caption" id="recordId" style="color: var(--color-text-muted);"></span>
+      </div>
+    </div>
+    <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);">
+      <span class="card__eyebrow">Notes</span>
+      <div class="field" style="margin-top: var(--space-3);">
+        <label class="field__label" for="recordNotes" style="text-transform: none; letter-spacing: 0;">Private notes for this record</label>
+        <textarea class="textarea" id="recordNotes" placeholder="Add an observation or reminder…"></textarea>
+      </div>
+      <div class="card__footer">
+        <span class="sample--caption" id="recordNotesMeta" style="color: var(--color-text-muted);"></span>
+        <button class="btn btn--primary btn--sm" id="recordNotesSaveBtn" type="button">
+          <span class="btn__spinner" aria-hidden="true"></span>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);" id="recordDiaryCard" hidden>
-    <span class="card__eyebrow">Daily Diary</span>
-    <div class="dash-list" id="recordDiaryList" style="margin-top: var(--space-3);"></div>
-  </div>
+  <!-- ============ Child Profile ============ -->
+  <div id="profileView" hidden>
+    <nav class="breadcrumbs profile-noprint" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
+      <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+      <span class="breadcrumbs__sep">/</span>
+      <a class="breadcrumbs__link" href="children.html">Children</a>
+      <span class="breadcrumbs__sep">/</span>
+      <span class="breadcrumbs__current" id="profileBreadcrumb" aria-current="page"></span>
+    </nav>
 
-  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);" id="recordEventsCard" hidden>
-    <span class="card__eyebrow">Upcoming events</span>
-    <div class="dash-list" id="recordEventsList" style="margin-top: var(--space-3);"></div>
-  </div>
+    <div id="profileHeader" class="profile-noprint"></div>
+    <div id="profileAlertBanner" class="profile-alert-banner profile-noprint" hidden></div>
 
-  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);">
-    <span class="card__eyebrow">Notes</span>
-    <div class="field" style="margin-top: var(--space-3);">
-      <label class="field__label" for="recordNotes" style="text-transform: none; letter-spacing: 0;">Private notes for this record</label>
-      <textarea class="textarea" id="recordNotes" placeholder="Add an observation or reminder…"></textarea>
+    <div class="profile-tabs-row profile-noprint">
+      <div class="tabs__list profile-tabs" id="profileTabs" role="tablist" aria-label="Profile sections">
+        <span class="tabs__indicator" id="profileTabIndicator"></span>
+      </div>
+      <select class="select profile-tabs-select" id="profileTabsSelect" aria-label="Profile section"></select>
     </div>
-    <div class="card__footer">
-      <span class="sample--caption" id="recordNotesMeta" style="color: var(--color-text-muted);"></span>
-      <button class="btn btn--primary btn--sm" id="recordNotesSaveBtn" type="button">
-        <span class="btn__spinner" aria-hidden="true"></span>
-        <span>Save</span>
+
+    <div id="profileTabPanel" class="profile-panel"></div>
+  </div>
+
+  <!-- ============ Print-only summary (hidden on screen, shown via @media print) ============ -->
+  <div id="printSummary" class="print-summary"></div>
+</div>
+
+<!-- ============ Family / Guardian edit modal ============ -->
+<div class="modal-backdrop" id="familyModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Edit guardian">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Edit guardian</h3>
+    <form id="familyForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="familyName">Name <span class="req">*</span></label>
+        <input class="input" id="familyName" type="text" />
+        <p class="field__error" id="err-familyName" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="familyRelation">Relationship</label>
+        <input class="input" id="familyRelation" type="text" placeholder="e.g. Mother, Father, Grandparent" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="familyContact">Email or phone <span class="req">*</span></label>
+        <input class="input" id="familyContact" type="text" />
+        <p class="field__error" id="err-familyContact" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="familyCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="familySave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Pickup person add/edit modal ============ -->
+<div class="modal-backdrop" id="pickupModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Authorised pickup person">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="pickupModalTitle">Add pickup person</h3>
+    <form id="pickupForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="pickupName">Name <span class="req">*</span></label>
+        <input class="input" id="pickupName" type="text" />
+        <p class="field__error" id="err-pickupName" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="pickupRelation">Relationship</label>
+        <input class="input" id="pickupRelation" type="text" placeholder="e.g. Grandmother, Family friend" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="pickupPasscode">Pickup passcode</label>
+        <input class="input" id="pickupPasscode" type="text" inputmode="numeric" placeholder="Optional — 4 digits" />
+        <p class="field__hint">Required at check-out on the Live Attendance page when set.</p>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" class="checkbox" id="pickupRestricted" />
+        <label for="pickupRestricted">Restricted — do not release to this person</label>
+      </div>
+      <div class="field" id="pickupRestrictionReasonField" hidden>
+        <label class="field__label" for="pickupRestrictionReason">Restriction reason</label>
+        <input class="input" id="pickupRestrictionReason" type="text" placeholder="e.g. Custody order on file" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="pickupCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="pickupSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Medical / dietary / allergy alert edit modal ============ -->
+<div class="modal-backdrop" id="alertModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Edit alert">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="alertModalTitle">Add alert</h3>
+    <form id="alertForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="alertType">Type <span class="req">*</span></label>
+        <select class="select" id="alertType">
+          <option value="allergy">Allergy</option>
+          <option value="medical">Medical</option>
+          <option value="dietary">Dietary</option>
+        </select>
+      </div>
+      <div class="field" id="alertAllergenField">
+        <label class="field__label" for="alertAllergen">Allergen</label>
+        <input class="input" id="alertAllergen" type="text" placeholder="e.g. peanuts, dairy, eggs" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="alertDetail">Detail <span class="req">*</span></label>
+        <textarea class="textarea" id="alertDetail" placeholder="What staff need to know, and what to do"></textarea>
+        <p class="field__error" id="err-alertDetail" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="alertCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="alertSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Document upload modal ============ -->
+<div class="modal-backdrop" id="documentModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add document">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add document</h3>
+    <form id="documentForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="documentFile">File <span class="req">*</span></label>
+        <input class="input" id="documentFile" type="file" />
+        <p class="field__error" id="err-documentFile" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="documentName">Label</label>
+        <input class="input" id="documentName" type="text" placeholder="e.g. Immunisation record" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="documentCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="documentSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generic destructive confirmation (remove pickup / alert) ============ -->
+<div class="modal-backdrop" id="confirmModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm">
+  <div class="modal">
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title" id="confirmModalTitle">Remove?</h3>
+    <p class="modal__text" id="confirmModalText">This cannot be undone.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="confirmModalCancel">Cancel</button>
+      <button class="btn btn--destructive" type="button" id="confirmModalOk">Remove</button>
     </div>
   </div>
 </div>
@@ -55,159 +216,6 @@
 <script src="store.js"></script>
 <script src="modules.js"></script>
 <script src="shell.js"></script>
-<script>
-  PlayShell.login();
-  var params = new URLSearchParams(window.location.search);
-  var record = window.PlayStore.getById(params.get('id'));
-
-  if (!record) {
-    window.location.replace('404.html');
-  } else {
-    var appContent = PlayShell.mount('', record.name);
-    var pageContent = document.getElementById('pageContent');
-    document.getElementById('recordType').textContent = record.type;
-    document.getElementById('recordName').textContent = record.name;
-    document.getElementById('recordSecondary').textContent = window.PlayStore.secondaryLine(record);
-    document.getElementById('recordStatus').textContent = record.status;
-    document.getElementById('recordId').textContent = record.id;
-    document.getElementById('recordBreadcrumb').textContent = record.name;
-    pageContent.hidden = false;
-    appContent.appendChild(pageContent);
-
-    /* Daily Diary (S13) — published Daily Care Log entries for this child,
-       most recent first. The Daily Care Log page (care-log.js) is the
-       source of truth for creating/editing entries; this is a read-only
-       feed of the same CareEntry records via the shared store. */
-    if (record.type === 'Child') {
-      (function renderDiaryForChild() {
-        var card = document.getElementById('recordDiaryCard');
-        var list = document.getElementById('recordDiaryList');
-        var entries = window.PlayStore.getByType('CareEntry').filter(function (e) { return e.childId === record.id; });
-        entries.sort(function (a, b) { return (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')); });
-        entries = entries.slice(0, 15);
-        if (!entries.length) return;
-        card.hidden = false;
-
-        var TYPE_LABEL = { meal: 'Meal', nap: 'Nap', toileting: 'Toileting', mood: 'Mood', activity: 'Activity', note: 'Note', photo: 'Photo' };
-        var MOOD_LABEL = { 'very-happy': 'Very happy', happy: 'Happy', neutral: 'Neutral', sad: 'Sad', upset: 'Upset' };
-        function summarize(e) {
-          if (e.entryType === 'meal') return (e.mealType || 'Meal') + ' · ' + (e.amount || 'Logged') + ' eaten';
-          if (e.entryType === 'nap') {
-            if (!e.endTime) return 'In progress';
-            var mins = e.durationMin || 0;
-            return 'Slept ' + Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm';
-          }
-          if (e.entryType === 'toileting') return e.kind + (e.notes ? ' · ' + e.notes : '');
-          if (e.entryType === 'mood') return (MOOD_LABEL[e.mood] || e.mood) + (e.notes ? ' · ' + e.notes : '');
-          if (e.entryType === 'activity') return e.title + (e.description ? ' · ' + e.description : '');
-          if (e.entryType === 'note') return e.text;
-          if (e.entryType === 'photo') return e.caption || 'Photo added';
-          return '';
-        }
-
-        list.innerHTML = entries.map(function () {
-          return '<div class="dash-list-row"><div class="dash-list-row__main"><div class="dash-list-row__title"></div><div class="dash-list-row__meta"></div></div></div>';
-        }).join('');
-        var rows = list.querySelectorAll('.dash-list-row');
-        rows.forEach(function (row, idx) {
-          var e = entries[idx];
-          row.querySelector('.dash-list-row__title').textContent = TYPE_LABEL[e.entryType] || e.entryType;
-          row.querySelector('.dash-list-row__meta').textContent = e.date + (e.time ? ' · ' + e.time : '') + ' · ' + summarize(e);
-        });
-      })();
-    }
-
-    /* Upcoming events for this child's class — reuses the shared Calendar
-       event records (store.js) with the same lightweight recurrence preview
-       used on the dashboard; the full recurrence/exception engine lives in
-       calendar.js, which is the source of truth for editing events. */
-    if (record.type === 'Child') {
-      (function renderUpcomingEventsForChild() {
-        var card = document.getElementById('recordEventsCard');
-        var list = document.getElementById('recordEventsList');
-        var classRecord = window.PlayStore.records.find(function (r) { return r.type === 'Class' && r.name === record.room; });
-        var events = window.PlayStore.getByType('Event');
-        var today = new Date(); today.setHours(0, 0, 0, 0);
-        var found = [];
-        for (var i = 0; i < 30; i += 1) {
-          var d = new Date(today); d.setDate(d.getDate() + i);
-          var iso = d.toISOString().slice(0, 10);
-          events.forEach(function (ev) {
-            if (ev.classIds && ev.classIds.length && (!classRecord || ev.classIds.indexOf(classRecord.id) === -1)) return;
-            var start = new Date(ev.startDate + 'T00:00:00');
-            if (d < start) return;
-            var freq = (ev.recurrence && ev.recurrence.freq) || 'none';
-            var occurs = false;
-            if (freq === 'none') occurs = d.getFullYear() === start.getFullYear() && d.getMonth() === start.getMonth() && d.getDate() === start.getDate();
-            else if (freq === 'weekly') occurs = Math.round((d - start) / 86400000) % 7 === 0;
-            else if (freq === 'monthly') {
-              var lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-              occurs = d.getDate() === Math.min(start.getDate(), lastDay);
-            }
-            if (!occurs) return;
-            if (ev.exceptions && ev.exceptions[iso] && ev.exceptions[iso].cancelled) return;
-            found.push({ event: ev, date: d, iso: iso });
-          });
-        }
-        found.sort(function (a, b) { return a.date - b.date; });
-        found = found.slice(0, 5);
-        if (!found.length) return;
-        card.hidden = false;
-        list.innerHTML = found.map(function () {
-          return '<a class="dash-list-row"><div class="dash-list-row__main"><div class="dash-list-row__title"></div><div class="dash-list-row__meta"></div></div></a>';
-        }).join('');
-        var rows = list.querySelectorAll('.dash-list-row');
-        rows.forEach(function (row, idx) {
-          var f = found[idx];
-          row.href = 'calendar.html?event=' + encodeURIComponent(f.event.id) + '&date=' + f.iso;
-          row.querySelector('.dash-list-row__title').textContent = f.event.title;
-          row.querySelector('.dash-list-row__meta').textContent = f.date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) + (f.event.allDay ? ' · All day' : ' · ' + f.event.startTime);
-        });
-      })();
-    }
-
-    /* Notes save — the whole app is local-only (no backend), so every save
-       here already is a local save. "Saved on this device" is therefore an
-       accurate message regardless of connectivity, and the button is never
-       disabled for being offline. */
-    (function wireNotes() {
-      var NOTES_KEY = 'ps_notes_' + record.id;
-      var textarea = document.getElementById('recordNotes');
-      var meta = document.getElementById('recordNotesMeta');
-      var saveBtn = document.getElementById('recordNotesSaveBtn');
-      var isSaving = false;
-
-      function readSaved() {
-        try { return JSON.parse(localStorage.getItem(NOTES_KEY) || 'null'); } catch (e) { return null; }
-      }
-      var saved = readSaved();
-      if (saved) {
-        textarea.value = saved.text || '';
-        meta.textContent = 'Saved ' + new Date(saved.time).toLocaleString();
-      }
-
-      saveBtn.addEventListener('click', function () {
-        if (isSaving) return;
-        isSaving = true;
-        saveBtn.classList.add('is-loading');
-        saveBtn.disabled = true;
-
-        window.setTimeout(function () {
-          try {
-            var entry = { text: textarea.value, time: new Date().toISOString() };
-            localStorage.setItem(NOTES_KEY, JSON.stringify(entry));
-            meta.textContent = 'Saved ' + new Date(entry.time).toLocaleString();
-            window.PlayShell.toast('info', 'Saved on this device', 'Your notes are stored locally on this device.');
-          } catch (e) {
-            window.PlayShell.toast('error', "Couldn't save your notes", 'Your text is still here — please try again.');
-          }
-          isSaving = false;
-          saveBtn.classList.remove('is-loading');
-          saveBtn.disabled = false;
-        }, 350);
-      });
-    })();
-  }
-</script>
+<script src="record.js"></script>
 </body>
 </html>

@@ -1,0 +1,197 @@
+/* ==========================================================================
+   PLAY SCHOOL — Child Profile (S13)
+   Depends on tokens + components from styles.css and the app shell from
+   shell.css. Only this page's own layout/widgets live here.
+   ========================================================================== */
+
+.profile-noprint { }
+
+/* ---------- header ---------- */
+.profile-header {
+  display: flex; align-items: flex-start; gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-subtle);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+.profile-header__photo {
+  width: 96px; height: 96px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--color-accent-yellow);
+  color: var(--color-text-on-accent);
+  font-weight: 700; font-size: var(--fs-h2);
+  overflow: hidden; flex-shrink: 0;
+  border: 3px solid var(--color-surface-raised);
+}
+.profile-header__photo img { width: 100%; height: 100%; object-fit: cover; }
+.profile-header__body { flex: 1; min-width: 220px; }
+.profile-header__name-row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.profile-header__name { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h2); }
+.profile-header__preferred { font-size: var(--fs-body); color: var(--color-text-muted); font-style: italic; }
+.profile-header__meta { margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); }
+.profile-header__meta-item { display: flex; flex-direction: column; gap: 2px; }
+.profile-header__meta-label { font-size: var(--fs-overline); font-weight: 700; letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--color-text-muted); }
+.profile-header__meta-value { font-size: var(--fs-body-sm); font-weight: 600; }
+.profile-header__actions { display: flex; align-items: flex-start; gap: var(--space-2); margin-left: auto; flex-wrap: wrap; }
+
+/* ---------- safeguarding alert banner ---------- */
+.profile-alert-banner {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-3));
+  z-index: 50;
+  display: flex; flex-direction: column; gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.profile-alert {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+}
+.profile-alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.profile-alert__label { font-size: var(--fs-overline); font-weight: 800; letter-spacing: var(--ls-wide); text-transform: uppercase; display: block; margin-bottom: 2px; }
+.profile-alert--medical { background: color-mix(in srgb, var(--color-error) 90%, var(--color-surface)); color: var(--raw-white); border-bottom: 1px solid color-mix(in srgb, var(--raw-white) 15%, transparent); }
+.profile-alert--custody { background: var(--raw-ink-950); color: var(--color-accent-yellow); border-bottom: 1px solid color-mix(in srgb, var(--color-accent-yellow) 25%, transparent); }
+.profile-alert--custody .profile-alert__label { color: var(--color-accent-yellow); }
+
+/* ---------- tabs ---------- */
+.profile-tabs-row { margin-bottom: var(--space-5); }
+.profile-tabs { max-width: 100%; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.profile-tabs::-webkit-scrollbar { display: none; }
+.profile-tabs .tabs__tab { white-space: nowrap; }
+.profile-tabs-select { display: none; width: 100%; }
+
+/* ---------- tab panel layout ---------- */
+.profile-panel { animation: profilePanelIn var(--dur-entrance) var(--ease-premium); }
+@keyframes profilePanelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .profile-panel { animation: none; } }
+
+.profile-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-5); }
+.profile-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-md);
+}
+.profile-card--wide { grid-column: 1 / -1; }
+.profile-card__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); gap: var(--space-3); }
+.profile-card__title { font-weight: 700; font-size: var(--fs-body); }
+.profile-card__edit {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--color-surface-glass-light);
+  color: var(--color-text-muted);
+  border: none; cursor: pointer;
+  transition: color var(--dur-normal) var(--ease-premium), background var(--dur-normal) var(--ease-premium), transform var(--dur-micro) var(--ease-premium);
+}
+.profile-card__edit:hover { color: var(--color-primary-soft); background: color-mix(in srgb, var(--color-primary) 14%, transparent); transform: scale(1.08); }
+.profile-card__edit svg { width: 14px; height: 14px; }
+.profile-row { display: flex; flex-direction: column; gap: 2px; padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); font-size: var(--fs-body-sm); }
+.profile-row:first-of-type { border-top: none; }
+.profile-row__label { color: var(--color-text-muted); font-size: var(--fs-overline); font-weight: 700; letter-spacing: var(--ls-wide); text-transform: uppercase; }
+.profile-row__value { font-weight: 600; text-align: left; word-break: break-word; }
+
+/* ---------- people cards (family / pickup) ---------- */
+.profile-people { display: flex; flex-direction: column; gap: var(--space-3); }
+.profile-person {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  border: 2px solid var(--color-border-subtle);
+}
+.profile-person--restricted { border-color: color-mix(in srgb, var(--color-error) 50%, transparent); background: color-mix(in srgb, var(--color-error) 8%, transparent); }
+.profile-person__avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface-raised); color: var(--color-text-secondary); font-weight: 700; font-size: var(--fs-caption); flex-shrink: 0; }
+.profile-person__body { flex: 1; min-width: 0; }
+.profile-person__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.profile-person__sub { font-size: var(--fs-caption); color: var(--color-text-muted); }
+.profile-person--restricted .profile-person__sub { color: var(--color-error); font-weight: 700; }
+.profile-person__actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+.profile-passcode { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--fs-caption); color: var(--color-text-muted); }
+.profile-passcode__value { font-weight: 700; letter-spacing: 2px; font-family: monospace; }
+
+/* ---------- alert list cards (medical/dietary tab) ---------- */
+.profile-alert-card {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-secondary);
+}
+.profile-alert-card--allergy, .profile-alert-card--medical { border-color: color-mix(in srgb, var(--color-error) 40%, transparent); background: color-mix(in srgb, var(--color-error) 6%, transparent); }
+.profile-alert-card--dietary { border-color: color-mix(in srgb, var(--color-success) 40%, transparent); background: color-mix(in srgb, var(--color-success) 6%, transparent); }
+.profile-alert-card__icon { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+.profile-alert-card--allergy .profile-alert-card__icon, .profile-alert-card--medical .profile-alert-card__icon { background: color-mix(in srgb, var(--color-error) 18%, transparent); color: var(--color-error); }
+.profile-alert-card--dietary .profile-alert-card__icon { background: color-mix(in srgb, var(--color-success) 18%, transparent); color: var(--color-success); }
+.profile-alert-card__icon svg { width: 16px; height: 16px; }
+.profile-alert-card__body { flex: 1; min-width: 0; }
+.profile-alert-card__type { font-size: var(--fs-overline); font-weight: 700; letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--color-text-muted); }
+.profile-alert-card__detail { margin-top: 2px; font-size: var(--fs-body-sm); }
+.profile-alert-card__actions { display: flex; gap: var(--space-1); flex-shrink: 0; }
+
+/* ---------- timeline (attendance / diary / incidents reuse) ---------- */
+.profile-list { display: flex; flex-direction: column; gap: 2px; }
+.profile-list-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-2); border-radius: var(--radius-md); font-size: var(--fs-body-sm); transition: background var(--dur-normal) var(--ease-premium); }
+.profile-list-row:hover { background: var(--color-surface-glass-light); }
+.profile-list-row__title { font-weight: 600; }
+.profile-list-row__meta { color: var(--color-text-muted); font-size: var(--fs-caption); margin-top: 2px; }
+
+/* ---------- locked states (plan-locked vs role-restricted) ---------- */
+.profile-locked { text-align: center; padding: var(--space-8) var(--space-6); }
+.profile-locked__icon { width: 44px; height: 44px; margin-inline: auto var(--space-4); border-radius: 50%; display: grid; place-items: center; }
+.profile-locked__icon svg { width: 20px; height: 20px; }
+.profile-locked--plan .profile-locked__icon { background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); }
+.profile-locked--role .profile-locked__icon { background: color-mix(in srgb, var(--color-error) 16%, transparent); color: var(--color-error); }
+.profile-locked__title { font-weight: 700; font-size: var(--fs-h3); font-family: var(--font-display); }
+.profile-locked__text { margin-top: var(--space-2); color: var(--color-text-secondary); max-width: 40ch; margin-inline: auto; font-size: var(--fs-body-sm); }
+.profile-locked__action { margin-top: var(--space-5); }
+
+/* ---------- empty state (small) ---------- */
+.profile-empty { text-align: center; padding: var(--space-6); color: var(--color-text-muted); font-size: var(--fs-body-sm); }
+.profile-empty svg { width: 26px; height: 26px; margin-bottom: var(--space-2); opacity: 0.6; }
+
+/* ---------- print summary (hidden on screen) ---------- */
+.print-summary { display: none; }
+
+@media print {
+  body * { visibility: hidden; }
+  .print-summary, .print-summary * { visibility: visible; }
+  .print-summary { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 16mm; color: #000; background: #fff; }
+  .print-summary h1 { font-size: 22pt; margin-bottom: 2mm; }
+  .print-summary h2 { font-size: 13pt; margin: 6mm 0 2mm; border-bottom: 1px solid #000; padding-bottom: 1mm; }
+  .print-summary__head { display: flex; align-items: center; gap: 8mm; margin-bottom: 4mm; }
+  .print-summary__photo { width: 24mm; height: 24mm; border-radius: 50%; background: #ddd; display: grid; place-items: center; font-weight: 700; font-size: 14pt; overflow: hidden; }
+  .print-summary__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .print-summary p { margin: 1mm 0; font-size: 10.5pt; line-height: 1.5; }
+  .print-summary .print-alert { font-weight: 700; padding: 2mm 3mm; border: 1.5pt solid #000; margin: 2mm 0; }
+  .print-summary .print-row { display: flex; justify-content: space-between; font-size: 10.5pt; padding: 1mm 0; border-bottom: 0.5pt solid #ccc; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .profile-header { padding: var(--space-5); }
+}
+
+@media (max-width: 767px) {
+  .profile-header { padding: var(--space-4); gap: var(--space-3); }
+  .profile-header__photo { width: 64px; height: 64px; font-size: var(--fs-body); }
+  .profile-header__name { font-size: var(--fs-h3); }
+  .profile-header__actions { width: 100%; margin-left: 0; }
+  .profile-header__actions .btn span:not(.btn__spinner) { display: none; }
+  .profile-header__actions .btn { width: 40px; height: 40px; padding: 0; justify-content: center; }
+
+  .profile-alert-banner { top: var(--header-h); }
+
+  .profile-tabs { display: none; }
+  .profile-tabs-select { display: block; }
+
+  .profile-cards { grid-template-columns: 1fr; }
+}
