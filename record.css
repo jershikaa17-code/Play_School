@@ -108,8 +108,8 @@
 .profile-person--restricted { border-color: color-mix(in srgb, var(--color-error) 50%, transparent); background: color-mix(in srgb, var(--color-error) 8%, transparent); }
 .profile-person__avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface-raised); color: var(--color-text-secondary); font-weight: 700; font-size: var(--fs-caption); flex-shrink: 0; }
 .profile-person__body { flex: 1; min-width: 0; }
-.profile-person__name { font-weight: 700; font-size: var(--fs-body-sm); }
-.profile-person__sub { font-size: var(--fs-caption); color: var(--color-text-muted); }
+.profile-person__name { display: block; font-weight: 700; font-size: var(--fs-body-sm); }
+.profile-person__sub { display: block; font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 1px; }
 .profile-person--restricted .profile-person__sub { color: var(--color-error); font-weight: 700; }
 .profile-person__actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
 .profile-passcode { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--fs-caption); color: var(--color-text-muted); }

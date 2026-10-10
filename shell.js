@@ -193,6 +193,7 @@
     { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html' },
     { id: 'classrooms', label: 'Classrooms', href: 'dashboard.html#classrooms' },
     { id: 'children', label: 'Children', href: 'children.html' },
+    { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
     { id: 'calendar', label: 'Calendar', href: 'calendar.html' },

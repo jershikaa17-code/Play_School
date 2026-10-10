@@ -44,6 +44,7 @@
     { id: 'dashboard', navLabel: 'Dashboard', href: 'dashboard.html', requiredPlan: 'Starter', core: true },
     { id: 'classrooms', navLabel: 'Classrooms', href: 'dashboard.html#classrooms', requiredPlan: 'Starter', core: true },
     { id: 'children', navLabel: 'Children', href: 'children.html', requiredPlan: 'Starter', core: true },
+    { id: 'families', navLabel: 'Families', href: 'families.html', requiredPlan: 'Starter', core: true },
     { id: 'staff', navLabel: 'Staff', href: 'dashboard.html#staff', requiredPlan: 'Starter', core: true },
     { id: 'billing', navLabel: 'Billing', href: 'payroll.html', requiredPlan: 'Starter', core: true },
     { id: 'calendar', navLabel: 'Calendar', href: 'calendar.html', requiredPlan: 'Starter', core: true },

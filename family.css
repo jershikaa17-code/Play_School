@@ -1,0 +1,8 @@
+/* ==========================================================================
+   PLAY SCHOOL — Family profile (S16)
+   Deliberately reuses record.css's .profile-header / .profile-cards /
+   .profile-card / .profile-person / .profile-row components wholesale —
+   this page is a lighter single-view sibling of S13, not a new design.
+   ========================================================================== */
+.fam-profile-children .profile-person { cursor: pointer; }
+.fam-profile-children .profile-person:hover { border-color: var(--color-primary-soft); }

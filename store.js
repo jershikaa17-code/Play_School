@@ -309,6 +309,48 @@
     return records.filter((r) => r.type === type);
   }
 
+  /* ---------- Families (S15) ----------
+     No separate "family" concept existed before S15 — a family is derived
+     from each child's primary guardian (childs.guardianId is the one stable
+     link every child has) and persisted as a real Family record the first
+     time it's seen, exactly like any other addRecord-created record. Runs on
+     every load so a sibling enrolled later (S-ENROL) joins its existing
+     family instead of spawning a duplicate one. */
+  function ensureFamiliesForAllChildren() {
+    const existingFamilies = records.filter((r) => r.type === 'Family');
+    const coveredChildIds = new Set();
+    existingFamilies.forEach((f) => (f.childIds || []).forEach((id) => coveredChildIds.add(id)));
+    const unclaimed = records.filter((r) => r.type === 'Child' && r.guardianId && !coveredChildIds.has(r.id));
+    if (!unclaimed.length) return;
+    const groups = new Map();
+    unclaimed.forEach((c) => {
+      if (!groups.has(c.guardianId)) groups.set(c.guardianId, { childIds: [], guardianIds: new Set() });
+      const g = groups.get(c.guardianId);
+      g.childIds.push(c.id);
+      g.guardianIds.add(c.guardianId);
+      (c.guardianIds || []).forEach((gid) => g.guardianIds.add(gid));
+    });
+    groups.forEach((group, primaryGuardianId) => {
+      const existing = existingFamilies.find((f) => f.primaryGuardianId === primaryGuardianId);
+      if (existing) {
+        updateRecord(existing.id, {
+          childIds: Array.from(new Set((existing.childIds || []).concat(group.childIds))),
+          guardianIds: Array.from(new Set((existing.guardianIds || []).concat(Array.from(group.guardianIds)))),
+        });
+        return;
+      }
+      const guardian = records.find((r) => r.id === primaryGuardianId);
+      const surname = ((guardian && guardian.name) || '').trim().split(/\s+/).slice(-1)[0];
+      addRecord({
+        id: 'FAM-' + primaryGuardianId, type: 'Family',
+        name: surname ? surname + ' Family' : 'Family',
+        guardianIds: Array.from(group.guardianIds), childIds: group.childIds,
+        primaryGuardianId, parentAppStatus: 'Not invited', invitedAt: null,
+      });
+    });
+  }
+  ensureFamiliesForAllChildren();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

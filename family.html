@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Family — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="family.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <nav class="breadcrumbs" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
+    <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+    <span class="breadcrumbs__sep">/</span>
+    <a class="breadcrumbs__link" href="families.html">Families</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current" id="famBreadcrumb" aria-current="page">Family</span>
+  </nav>
+
+  <div id="famHeader"></div>
+  <div class="profile-cards" id="famCards" style="margin-top: var(--space-5);"></div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="family.js"></script>
+</body>
+</html>
