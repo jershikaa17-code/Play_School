@@ -26,6 +26,11 @@
     </div>
   </div>
 
+  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);" id="recordDiaryCard" hidden>
+    <span class="card__eyebrow">Daily Diary</span>
+    <div class="dash-list" id="recordDiaryList" style="margin-top: var(--space-3);"></div>
+  </div>
+
   <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);" id="recordEventsCard" hidden>
     <span class="card__eyebrow">Upcoming events</span>
     <div class="dash-list" id="recordEventsList" style="margin-top: var(--space-3);"></div>
@@ -68,6 +73,49 @@
     document.getElementById('recordBreadcrumb').textContent = record.name;
     pageContent.hidden = false;
     appContent.appendChild(pageContent);
+
+    /* Daily Diary (S13) — published Daily Care Log entries for this child,
+       most recent first. The Daily Care Log page (care-log.js) is the
+       source of truth for creating/editing entries; this is a read-only
+       feed of the same CareEntry records via the shared store. */
+    if (record.type === 'Child') {
+      (function renderDiaryForChild() {
+        var card = document.getElementById('recordDiaryCard');
+        var list = document.getElementById('recordDiaryList');
+        var entries = window.PlayStore.getByType('CareEntry').filter(function (e) { return e.childId === record.id; });
+        entries.sort(function (a, b) { return (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')); });
+        entries = entries.slice(0, 15);
+        if (!entries.length) return;
+        card.hidden = false;
+
+        var TYPE_LABEL = { meal: 'Meal', nap: 'Nap', toileting: 'Toileting', mood: 'Mood', activity: 'Activity', note: 'Note', photo: 'Photo' };
+        var MOOD_LABEL = { 'very-happy': 'Very happy', happy: 'Happy', neutral: 'Neutral', sad: 'Sad', upset: 'Upset' };
+        function summarize(e) {
+          if (e.entryType === 'meal') return (e.mealType || 'Meal') + ' · ' + (e.amount || 'Logged') + ' eaten';
+          if (e.entryType === 'nap') {
+            if (!e.endTime) return 'In progress';
+            var mins = e.durationMin || 0;
+            return 'Slept ' + Math.floor(mins / 60) + 'h ' + (mins % 60) + 'm';
+          }
+          if (e.entryType === 'toileting') return e.kind + (e.notes ? ' · ' + e.notes : '');
+          if (e.entryType === 'mood') return (MOOD_LABEL[e.mood] || e.mood) + (e.notes ? ' · ' + e.notes : '');
+          if (e.entryType === 'activity') return e.title + (e.description ? ' · ' + e.description : '');
+          if (e.entryType === 'note') return e.text;
+          if (e.entryType === 'photo') return e.caption || 'Photo added';
+          return '';
+        }
+
+        list.innerHTML = entries.map(function () {
+          return '<div class="dash-list-row"><div class="dash-list-row__main"><div class="dash-list-row__title"></div><div class="dash-list-row__meta"></div></div></div>';
+        }).join('');
+        var rows = list.querySelectorAll('.dash-list-row');
+        rows.forEach(function (row, idx) {
+          var e = entries[idx];
+          row.querySelector('.dash-list-row__title').textContent = TYPE_LABEL[e.entryType] || e.entryType;
+          row.querySelector('.dash-list-row__meta').textContent = e.date + (e.time ? ' · ' + e.time : '') + ' · ' + summarize(e);
+        });
+      })();
+    }
 
     /* Upcoming events for this child's class — reuses the shared Calendar
        event records (store.js) with the same lightweight recurrence preview

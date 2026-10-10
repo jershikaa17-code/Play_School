@@ -196,6 +196,7 @@
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
     { id: 'calendar', label: 'Calendar', href: 'calendar.html' },
+    { id: 'care-log', label: 'Daily Care Log', href: 'care-log.html' },
   ];
 
   function resolveNavItems() {

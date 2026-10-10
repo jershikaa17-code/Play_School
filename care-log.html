@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Care Log — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="care-log.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <div class="care-page-header">
+    <div>
+      <h1 class="care-page-header__heading">Daily Care Log</h1>
+      <p class="care-page-header__text">Capture each child's day and keep families connected.</p>
+    </div>
+  </div>
+
+  <div class="care-toolbar">
+    <div class="care-toolbar__row">
+      <div class="field care-toolbar__field">
+        <label class="field__label" for="careClassSelect">Class</label>
+        <select class="select" id="careClassSelect"></select>
+      </div>
+      <div class="care-toolbar__date">
+        <label class="field__label" for="careDateInput">Date</label>
+        <div class="care-date-controls">
+          <button class="btn btn--icon" id="carePrevDay" type="button" aria-label="Previous day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <input class="input" id="careDateInput" type="date" />
+          <button class="btn btn--icon" id="careNextDay" type="button" aria-label="Next day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="btn btn--secondary btn--sm" id="careTodayBtn" type="button">Today</button>
+        </div>
+      </div>
+      <div class="care-view-toggle" id="careViewToggle" role="group" aria-label="Switch between grid and timeline">
+        <button class="care-view-toggle__btn" type="button" data-view="grid" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          Grid
+        </button>
+        <button class="care-view-toggle__btn" type="button" data-view="timeline" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="13"/><circle cx="12" cy="17" r="2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          Timeline
+        </button>
+      </div>
+    </div>
+
+    <div class="care-summary" id="careSummary"></div>
+  </div>
+
+  <div class="care-quickadd" id="careQuickAdd">
+    <div class="care-quickadd__children" id="careChildPicker"></div>
+    <div class="care-quickadd__selection" id="careSelectionBar">
+      <span id="careSelectionCount">No children selected</span>
+      <span class="care-quickadd__selection-actions">
+        <button class="btn btn--text btn--sm" type="button" id="careSelectAllBtn">Select all</button>
+        <button class="btn btn--text btn--sm" type="button" id="careClearSelectionBtn">Clear</button>
+      </span>
+    </div>
+    <div class="care-quickadd__actions" id="careQuickActions"></div>
+  </div>
+
+  <div id="careSkeleton" class="care-skeleton">
+    <div class="skeleton" style="height:420px; border-radius: var(--radius-lg);"></div>
+  </div>
+
+  <div id="careViews" hidden>
+    <div class="care-view-panel" data-panel="grid" id="careGridPanel"></div>
+    <div class="care-view-panel" data-panel="timeline" id="careTimelinePanel" hidden></div>
+  </div>
+
+  <div class="state-panel" id="careEmptyState" hidden>
+    <div class="state-panel__icon" id="careEmptyIcon"></div>
+    <div class="state-panel__title">No children in this class</div>
+    <p class="state-panel__text">Enrol a child into this class to start logging their day.</p>
+    <div class="state-panel__action"><a class="btn btn--accent" href="children.html">Go to Children</a></div>
+  </div>
+
+</div>
+
+<!-- ============ mobile sticky quick-add bar ============ -->
+<div class="care-mobile-bar" id="careMobileBar"></div>
+
+<!-- ============ Meal modal ============ -->
+<div class="modal-backdrop" id="mealModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log a meal">
+  <div class="modal care-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Log a meal</h3>
+    <p class="modal__text" id="mealModalFor"></p>
+    <form id="mealForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="mealType">Meal type <span class="req">*</span></label>
+        <select class="select" id="mealType"></select>
+      </div>
+      <div class="field">
+        <label class="field__label">Menu items</label>
+        <div class="cal-check-list" id="mealItemsList"></div>
+        <p class="field__hint" id="mealMenuHint"></p>
+      </div>
+      <div id="mealAllergyWarning" hidden></div>
+      <div class="field">
+        <label class="field__label">Amount eaten</label>
+        <div class="care-chip-row" id="mealAmountChips">
+          <button class="care-chip" type="button" data-amount="None">None</button>
+          <button class="care-chip" type="button" data-amount="Some">Some</button>
+          <button class="care-chip" type="button" data-amount="Most">Most</button>
+          <button class="care-chip" type="button" data-amount="All">All</button>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="mealTime">Time <span class="req">*</span></label>
+          <input class="input" id="mealTime" type="time" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="mealNotes">Notes</label>
+          <input class="input" id="mealNotes" type="text" placeholder="Optional" />
+        </div>
+      </div>
+      <div class="check-row" id="mealAckRow" hidden>
+        <input type="checkbox" class="checkbox" id="mealAckCheckbox" />
+        <label for="mealAckCheckbox">I have checked the menu and confirmed it is safe for the selected child/children.</label>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="mealCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="mealSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save meal</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Nap modal ============ -->
+<div class="modal-backdrop" id="napModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Nap">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Nap</h3>
+    <p class="modal__text" id="napModalFor"></p>
+    <div id="napBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="napCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="napSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="napSaveLabel">Start nap</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toileting modal ============ -->
+<div class="modal-backdrop" id="toiletModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log toileting">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Toileting</h3>
+    <p class="modal__text" id="toiletModalFor"></p>
+    <div class="care-chip-row" id="toiletChips">
+      <button class="care-chip" type="button" data-kind="Wet">Wet</button>
+      <button class="care-chip" type="button" data-kind="Dry">Dry</button>
+      <button class="care-chip" type="button" data-kind="BM">BM</button>
+      <button class="care-chip" type="button" data-kind="Potty">Potty</button>
+      <button class="care-chip" type="button" data-kind="Accident">Accident</button>
+    </div>
+    <div class="input-grid" style="margin-top: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="toiletTime">Time</label>
+        <input class="input" id="toiletTime" type="time" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="toiletNotes">Notes</label>
+        <input class="input" id="toiletNotes" type="text" placeholder="Optional" />
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="toiletCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="toiletSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Mood modal ============ -->
+<div class="modal-backdrop" id="moodModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log mood">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Mood</h3>
+    <p class="modal__text" id="moodModalFor"></p>
+    <div class="care-mood-grid" id="moodGrid"></div>
+    <div class="input-grid" style="margin-top: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="moodTime">Time</label>
+        <input class="input" id="moodTime" type="time" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="moodNotes">Notes</label>
+        <input class="input" id="moodNotes" type="text" placeholder="Optional" />
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="moodCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="moodSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Activity modal ============ -->
+<div class="modal-backdrop" id="activityModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log activity">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Activity</h3>
+    <p class="modal__text" id="activityModalFor"></p>
+    <form id="activityForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="activityTitle">Activity <span class="req">*</span></label>
+        <input class="input" id="activityTitle" type="text" placeholder="e.g. Sensory play, Circle time" />
+        <p class="field__error" id="err-activityTitle" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="activityDescription">Description</label>
+        <textarea class="textarea" id="activityDescription" placeholder="Optional"></textarea>
+      </div>
+      <div class="field">
+        <label class="field__label" for="activityTime">Time</label>
+        <input class="input" id="activityTime" type="time" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="activityCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="activitySave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Note modal ============ -->
+<div class="modal-backdrop" id="noteModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Log note">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Note</h3>
+    <p class="modal__text" id="noteModalFor"></p>
+    <form id="noteForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="noteText">Note <span class="req">*</span></label>
+        <textarea class="textarea" id="noteText" placeholder="Share an observation with the family…"></textarea>
+        <p class="field__error" id="err-noteText" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="noteTime">Time</label>
+        <input class="input" id="noteTime" type="time" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="noteCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="noteSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Photo modal ============ -->
+<div class="modal-backdrop" id="photoModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add photo">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add photo</h3>
+    <p class="modal__text" id="photoModalFor"></p>
+    <form id="photoForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="photoFile">Photo <span class="req">*</span></label>
+        <input class="input" id="photoFile" type="file" accept="image/*" />
+        <p class="field__error" id="err-photoFile" hidden></p>
+      </div>
+      <div id="photoPreviewWrap" class="care-photo-preview" hidden>
+        <img id="photoPreview" alt="Selected photo preview" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="photoCaption">Caption</label>
+        <input class="input" id="photoCaption" type="text" placeholder="Optional" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="photoTime">Time</label>
+        <input class="input" id="photoTime" type="time" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="photoCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="photoSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="care-log.js"></script>
+</body>
+</html>

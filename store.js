@@ -10,7 +10,7 @@
     {
       id: 'C-1001', type: 'Child', name: 'Amara Osei', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
       dob: '2023-06-10', startDate: '2025-09-02',
-      alerts: [{ type: 'allergy', detail: 'Severe peanut allergy — EpiPen in office' }],
+      alerts: [{ type: 'allergy', detail: 'Severe peanut allergy — EpiPen in office', allergen: 'peanuts' }],
     },
     {
       id: 'C-1002', type: 'Child', name: 'Rhea Kapoor', room: 'Marigold Room', status: 'Active', guardianId: 'G-2002',
@@ -51,6 +51,53 @@
     { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active' },
     { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active' },
     { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active' },
+
+    /* ---------- weekly menu template ----------
+       One record per weekday (0=Sunday … 6=Saturday), each item tagged with
+       the allergens it contains so the Daily Care Log can cross-check them
+       against a child's recorded allergies. Resolved for a given date via
+       PlayStore.getMenuForDate() below — not a per-date record, so it never
+       goes stale. */
+    {
+      id: 'MENU-1', type: 'MenuTemplate', dayOfWeek: 1,
+      meals: {
+        Breakfast: [{ name: 'Oatmeal with banana', allergens: [] }, { name: 'Milk', allergens: ['dairy'] }],
+        Snack: [{ name: 'Apple slices with peanut butter', allergens: ['peanuts'] }],
+        Lunch: [{ name: 'Grilled cheese sandwich', allergens: ['dairy', 'gluten'] }, { name: 'Tomato soup', allergens: [] }, { name: 'Orange wedges', allergens: [] }],
+      },
+    },
+    {
+      id: 'MENU-2', type: 'MenuTemplate', dayOfWeek: 2,
+      meals: {
+        Breakfast: [{ name: 'Scrambled eggs', allergens: ['eggs'] }, { name: 'Toast', allergens: ['gluten'] }],
+        Snack: [{ name: 'Yogurt with berries', allergens: ['dairy'] }],
+        Lunch: [{ name: 'Chicken pasta', allergens: ['gluten'] }, { name: 'Garden salad', allergens: [] }, { name: 'Watermelon', allergens: [] }],
+      },
+    },
+    {
+      id: 'MENU-3', type: 'MenuTemplate', dayOfWeek: 3,
+      meals: {
+        Breakfast: [{ name: 'Pancakes', allergens: ['gluten', 'eggs', 'dairy'] }],
+        Snack: [{ name: 'Hummus with carrot sticks', allergens: [] }],
+        Lunch: [{ name: 'Veggie wrap', allergens: ['gluten'] }, { name: 'Lentil soup', allergens: [] }, { name: 'Banana', allergens: [] }],
+      },
+    },
+    {
+      id: 'MENU-4', type: 'MenuTemplate', dayOfWeek: 4,
+      meals: {
+        Breakfast: [{ name: 'Cereal with milk', allergens: ['gluten', 'dairy'] }],
+        Snack: [{ name: 'Peanut butter crackers', allergens: ['peanuts', 'gluten'] }],
+        Lunch: [{ name: 'Fish fingers', allergens: ['fish', 'gluten'] }, { name: 'Mixed vegetables', allergens: [] }, { name: 'Pear slices', allergens: [] }],
+      },
+    },
+    {
+      id: 'MENU-5', type: 'MenuTemplate', dayOfWeek: 5,
+      meals: {
+        Breakfast: [{ name: 'Fruit yogurt parfait', allergens: ['dairy'] }],
+        Snack: [{ name: 'Cheese cubes', allergens: ['dairy'] }],
+        Lunch: [{ name: 'Rice and dal', allergens: [] }, { name: 'Cucumber salad', allergens: [] }, { name: 'Apple', allergens: [] }],
+      },
+    },
 
     /* ---------- calendar events ----------
        `recurrence.freq` is 'none' | 'weekly' | 'monthly'; occurrences are computed
@@ -205,6 +252,14 @@
     return records.find((r) => normalize(r.id) === normalize(id)) || null;
   }
 
+  /** Resolves the day's menu from the weekly MenuTemplate by weekday — not a
+      per-date record, so "today" never goes stale. Returns null on days with
+      no scheduled menu (weekends). */
+  function getMenuForDate(dateISO) {
+    const dow = new Date(dateISO + 'T00:00:00').getDay();
+    return records.find((r) => r.type === 'MenuTemplate' && r.dayOfWeek === dow) || null;
+  }
+
   window.PlayStore = {
     records,
     search,
@@ -216,5 +271,6 @@
     getByType,
     getSettings,
     saveSettings,
+    getMenuForDate,
   };
 })();
