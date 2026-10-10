@@ -1034,6 +1034,9 @@ body {
 .tabs__tab {
   position: relative;
   z-index: 1;
+  appearance: none;
+  background: none;
+  border: none;
   padding: var(--space-2) var(--space-5);
   font-size: var(--fs-body-sm);
   font-weight: 600;
