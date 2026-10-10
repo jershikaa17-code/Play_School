@@ -195,6 +195,7 @@
     { id: 'children', label: 'Children', href: 'children.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
+    { id: 'calendar', label: 'Calendar', href: 'calendar.html' },
   ];
 
   function resolveNavItems() {

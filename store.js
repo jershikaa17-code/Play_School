@@ -51,6 +51,67 @@
     { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active' },
     { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active' },
     { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active' },
+
+    /* ---------- calendar events ----------
+       `recurrence.freq` is 'none' | 'weekly' | 'monthly'; occurrences are computed
+       on the fly from this one master record (see calendar.js expandEvent()) —
+       `exceptions` holds per-occurrence overrides/cancellations keyed by the
+       original occurrence date, so editing/deleting a single instance never
+       duplicates or rewrites the whole series. */
+    {
+      id: 'EVT-9001', type: 'Event', seriesId: 'EVT-9001', title: 'Weekly staff meeting', eventType: 'meeting',
+      allDay: false, startDate: '2026-10-05', startTime: '08:00', endDate: '2026-10-05', endTime: '08:45',
+      recurrence: { freq: 'weekly', until: null }, exceptions: {},
+      location: 'Staff room', classIds: [], staffIds: ['S-3001', 'S-3002'],
+      requiresRSVP: false, requiresConsent: false, attachmentName: null,
+      description: 'Weekly check-in on room ratios, incidents and upcoming events.',
+      rsvps: {}, consents: {},
+    },
+    {
+      id: 'EVT-9002', type: 'Event', seriesId: 'EVT-9002', title: 'Parent-teacher conferences', eventType: 'conference',
+      allDay: false, startDate: '2026-10-15', startTime: '15:00', endDate: '2026-10-15', endTime: '18:00',
+      recurrence: { freq: 'monthly', until: null }, exceptions: {},
+      location: 'Classrooms', classIds: [], staffIds: [],
+      requiresRSVP: true, requiresConsent: false, attachmentName: null,
+      description: 'Individual 15-minute slots — sign up at the front desk.',
+      rsvps: { 'G-2001': 'yes', 'G-2002': 'no' }, consents: {},
+    },
+    {
+      id: 'EVT-9003', type: 'Event', seriesId: 'EVT-9003', title: 'Daisy Room farm visit', eventType: 'trip',
+      allDay: false, startDate: '2026-10-22', startTime: '09:30', endDate: '2026-10-22', endTime: '13:00',
+      recurrence: { freq: 'none', until: null }, exceptions: {},
+      location: 'Greenfield Farm', classIds: ['CLS-9003'], staffIds: ['S-3001'],
+      requiresRSVP: true, requiresConsent: true, attachmentName: 'farm-visit-itinerary.pdf',
+      description: 'A morning visit to see farm animals and the harvest. Please dress for the weather.',
+      rsvps: { 'G-2006': 'yes' }, consents: { 'C-1006': true },
+    },
+    {
+      id: 'EVT-9004', type: 'Event', seriesId: 'EVT-9004', title: 'Autumn holiday', eventType: 'holiday',
+      allDay: true, startDate: '2026-11-02', startTime: null, endDate: '2026-11-06', endTime: null,
+      recurrence: { freq: 'none', until: null }, exceptions: {},
+      location: '', classIds: [], staffIds: [],
+      requiresRSVP: false, requiresConsent: false, attachmentName: null,
+      description: 'School closed for the autumn half-term break.',
+      rsvps: {}, consents: {},
+    },
+    {
+      id: 'EVT-9005', type: 'Event', seriesId: 'EVT-9005', title: 'Staff training day — school closed', eventType: 'closure',
+      allDay: true, startDate: '2026-10-30', startTime: null, endDate: '2026-10-30', endTime: null,
+      recurrence: { freq: 'none', until: null }, exceptions: {},
+      location: '', classIds: [], staffIds: [],
+      requiresRSVP: false, requiresConsent: false, attachmentName: null,
+      description: 'No childcare available — staff attend first-aid recertification.',
+      rsvps: {}, consents: {},
+    },
+    {
+      id: 'EVT-9006', type: 'Event', seriesId: 'EVT-9006', title: 'Harvest festival', eventType: 'event',
+      allDay: false, startDate: '2026-10-24', startTime: '10:00', endDate: '2026-10-24', endTime: '12:00',
+      recurrence: { freq: 'none', until: null }, exceptions: {},
+      location: 'Garden courtyard', classIds: ['CLS-9001', 'CLS-9002', 'CLS-9003'], staffIds: [],
+      requiresRSVP: true, requiresConsent: false, attachmentName: null,
+      description: 'Families welcome to join us for songs, crafts and a harvest potluck.',
+      rsvps: { 'G-2001': 'yes', 'G-2003': 'yes', 'G-2005': 'no' }, consents: {},
+    },
   ];
 
   /* ---------- persisted additions (classes, staff, etc. added post-seed) ----------

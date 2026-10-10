@@ -46,6 +46,7 @@
     { id: 'children', navLabel: 'Children', href: 'children.html', requiredPlan: 'Starter', core: true },
     { id: 'staff', navLabel: 'Staff', href: 'dashboard.html#staff', requiredPlan: 'Starter', core: true },
     { id: 'billing', navLabel: 'Billing', href: 'payroll.html', requiredPlan: 'Starter', core: true },
+    { id: 'calendar', navLabel: 'Calendar', href: 'calendar.html', requiredPlan: 'Starter', core: true },
     {
       id: 'attendance',
       navLabel: 'Attendance & Check-in',

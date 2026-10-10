@@ -156,6 +156,7 @@
     { id: 'fees', title: 'Outstanding payments', roles: ['Director', 'Admin'], module: null, render: renderFeesWidget },
     { id: 'incidents', title: 'Recent incidents', roles: ['Director', 'Admin', 'Teacher'], module: 'health-safety', render: renderIncidentsWidget },
     { id: 'announcements', title: 'Announcements', roles: ['Director', 'Admin', 'Teacher'], module: 'communication', render: renderAnnouncementsWidget },
+    { id: 'upcoming-events', title: 'Upcoming events', roles: ['Director', 'Admin', 'Teacher'], module: null, render: renderUpcomingEventsWidget },
   ];
   function prefsKey() { return 'ps_dashboard_widgets_' + role; }
   function getWidgetPrefs() {
@@ -370,6 +371,47 @@
     const list = recentAnnouncements();
     if (!list.length) { el.innerHTML = emptyState('No announcements yet.'); return; }
     el.innerHTML = listRows(list.map((a) => ({ title: a.title, meta: a.audience + ' · ' + a.date })));
+  }
+  /* ---------- upcoming events (reads the shared Calendar event records; a
+     lightweight recurrence check for a 14-day preview window — the full
+     recurrence engine with exceptions/overrides lives in calendar.js) ---------- */
+  function sameCalendarDate(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+  function upcomingEventOccurrences(days) {
+    const events = window.PlayStore.getByType('Event');
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const out = [];
+    for (let i = 0; i < days; i += 1) {
+      const d = new Date(today); d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0, 10);
+      events.forEach((ev) => {
+        const start = new Date(ev.startDate + 'T00:00:00');
+        if (d < start) return;
+        const freq = (ev.recurrence && ev.recurrence.freq) || 'none';
+        let occurs = false;
+        if (freq === 'none') occurs = sameCalendarDate(d, start);
+        else if (freq === 'weekly') occurs = Math.round((d - start) / 86400000) % 7 === 0;
+        else if (freq === 'monthly') {
+          const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+          occurs = d.getDate() === Math.min(start.getDate(), lastDay);
+        }
+        if (!occurs) return;
+        if (ev.exceptions && ev.exceptions[iso] && ev.exceptions[iso].cancelled) return;
+        out.push({ event: ev, date: d, iso });
+      });
+    }
+    out.sort((a, b) => a.date - b.date);
+    return out;
+  }
+  function renderUpcomingEventsWidget(el) {
+    const list = upcomingEventOccurrences(14).slice(0, 5);
+    if (!list.length) { el.innerHTML = emptyState('No upcoming events in the next two weeks.'); return; }
+    el.innerHTML = `<div class="dash-list">${list.map(({ event, date, iso }) => `
+      <a class="dash-list-row" href="calendar.html?event=${encodeURIComponent(event.id)}&date=${iso}">
+        <div class="dash-list-row__main">
+          <div class="dash-list-row__title">${escapeHtml(event.title)}</div>
+          <div class="dash-list-row__meta">${date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}${event.allDay ? ' · All day' : ' · ' + event.startTime}</div>
+        </div>
+      </a>`).join('')}</div>`;
   }
   function listRows(rows) {
     return `<div class="dash-list">${rows.map((r) => `

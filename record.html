@@ -6,6 +6,7 @@
 <title>Record — Play School</title>
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
 
@@ -23,6 +24,11 @@
       <span class="badge badge--success" id="recordStatus"></span>
       <span class="sample--caption" id="recordId" style="color: var(--color-text-muted);"></span>
     </div>
+  </div>
+
+  <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);" id="recordEventsCard" hidden>
+    <span class="card__eyebrow">Upcoming events</span>
+    <div class="dash-list" id="recordEventsList" style="margin-top: var(--space-3);"></div>
   </div>
 
   <div class="card card--glass" style="max-width: 480px; margin-top: var(--space-5);">
@@ -62,6 +68,55 @@
     document.getElementById('recordBreadcrumb').textContent = record.name;
     pageContent.hidden = false;
     appContent.appendChild(pageContent);
+
+    /* Upcoming events for this child's class — reuses the shared Calendar
+       event records (store.js) with the same lightweight recurrence preview
+       used on the dashboard; the full recurrence/exception engine lives in
+       calendar.js, which is the source of truth for editing events. */
+    if (record.type === 'Child') {
+      (function renderUpcomingEventsForChild() {
+        var card = document.getElementById('recordEventsCard');
+        var list = document.getElementById('recordEventsList');
+        var classRecord = window.PlayStore.records.find(function (r) { return r.type === 'Class' && r.name === record.room; });
+        var events = window.PlayStore.getByType('Event');
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var found = [];
+        for (var i = 0; i < 30; i += 1) {
+          var d = new Date(today); d.setDate(d.getDate() + i);
+          var iso = d.toISOString().slice(0, 10);
+          events.forEach(function (ev) {
+            if (ev.classIds && ev.classIds.length && (!classRecord || ev.classIds.indexOf(classRecord.id) === -1)) return;
+            var start = new Date(ev.startDate + 'T00:00:00');
+            if (d < start) return;
+            var freq = (ev.recurrence && ev.recurrence.freq) || 'none';
+            var occurs = false;
+            if (freq === 'none') occurs = d.getFullYear() === start.getFullYear() && d.getMonth() === start.getMonth() && d.getDate() === start.getDate();
+            else if (freq === 'weekly') occurs = Math.round((d - start) / 86400000) % 7 === 0;
+            else if (freq === 'monthly') {
+              var lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+              occurs = d.getDate() === Math.min(start.getDate(), lastDay);
+            }
+            if (!occurs) return;
+            if (ev.exceptions && ev.exceptions[iso] && ev.exceptions[iso].cancelled) return;
+            found.push({ event: ev, date: d, iso: iso });
+          });
+        }
+        found.sort(function (a, b) { return a.date - b.date; });
+        found = found.slice(0, 5);
+        if (!found.length) return;
+        card.hidden = false;
+        list.innerHTML = found.map(function () {
+          return '<a class="dash-list-row"><div class="dash-list-row__main"><div class="dash-list-row__title"></div><div class="dash-list-row__meta"></div></div></a>';
+        }).join('');
+        var rows = list.querySelectorAll('.dash-list-row');
+        rows.forEach(function (row, idx) {
+          var f = found[idx];
+          row.href = 'calendar.html?event=' + encodeURIComponent(f.event.id) + '&date=' + f.iso;
+          row.querySelector('.dash-list-row__title').textContent = f.event.title;
+          row.querySelector('.dash-list-row__meta').textContent = f.date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) + (f.event.allDay ? ' · All day' : ' · ' + f.event.startTime);
+        });
+      })();
+    }
 
     /* Notes save — the whole app is local-only (no backend), so every save
        here already is a local save. "Saved on this device" is therefore an

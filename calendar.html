@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Calendar — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="calendar.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <div class="cal-page-header">
+    <div>
+      <h1 class="cal-page-header__heading">Calendar</h1>
+      <p class="cal-page-header__text">School events, trips, meetings and important dates.</p>
+    </div>
+    <button class="btn btn--accent" id="calNewEventBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>New event</span>
+    </button>
+  </div>
+
+  <div class="cal-toolbar">
+    <div class="cal-toolbar__nav">
+      <button class="btn btn--secondary btn--sm" id="calTodayBtn" type="button">Today</button>
+      <span class="cal-nav-arrows">
+        <button class="btn btn--icon" id="calPrevBtn" type="button" aria-label="Previous period">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="btn btn--icon" id="calNextBtn" type="button" aria-label="Next period">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </span>
+      <span class="cal-toolbar__title" id="calTitle" aria-live="polite">&nbsp;</span>
+    </div>
+
+    <div class="tabs__list" id="calViewTabs" role="tablist" aria-label="Calendar view">
+      <button class="tabs__tab" type="button" data-view="month" role="tab" aria-selected="true">Month</button>
+      <button class="tabs__tab" type="button" data-view="week" role="tab" aria-selected="false">Week</button>
+      <button class="tabs__tab" type="button" data-view="day" role="tab" aria-selected="false">Day</button>
+      <button class="tabs__tab" type="button" data-view="agenda" role="tab" aria-selected="false">Agenda</button>
+      <span class="tabs__indicator" id="calViewIndicator"></span>
+    </div>
+
+    <div class="cal-toolbar__filters" id="calFiltersDesktop"></div>
+    <button class="btn btn--secondary btn--sm cal-toolbar__filter-btn" id="calFilterSheetBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      Filters
+      <span class="cal-filter-count" id="calFilterCount" hidden>0</span>
+    </button>
+  </div>
+
+  <div class="cal-legend" id="calLegend"></div>
+
+  <div class="cal-chip-row" id="calChipRow" hidden></div>
+
+  <div id="calSkeleton" class="cal-skeleton">
+    <div class="skeleton" style="height:520px; border-radius: var(--radius-lg);"></div>
+  </div>
+
+  <div id="calViews" hidden>
+    <div class="cal-view-panel" data-panel="month" id="calMonthPanel"></div>
+    <div class="cal-view-panel" data-panel="week" id="calWeekPanel" hidden></div>
+    <div class="cal-view-panel" data-panel="day" id="calDayPanel" hidden></div>
+    <div class="cal-view-panel" data-panel="agenda" id="calAgendaPanel" hidden></div>
+  </div>
+
+  <div class="state-panel" id="calEmptyState" hidden>
+    <div class="state-panel__icon" id="calEmptyIcon"></div>
+    <div class="state-panel__title" id="calEmptyTitle">No events match these filters</div>
+    <p class="state-panel__text" id="calEmptyText">Try a different date range or clear your filters.</p>
+    <div class="state-panel__action" id="calEmptyAction"></div>
+  </div>
+
+  <button class="fab" id="calFab" type="button" aria-label="New event">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+</div>
+
+<!-- ============ mobile filter bottom sheet ============ -->
+<div class="sheet-backdrop" id="filterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filter calendar">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Filter calendar</div>
+    <div id="filterSheetBody"></div>
+    <div class="sheet__actions">
+      <button class="btn btn--ghost" type="button" id="filterSheetClear">Clear all</button>
+      <button class="btn btn--accent" type="button" id="filterSheetApply">Show results</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ day "+N more" popover ============ -->
+<div class="cal-day-popover" id="calDayPopover" hidden>
+  <div class="cal-day-popover__head">
+    <span id="calDayPopoverTitle"></span>
+    <button class="btn btn--icon" type="button" id="calDayPopoverClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="cal-day-popover__list" id="calDayPopoverList"></div>
+</div>
+
+<!-- ============ New / Edit event modal ============ -->
+<div class="modal-backdrop" id="eventModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Event form">
+  <div class="modal child-modal cal-event-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="eventModalTitle">New event</h3>
+    <form id="eventForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="evTitle">Event title <span class="req">*</span></label>
+        <input class="input" id="evTitle" type="text" autocomplete="off" />
+        <p class="field__error" id="err-evTitle" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="evType">Event type <span class="req">*</span></label>
+        <select class="select" id="evType"></select>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" class="checkbox" id="evAllDay" />
+        <label for="evAllDay">All-day event</label>
+      </div>
+
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="evStartDate">Start date <span class="req">*</span></label>
+          <input class="input" id="evStartDate" type="date" />
+        </div>
+        <div class="field" id="evStartTimeField">
+          <label class="field__label" for="evStartTime">Start time <span class="req">*</span></label>
+          <input class="input" id="evStartTime" type="time" />
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="evEndDate">End date <span class="req">*</span></label>
+          <input class="input" id="evEndDate" type="date" />
+        </div>
+        <div class="field" id="evEndTimeField">
+          <label class="field__label" for="evEndTime">End time <span class="req">*</span></label>
+          <input class="input" id="evEndTime" type="time" />
+        </div>
+      </div>
+      <p class="field__error" id="err-evDates" hidden></p>
+
+      <div class="field">
+        <label class="field__label" for="evRepeat">Repeat</label>
+        <select class="select" id="evRepeat">
+          <option value="none">Does not repeat</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="evLocation">Location</label>
+        <input class="input" id="evLocation" type="text" placeholder="e.g. Main hall" />
+      </div>
+
+      <div class="field">
+        <label class="field__label">Classes involved</label>
+        <div class="cal-check-list" id="evClassList"></div>
+      </div>
+
+      <div class="field">
+        <label class="field__label">Staff involved</label>
+        <div class="cal-check-list" id="evStaffList"></div>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" class="checkbox" id="evRSVP" />
+        <label for="evRSVP">Requires RSVP from families</label>
+      </div>
+      <div class="check-row" id="evConsentRow" hidden>
+        <input type="checkbox" class="checkbox" id="evConsent" />
+        <label for="evConsent">Requires signed consent (trip)</label>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="evDescription">Description</label>
+        <textarea class="textarea" id="evDescription" placeholder="Add any useful details…"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="evAttachment">Attachment</label>
+        <input class="input" id="evAttachment" type="file" />
+        <p class="field__hint" id="evAttachmentName"></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="eventModalCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="eventModalSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="eventModalSaveLabel">Save event</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Unsaved changes confirm ============ -->
+<div class="modal-backdrop" id="discardConfirmBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Discard changes">
+  <div class="modal">
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="modal__title">Discard unsaved changes?</h3>
+    <p class="modal__text">You have unsaved changes to this event. Closing now will lose them.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="discardCancel">Keep editing</button>
+      <button class="btn btn--destructive" type="button" id="discardConfirm">Discard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Recurrence scope picker (edit / delete) ============ -->
+<div class="modal-backdrop" id="scopeModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Choose which events to change">
+  <div class="modal">
+    <h3 class="modal__title" id="scopeModalTitle">This is a recurring event</h3>
+    <p class="modal__text" id="scopeModalText">Which events would you like to change?</p>
+    <div class="cal-scope-options" id="scopeModalOptions">
+      <label class="cal-scope-option">
+        <input type="radio" name="scope" value="only" checked />
+        <span>This event only</span>
+      </label>
+      <label class="cal-scope-option">
+        <input type="radio" name="scope" value="following" />
+        <span>This and all following events</span>
+      </label>
+      <label class="cal-scope-option">
+        <input type="radio" name="scope" value="series" />
+        <span>All events in the series</span>
+      </label>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="scopeModalCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="scopeModalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Simple delete confirm (non-recurring) ============ -->
+<div class="modal-backdrop" id="deleteConfirmBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Delete event">
+  <div class="modal">
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title" id="deleteConfirmTitle">Delete this event?</h3>
+    <p class="modal__text">This cannot be undone.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="deleteConfirmCancel">Cancel</button>
+      <button class="btn btn--destructive" type="button" id="deleteConfirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Move & notify confirm (drag-and-drop) ============ -->
+<div class="modal-backdrop" id="moveConfirmBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move event">
+  <div class="modal">
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <h3 class="modal__title">Move and notify families?</h3>
+    <p class="modal__text" id="moveConfirmText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="moveConfirmCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="moveConfirmOk">Move event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Event details drawer ============ -->
+<div class="drawer-backdrop" id="eventDrawerBackdrop"></div>
+<aside class="drawer cal-drawer" id="eventDrawer" role="dialog" aria-modal="true" aria-label="Event details">
+  <div class="drawer__head">
+    <h3 class="drawer__title">Event details</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="eventDrawerBody"></div>
+</aside>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="calendar.js"></script>
+</body>
+</html>
