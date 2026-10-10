@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Children — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="children.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="child-page-header">
+    <div>
+      <h1 class="child-page-header__heading" id="childHeading">Children</h1>
+      <p class="child-page-header__text">Every enrolled child, their class and their safety details in one place.</p>
+    </div>
+    <div class="child-page-header__actions">
+      <button class="btn btn--secondary" id="exportAllBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Export</span>
+      </button>
+      <button class="btn btn--accent" id="enrolBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+        <span>Enrol child</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- toolbar ---------- -->
+  <div class="child-toolbar">
+    <div class="input-wrap child-toolbar__search">
+      <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="input" id="childSearch" type="text" placeholder="Search by child or parent name" aria-label="Search by child or parent name" />
+    </div>
+
+    <div class="child-toolbar__filters" id="childFiltersDesktop">
+      <!-- filled by JS: class / age band / status / alerts dropdowns -->
+    </div>
+
+    <button class="btn btn--secondary btn--sm child-toolbar__filter-btn" id="filterSheetBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      Filters
+      <span class="child-toolbar__filter-count" id="filterCountBadge" hidden>0</span>
+    </button>
+
+    <div class="child-view-toggle" id="viewToggle" role="group" aria-label="Switch between grid and list view">
+      <button class="child-view-toggle__btn" type="button" data-view="grid" aria-pressed="true" aria-label="Grid view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      </button>
+      <button class="child-view-toggle__btn" type="button" data-view="list" aria-pressed="false" aria-label="List view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- active filter chips ---------- -->
+  <div class="child-chip-row" id="childChipRow" hidden></div>
+
+  <!-- ---------- result count ---------- -->
+  <div class="child-result-count" id="childResultCount"></div>
+
+  <!-- ---------- bulk action bar ---------- -->
+  <div class="child-bulkbar" id="childBulkBar" hidden>
+    <span class="child-bulkbar__count" id="childBulkCount"></span>
+    <div class="child-bulkbar__actions">
+      <button class="btn btn--secondary btn--sm" id="bulkExportBtn" type="button">Export CSV</button>
+      <button class="btn btn--secondary btn--sm" id="bulkMessageBtn" type="button">Message families</button>
+      <button class="btn btn--secondary btn--sm" id="bulkMoveBtn" type="button">Move class</button>
+      <button class="btn btn--text btn--sm" id="bulkClearBtn" type="button">Clear selection</button>
+    </div>
+  </div>
+
+  <!-- ---------- skeleton ---------- -->
+  <div id="childSkeleton" class="child-grid">
+    <div class="skeleton skeleton--card child-card-skel"></div>
+    <div class="skeleton skeleton--card child-card-skel"></div>
+    <div class="skeleton skeleton--card child-card-skel"></div>
+    <div class="skeleton skeleton--card child-card-skel"></div>
+    <div class="skeleton skeleton--card child-card-skel"></div>
+    <div class="skeleton skeleton--card child-card-skel"></div>
+  </div>
+
+  <!-- ---------- grid view ---------- -->
+  <div class="child-grid" id="childGrid" hidden></div>
+
+  <!-- ---------- list view ---------- -->
+  <div class="table-wrap" id="childTableWrap" hidden>
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width:40px;"><input type="checkbox" class="checkbox" id="childSelectAll" aria-label="Select all children" /></th>
+          <th>Child</th>
+          <th>Age</th>
+          <th>Class</th>
+          <th>Guardian</th>
+          <th>Start date</th>
+          <th>Status</th>
+          <th>Alerts</th>
+          <th style="width:40px;"></th>
+        </tr>
+      </thead>
+      <tbody id="childTableBody"></tbody>
+    </table>
+    <div class="table-card" id="childTableCards"></div>
+  </div>
+
+  <!-- ---------- empty state ---------- -->
+  <div class="state-panel" id="childEmptyState" hidden>
+    <div class="state-panel__icon" id="childEmptyIcon"></div>
+    <div class="state-panel__title" id="childEmptyTitle"></div>
+    <p class="state-panel__text" id="childEmptyText"></p>
+    <div class="state-panel__action" id="childEmptyAction"></div>
+  </div>
+
+  <!-- ---------- mobile floating enrol action ---------- -->
+  <button class="fab" id="childFab" type="button" aria-label="Enrol child">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+</div>
+
+<!-- ============ mobile filter bottom sheet ============ -->
+<div class="sheet-backdrop" id="filterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filter children">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Filter children</div>
+    <div id="filterSheetBody"></div>
+    <div class="sheet__actions">
+      <button class="btn btn--ghost" type="button" id="filterSheetClear">Clear all</button>
+      <button class="btn btn--accent" type="button" id="filterSheetApply">Show results</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Enrol / Edit child modal ============ -->
+<div class="modal-backdrop" id="childFormModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Enrol child">
+  <div class="modal child-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="childFormModalTitle">Enrol child</h3>
+    <p class="modal__text" id="childFormModalText">Add a new child to the roster. You can update safety details any time.</p>
+    <form id="childForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="cfName">Child's full name <span class="req">*</span></label>
+        <input class="input" id="cfName" type="text" autocomplete="off" />
+        <p class="field__error" id="err-cfName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="cfDob">Date of birth <span class="req">*</span></label>
+          <input class="input" id="cfDob" type="date" />
+          <p class="field__error" id="err-cfDob" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="cfClass">Class <span class="req">*</span></label>
+          <select class="select" id="cfClass"></select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="cfStart">Start date <span class="req">*</span></label>
+          <input class="input" id="cfStart" type="date" />
+          <p class="field__error" id="err-cfStart" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="cfGuardianName">Primary guardian name <span class="req">*</span></label>
+          <input class="input" id="cfGuardianName" type="text" autocomplete="off" />
+          <p class="field__error" id="err-cfGuardianName" hidden></p>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="cfGuardianContact">Guardian email or phone <span class="req">*</span></label>
+        <input class="input" id="cfGuardianContact" type="text" autocomplete="off" />
+        <p class="field__error" id="err-cfGuardianContact" hidden></p>
+      </div>
+
+      <p class="field__label" style="margin-top: var(--space-2); text-transform: uppercase; letter-spacing: var(--ls-wide); color: var(--color-text-muted);">Safety &amp; care details (optional)</p>
+      <div class="field">
+        <label class="field__label" for="cfAllergy" style="text-transform:none; letter-spacing:0; color: var(--color-error);">Allergy</label>
+        <input class="input" id="cfAllergy" type="text" placeholder="e.g. Severe peanut allergy — EpiPen in office" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="cfMedical" style="text-transform:none; letter-spacing:0; color: var(--color-primary-soft);">Medical</label>
+        <input class="input" id="cfMedical" type="text" placeholder="e.g. Asthma — inhaler kept in classroom cabinet" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="cfCustody" style="text-transform:none; letter-spacing:0;">Custody restriction</label>
+        <input class="input" id="cfCustody" type="text" placeholder="e.g. Only listed guardians may collect this child" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="cfDietary" style="text-transform:none; letter-spacing:0; color: var(--color-success);">Dietary</label>
+        <input class="input" id="cfDietary" type="text" placeholder="e.g. Vegetarian diet only" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="childFormSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="childFormSubmitLabel">Enrol child</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Move class modal ============ -->
+<div class="modal-backdrop" id="moveClassModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move class">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M16 3H5a2 2 0 0 0-2 2v16l5-3 5 3 5-3 5 3V9Z"/></svg>
+    </div>
+    <h3 class="modal__title">Move class</h3>
+    <p class="modal__text" id="moveClassText"></p>
+    <form id="moveClassForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="moveClassCurrent">Current class</label>
+        <input class="input" id="moveClassCurrent" type="text" disabled />
+      </div>
+      <div class="field">
+        <label class="field__label" for="moveClassNew">New class <span class="req">*</span></label>
+        <select class="select" id="moveClassNew"></select>
+        <p class="field__error" id="err-moveClassNew" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="moveClassConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Confirm move</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Withdraw modal ============ -->
+<div class="modal-backdrop" id="withdrawModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Withdraw child">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="modal__title" id="withdrawTitle">Withdraw child</h3>
+    <p class="modal__text">This marks the child as withdrawn and keeps their full history on record. This cannot be undone from here.</p>
+    <form id="withdrawForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="withdrawDate">Withdrawal date <span class="req">*</span></label>
+        <input class="input" id="withdrawDate" type="date" />
+        <p class="field__error" id="err-withdrawDate" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="withdrawReason">Reason <span class="req">*</span></label>
+        <textarea class="textarea" id="withdrawReason" placeholder="e.g. Family relocated out of the district."></textarea>
+        <p class="field__error" id="err-withdrawReason" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="withdrawConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Confirm withdrawal</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Message families (composer) modal ============ -->
+<div class="modal-backdrop" id="messageModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Message families">
+  <div class="modal child-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Message families</h3>
+    <p class="modal__text">Review the recipients below, then write your message. Guardians receive this in their parent portal inbox.</p>
+    <div class="message-recipients" id="messageRecipients"></div>
+    <form id="messageForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="msgSubject">Subject <span class="req">*</span></label>
+        <input class="input" id="msgSubject" type="text" />
+        <p class="field__error" id="err-msgSubject" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="msgBody">Message <span class="req">*</span></label>
+        <textarea class="textarea" id="msgBody" style="min-height:120px;" placeholder="Write your message to these families…"></textarea>
+        <p class="field__error" id="err-msgBody" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="messageSend">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Send message</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="children.js"></script>
+</body>
+</html>

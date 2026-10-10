@@ -192,7 +192,7 @@
   const FALLBACK_NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html' },
     { id: 'classrooms', label: 'Classrooms', href: 'dashboard.html#classrooms' },
-    { id: 'children', label: 'Children', href: 'dashboard.html#children' },
+    { id: 'children', label: 'Children', href: 'children.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
   ];

@@ -73,7 +73,7 @@
   }
 
   /* ---------- data helpers (all real, from PlayStore) ---------- */
-  function activeChildren() { return window.PlayStore.records.filter((r) => r.type === 'Child' && r.status !== 'Inactive'); }
+  function activeChildren() { return window.PlayStore.records.filter((r) => r.type === 'Child' && r.status !== 'Withdrawn'); }
   function allStaff() { return window.PlayStore.getByType('Staff'); }
   function attendanceToday() { return window.PlayStore.getByType('Attendance').filter((a) => a.date === todayStr()); }
   function presentTodayCount() {
@@ -227,9 +227,9 @@
   function kpiDefs() {
     const rate = attendanceRate();
     return [
-      { id: 'students', label: 'Total students', icon: ICONS.users, roles: ['Director', 'Admin', 'Teacher'], module: null, value: () => String(activeChildren().length), href: 'dashboard.html#children' },
-      { id: 'present', label: 'Present today', icon: ICONS.check, roles: ['Director', 'Admin', 'Teacher'], module: 'attendance', value: () => String(presentTodayCount()), href: 'dashboard.html#children' },
-      { id: 'rate', label: 'Attendance rate', icon: ICONS.trend, roles: ['Director', 'Admin', 'Teacher'], module: 'attendance', value: () => (rate === null ? '—' : rate + '%'), href: 'dashboard.html#children' },
+      { id: 'students', label: 'Total students', icon: ICONS.users, roles: ['Director', 'Admin', 'Teacher'], module: null, value: () => String(activeChildren().length), href: 'children.html' },
+      { id: 'present', label: 'Present today', icon: ICONS.check, roles: ['Director', 'Admin', 'Teacher'], module: 'attendance', value: () => String(presentTodayCount()), href: 'children.html' },
+      { id: 'rate', label: 'Attendance rate', icon: ICONS.trend, roles: ['Director', 'Admin', 'Teacher'], module: 'attendance', value: () => (rate === null ? '—' : rate + '%'), href: 'children.html' },
       { id: 'fees', label: 'Pending fees', icon: ICONS.card, roles: ['Director', 'Admin'], module: null, value: () => '$' + pendingFeesTotal().toFixed(2), href: 'payroll.html' },
       { id: 'enquiries', label: 'New enquiries', icon: ICONS.userPlus, roles: ['Director', 'Admin'], module: null, value: () => String(newEnquiries().length), href: '#widget-enquiries' },
       { id: 'incidents', label: 'Open incidents', icon: ICONS.alert, roles: ['Director', 'Admin', 'Teacher'], module: 'health-safety', value: () => String(openIncidents().length), href: '#widget-incidents', alertIf: () => openIncidents().length > 0 },
@@ -480,7 +480,7 @@
             title: 'Attendance updated',
             text: `${child.name} marked ${status.toLowerCase()} today.`,
             module: 'attendance',
-            recordRoute: 'dashboard.html#children',
+            recordRoute: 'children.html',
           });
         }
       });
