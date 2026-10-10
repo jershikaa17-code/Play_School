@@ -10,7 +10,7 @@
   const AUTH_KEY = 'ps_auth';
   const NOTIFS_KEY = 'ps_notifications';
   const DEMO_ROLE_KEY = 'ps_demo_role';
-  const DEMO_ROLES = ['Director', 'Admin', 'Teacher'];
+  const DEMO_ROLES = ['Director', 'Admin', 'Teacher', 'Safeguarding lead'];
 
   /** Demo role-switching — stands in for real multi-user auth. Pages that
       already role-gate via ?role= in the URL are untouched; this is the

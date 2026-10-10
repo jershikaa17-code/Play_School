@@ -37,6 +37,16 @@
     custody: { label: 'Custody', icon: ICON.custody, cls: 'alert-icon--custody' },
     dietary: { label: 'Dietary', icon: ICON.dietary, cls: 'alert-icon--dietary' },
   };
+  /** Minimal language-aware template set — demonstrates the integration point
+      a guardian's preferredLanguage (S16) is meant to drive. Real translated
+      copy for every language isn't built out; English is always the
+      fallback when a guardian's language has no template. */
+  const MESSAGE_TEMPLATES = {
+    English: { subject: 'A note from Play School', body: 'Hello,\n\nWe wanted to reach out regarding your family. Please let us know if you have any questions.\n\nWarm regards,\nPlay School' },
+    Spanish: { subject: 'Un mensaje de Play School', body: 'Hola,\n\nQueríamos comunicarnos con respecto a su familia. No dude en contactarnos si tiene alguna pregunta.\n\nSaludos cordiales,\nPlay School' },
+  };
+  function templateForLanguage(language) { return MESSAGE_TEMPLATES[language] || MESSAGE_TEMPLATES.English; }
+
   const STATUS_OPTIONS = ['Active', 'Starting soon', 'Draft', 'Waitlisted', 'Withdrawn', 'Graduated'];
   const STATUS_BADGE = { 'Active': 'badge--success', 'Starting soon': 'badge--warning', 'Draft': 'badge--neutral', 'Waitlisted': 'badge--warning', 'Withdrawn': 'badge--error', 'Graduated': 'badge--neutral' };
   const AGE_BANDS = [
@@ -100,6 +110,15 @@
     const params = new URLSearchParams(window.location.search);
     const action = params.get('action');
     const id = params.get('id');
+    if (action === 'message') {
+      const idsParam = params.get('childIds');
+      if (idsParam) {
+        const ids = idsParam.split(',').filter(Boolean);
+        const kids = allChildren().filter((c) => ids.includes(c.id));
+        if (kids.length) openMessageComposer(kids);
+        return;
+      }
+    }
     if (!action || !id) return;
     const child = allChildren().find((c) => c.id === id);
     if (!child) return;
@@ -860,8 +879,10 @@
     });
     messageRecipientGuardianIds = new Set(guardianIds.keys());
     renderMessageRecipients(guardianIds);
-    $('msgSubject').value = '';
-    $('msgBody').value = '';
+    const firstGuardian = Array.from(guardianIds.values())[0];
+    const tmpl = templateForLanguage(firstGuardian && firstGuardian.preferredLanguage);
+    $('msgSubject').value = tmpl.subject;
+    $('msgBody').value = tmpl.body;
     setFieldError('msgSubject', null);
     setFieldError('msgBody', null);
     openModal('messageModalBackdrop');

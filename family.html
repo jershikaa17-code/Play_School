@@ -12,7 +12,7 @@
 <body>
 
 <div id="pageContent" hidden>
-  <nav class="breadcrumbs" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
+  <nav class="breadcrumbs famp-noprint" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
     <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
     <span class="breadcrumbs__sep">/</span>
     <a class="breadcrumbs__link" href="families.html">Families</a>
@@ -21,7 +21,74 @@
   </nav>
 
   <div id="famHeader"></div>
-  <div class="profile-cards" id="famCards" style="margin-top: var(--space-5);"></div>
+
+  <div class="famp-grid">
+    <section class="profile-card famp-section" id="famGuardiansSection" aria-labelledby="famGuardiansHeading"></section>
+    <section class="profile-card famp-section" id="famHouseholdsSection" aria-labelledby="famHouseholdsHeading"></section>
+    <section class="profile-card famp-section famp-section--wide" id="famChildrenSection" aria-labelledby="famChildrenHeading"></section>
+    <section class="profile-card famp-section famp-section--wide" id="famCustodySection" hidden aria-labelledby="famCustodyHeading"></section>
+    <section class="profile-card famp-section" id="famMessagesSection" aria-labelledby="famMessagesHeading"></section>
+    <section class="profile-card famp-section" id="famAccountSummary" aria-labelledby="famAccountHeading"></section>
+  </div>
+</div>
+
+<!-- ============ Add / Edit guardian modal ============ -->
+<div class="modal-backdrop" id="guardianModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Guardian">
+  <div class="modal" style="max-width: 520px;">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="guardianModalTitle">Add guardian</h3>
+    <div style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="enroll-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field"><label class="field__label" for="gmName">Full name <span class="req">*</span></label><input class="input" id="gmName" type="text" /><p class="field__error" id="err-gmName" hidden></p></div>
+        <div class="field"><label class="field__label" for="gmRelation">Relationship</label>
+          <select class="select" id="gmRelation">
+            <option>Mother</option><option>Father</option><option>Guardian</option><option>Grandparent</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label class="field__label" for="gmPhone">Phone number</label><input class="input" id="gmPhone" type="tel" /></div>
+        <div class="field"><label class="field__label" for="gmEmail">Email</label><input class="input" id="gmEmail" type="email" /><p class="field__error" id="err-gmContact" hidden></p></div>
+        <div class="field"><label class="field__label" for="gmLanguage">Preferred language</label>
+          <select class="select" id="gmLanguage">
+            <option>English</option><option>Spanish</option><option>French</option><option>Hindi</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field" id="gmHouseholdField"><label class="field__label" for="gmHousehold">Household</label><select class="select" id="gmHousehold"></select></div>
+      </div>
+      <div class="field">
+        <label class="field__label">Communication preferences</label>
+        <div class="famp-comm-options" id="gmCommOptions"></div>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" class="checkbox" id="gmPrimary" />
+        <label for="gmPrimary">Make this the primary contact</label>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="gmCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="gmSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save changes</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Edit household modal ============ -->
+<div class="modal-backdrop" id="householdModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Household">
+  <div class="modal" style="max-width: 460px;">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="householdModalTitle">Edit household</h3>
+    <div style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field"><label class="field__label" for="hmAddress">Address</label><input class="input" id="hmAddress" type="text" placeholder="Street, city, postcode" /></div>
+      <div class="field"><label class="field__label" for="hmInvoice">Invoice recipient</label><select class="select" id="hmInvoice"></select></div>
+      <div class="field"><label class="field__label" for="hmReport">Report recipient</label><select class="select" id="hmReport"></select></div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="hmCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="hmSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save changes</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="store.js"></script>

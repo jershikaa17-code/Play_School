@@ -157,7 +157,8 @@
   padding: 0;
   overflow: hidden;
 }
-.app-bell__panel #appBellList { max-height: 320px; overflow-y: auto; }
+.app-bell__panel #appBellList { max-height: 320px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.app-bell__panel #appBellList::-webkit-scrollbar { display: none; }
 .app-bell__badge {
   position: absolute;
   top: -2px; right: -2px;

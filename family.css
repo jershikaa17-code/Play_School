@@ -1,8 +1,106 @@
 /* ==========================================================================
    PLAY SCHOOL — Family profile (S16)
-   Deliberately reuses record.css's .profile-header / .profile-cards /
-   .profile-card / .profile-person / .profile-row components wholesale —
-   this page is a lighter single-view sibling of S13, not a new design.
+   Reuses record.css's .profile-header / .profile-card / .profile-person /
+   .profile-row components wholesale — this page is a richer sibling of S13,
+   not a new design. Only this page's own widgets live here.
    ========================================================================== */
+
+.famp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin-top: var(--space-5); }
+.famp-section--wide { grid-column: 1 / -1; }
+.famp-section { animation: fampIn 360ms var(--ease-premium); }
+@keyframes fampIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .famp-section, .profile-header { animation: none !important; } }
+
+.famp-section__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+.famp-section__title { font-weight: 700; font-size: var(--fs-body); font-family: var(--font-display); }
+
+/* ---------- header quick actions ---------- */
+.famp-quick-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.famp-quick-actions .btn:disabled { opacity: 0.4; }
+.famp-address { font-size: var(--fs-body-sm); color: var(--color-text-secondary); margin-top: var(--space-2); }
+
+/* ---------- guardian card ---------- */
+.famp-guardian-card { border-radius: var(--radius-lg); background: var(--color-surface-secondary); border: 1.5px solid var(--color-border-subtle); padding: var(--space-4); margin-bottom: var(--space-3); transition: border-color var(--dur-normal) var(--ease-premium), transform var(--dur-micro) var(--ease-premium); }
+.famp-guardian-card:hover { border-color: var(--color-border-strong); }
+.famp-guardian-card.is-primary { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface-secondary)); }
+.famp-guardian-card__head { display: flex; align-items: center; gap: var(--space-3); }
+.famp-guardian-card__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.famp-guardian-card__sub { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 1px; }
+.famp-guardian-card__actions { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-shrink: 0; }
+.famp-star-btn { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: none; border: none; cursor: pointer; color: var(--color-text-muted); transition: all var(--dur-normal) var(--ease-premium); }
+.famp-star-btn:hover { background: color-mix(in srgb, var(--color-accent-yellow) 16%, transparent); transform: scale(1.1); }
+.famp-star-btn.is-active { color: var(--color-accent-yellow); }
+.famp-star-btn svg { width: 17px; height: 17px; transition: transform 320ms var(--ease-premium); }
+.famp-star-btn.is-active svg { transform: scale(1.15); }
+.famp-guardian-card__details { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2) var(--space-4); margin-top: var(--space-3); font-size: var(--fs-caption); }
+.famp-guardian-card__detail-label { color: var(--color-text-muted); display: block; }
+.famp-guardian-card__detail-value { color: var(--color-text-secondary); font-weight: 600; }
+.famp-comm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+.famp-comm-chip { font-size: 0.68rem; font-weight: 700; padding: 2px var(--space-2); border-radius: var(--radius-pill); background: color-mix(in srgb, var(--color-primary) 14%, transparent); color: var(--color-primary-soft); }
+.famp-comm-options { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+.famp-comm-options label { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-body-sm); }
+
+/* ---------- household card ---------- */
+.famp-household-card { border-radius: var(--radius-lg); background: var(--color-surface-secondary); border: 1.5px solid var(--color-border-subtle); padding: var(--space-4); margin-bottom: var(--space-3); }
+.famp-household-card__head { display: flex; align-items: center; gap: var(--space-3); }
+.famp-household-card__label { font-weight: 700; font-size: var(--fs-body-sm); }
+.famp-household-card__address { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 2px; }
+.famp-household-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) 0; border-top: 1px solid var(--color-border-subtle); font-size: var(--fs-caption); }
+.famp-household-row:first-of-type { border-top: none; }
+.famp-household-row__label { color: var(--color-text-muted); }
+.famp-household-row__value { font-weight: 600; text-align: right; }
+
+/* ---------- children ---------- */
+.famp-child-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-4); }
+.famp-child-card { display: block; text-decoration: none; color: inherit; padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface-secondary); border: 1.5px solid var(--color-border-subtle); text-align: center; transition: all var(--dur-normal) var(--ease-premium); }
+.famp-child-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--color-primary-soft); }
+.famp-child-card__photo { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto var(--space-3); display: grid; place-items: center; background: var(--color-accent-yellow); color: var(--color-text-on-accent); font-weight: 700; }
+.famp-child-card__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.famp-child-card__meta { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 2px; }
+
+/* ---------- custody & legal (restricted) ---------- */
+.famp-custody-banner { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-caption); font-weight: 700; color: var(--raw-ink-950); background: var(--color-accent-yellow); padding: 4px var(--space-3); border-radius: var(--radius-pill); display: inline-flex; margin-bottom: var(--space-4); }
+.famp-custody-note { border-radius: var(--radius-md); border: 1px solid color-mix(in srgb, var(--color-error) 40%, transparent); background: color-mix(in srgb, var(--color-error) 8%, transparent); padding: var(--space-4); margin-bottom: var(--space-3); font-size: var(--fs-body-sm); }
+.famp-custody-note__child { font-weight: 700; margin-bottom: 2px; }
+
+/* ---------- messages ---------- */
+.famp-message-row { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-2); border-radius: var(--radius-md); cursor: pointer; transition: background var(--dur-micro) var(--ease-premium); }
+.famp-message-row:hover { background: var(--color-surface-glass-light); }
+.famp-message-row__body { flex: 1; min-width: 0; }
+.famp-message-row__subject { font-weight: 700; font-size: var(--fs-body-sm); }
+.famp-message-row__preview { font-size: var(--fs-caption); color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.famp-message-row__meta { font-size: var(--fs-caption); color: var(--color-text-muted); flex-shrink: 0; text-align: right; }
+
+/* ---------- account summary ---------- */
+.famp-balance-figure { font-family: var(--font-display); font-size: var(--fs-h2); font-weight: 560; }
+.famp-balance-figure--due { color: var(--color-error); }
+.famp-balance-figure--settled { color: var(--color-success); }
+.famp-highlight { animation: fampHighlight 1400ms var(--ease-premium); }
+@keyframes fampHighlight { 0% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 55%, transparent); } 100% { box-shadow: none; } }
+
+/* ---------- mobile collapsible sections ---------- */
+.famp-collapse-toggle { display: none; background: none; border: none; color: var(--color-text-muted); cursor: pointer; }
+.famp-collapse-toggle svg { width: 16px; height: 16px; transition: transform var(--dur-normal) var(--ease-premium); }
+
 .fam-profile-children .profile-person { cursor: pointer; }
 .fam-profile-children .profile-person:hover { border-color: var(--color-primary-soft); }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .famp-grid { grid-template-columns: 1fr; }
+  .famp-guardian-card__details { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .profile-header { flex-wrap: wrap; }
+  .profile-header__actions { width: 100%; }
+  .famp-quick-actions { width: 100%; }
+  .famp-quick-actions .btn { flex: 1; }
+  .famp-quick-actions .btn span:not(.btn__spinner) { display: inline; }
+  .famp-child-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .famp-collapse-toggle { display: inline-flex; }
+  .famp-section.is-collapsed .famp-section__body { display: none; }
+  .famp-section.is-collapsed .famp-collapse-toggle svg { transform: rotate(-90deg); }
+}
