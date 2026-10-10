@@ -13,6 +13,13 @@
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
+  /** Guardian.relation is stored as "<relation> of <child name>" (e.g. "Mother
+      of Ivy Thornbury") so it reads sensibly across multiple children sharing
+      a guardian; strips the child-specific suffix back off for display. */
+  function cleanRelation(relation, childName) {
+    const escaped = String(childName || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return String(relation || '').replace(new RegExp('\\s+of\\s+' + escaped + '$'), '');
+  }
   function pad2(n) { return String(n).padStart(2, '0'); }
   function todayISO() { const d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
   function initials(name) {
@@ -198,7 +205,7 @@
       </div>`;
   }
   function wireHeaderActions() {
-    $('hdrEditBtn').addEventListener('click', () => { window.location.href = 'children.html?action=edit&id=' + encodeURIComponent(record.id); });
+    $('hdrEditBtn').addEventListener('click', () => { window.location.href = 'enroll.html?id=' + encodeURIComponent(record.id); });
     $('hdrMessageBtn').addEventListener('click', () => { window.location.href = 'children.html?action=message&id=' + encodeURIComponent(record.id); });
     $('hdrMoveBtn').addEventListener('click', () => { window.location.href = 'children.html?action=move&id=' + encodeURIComponent(record.id); });
     $('hdrWithdrawBtn').addEventListener('click', () => { window.location.href = 'children.html?action=withdraw&id=' + encodeURIComponent(record.id); });
@@ -322,7 +329,7 @@
           <div class="profile-card__head"><span class="profile-card__title">Family contact</span>${cardEditBtn('ovEditFamily', 'Edit family contact')}</div>
           ${guardian ? `
             <div class="profile-row"><span class="profile-row__label">Name</span><span class="profile-row__value">${escapeHtml(guardian.name)}</span></div>
-            <div class="profile-row"><span class="profile-row__label">Relationship</span><span class="profile-row__value">${escapeHtml((guardian.relation || '').replace('Parent of ' + child.name, 'Parent'))}</span></div>
+            <div class="profile-row"><span class="profile-row__label">Relationship</span><span class="profile-row__value">${escapeHtml(cleanRelation(guardian.relation, child.name))}</span></div>
             <div class="profile-row"><span class="profile-row__label">Contact</span><span class="profile-row__value">${escapeHtml(guardian.contact || '—')}</span></div>
           ` : emptyStateHtml('No guardian on file.')}
         </div>
@@ -354,7 +361,7 @@
         </div>
       </div>`;
 
-    $('ovEditPersonal').addEventListener('click', () => { window.location.href = 'children.html?action=edit&id=' + encodeURIComponent(child.id); });
+    $('ovEditPersonal').addEventListener('click', () => { window.location.href = 'enroll.html?id=' + encodeURIComponent(child.id); });
     $('ovEditFamily').addEventListener('click', openFamilyModal);
   }
 
@@ -370,7 +377,7 @@
           ${guardian ? `
             <div class="profile-people"><div class="profile-person">
               <span class="profile-person__avatar">${escapeHtml(initials(guardian.name))}</span>
-              <span class="profile-person__body"><span class="profile-person__name">${escapeHtml(guardian.name)}</span><span class="profile-person__sub">${escapeHtml((guardian.relation || '').replace('Parent of ' + child.name, 'Parent'))} · ${escapeHtml(guardian.contact || 'No contact on file')}</span></span>
+              <span class="profile-person__body"><span class="profile-person__name">${escapeHtml(guardian.name)}</span><span class="profile-person__sub">${escapeHtml(cleanRelation(guardian.relation, child.name))} · ${escapeHtml(guardian.contact || 'No contact on file')}</span></span>
             </div></div>` : emptyStateHtml('No guardian on file.')}
         </div>
         <div class="profile-card">
@@ -659,7 +666,7 @@
   function openFamilyModal() {
     const guardian = guardianFor(record);
     $('familyName').value = guardian ? guardian.name : '';
-    $('familyRelation').value = guardian ? (guardian.relation || '').replace('Parent of ' + record.name, 'Parent') : '';
+    $('familyRelation').value = guardian ? cleanRelation(guardian.relation, record.name) : '';
     $('familyContact').value = guardian ? (guardian.contact || '') : '';
     setFieldError('familyName', null); setFieldError('familyContact', null);
     openModal('familyModalBackdrop');
@@ -836,7 +843,7 @@
           <p>Date of birth: ${formatDateMed(child.dob)} (${ageInfo(child.dob).label}) &nbsp;·&nbsp; Class: ${escapeHtml(child.room || '—')}</p>
         </div>
       </div>`;
-    if (guardian) html += `<h2>Family contact</h2><p>${escapeHtml(guardian.name)} — ${escapeHtml((guardian.relation || '').replace('Parent of ' + child.name, 'Parent'))}<br>${escapeHtml(guardian.contact || '')}</p>`;
+    if (guardian) html += `<h2>Family contact</h2><p>${escapeHtml(guardian.name)} — ${escapeHtml(cleanRelation(guardian.relation, child.name))}<br>${escapeHtml(guardian.contact || '')}</p>`;
     const medicalAlerts = alerts.filter((a) => a.type === 'allergy' || a.type === 'medical');
     const custodyAlerts = alerts.filter((a) => a.type === 'custody');
     const dietaryAlerts = alerts.filter((a) => a.type === 'dietary');

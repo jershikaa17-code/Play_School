@@ -1,0 +1,262 @@
+/* ==========================================================================
+   PLAY SCHOOL — Child Enrolment & Edit (S-ENROL)
+   Rich royal-blue/navy direction built entirely from T00 tokens:
+   --color-primary (violet, reads as royal blue) + --raw-ink-9xx (deep navy)
+   surfaces. Yellow accent is deliberately avoided except for the amber
+   waitlist notice, which reuses the existing semantic warning colour.
+   ========================================================================== */
+
+/* This page's content is taller than most viewports by design (five-step
+   wizard); keep the page scrollable but hide the browser's default track so
+   it doesn't compete visually with the sidebar's own hidden-scrollbar nav. */
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* ---------- header ---------- */
+.enroll-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-6); flex-wrap: wrap; }
+.enroll-header__title { font-family: var(--font-display); font-size: var(--fs-h1); font-weight: 560; background: linear-gradient(135deg, var(--color-text-primary), var(--color-primary-soft)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.enroll-header__text { margin-top: var(--space-2); color: var(--color-text-secondary); max-width: 56ch; }
+.enroll-mobile-progress { display: none; width: 100%; }
+
+/* ---------- duplicate warning ---------- */
+.enroll-duplicate {
+  display: flex; align-items: center; gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  background: color-mix(in srgb, var(--color-warn-600, var(--raw-warn-600)) 14%, var(--color-surface-primary));
+  border: 1px solid color-mix(in srgb, var(--raw-warn-500) 45%, transparent);
+  animation: enrollSlideIn 320ms var(--ease-premium);
+}
+.enroll-duplicate__icon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--raw-warn-500) 22%, transparent); color: var(--raw-warn-500); flex-shrink: 0; }
+.enroll-duplicate__icon svg { width: 18px; height: 18px; }
+.enroll-duplicate__body { flex: 1; font-size: var(--fs-body-sm); }
+.enroll-duplicate__title { font-weight: 700; }
+.enroll-duplicate__text { margin-top: 2px; color: var(--color-text-secondary); }
+@keyframes enrollSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------- layout ---------- */
+.enroll-layout { display: grid; grid-template-columns: 240px 1fr; gap: var(--space-6); align-items: start; }
+
+/* ---------- vertical stepper (desktop) ---------- */
+.enroll-stepper { position: sticky; top: calc(var(--header-h) + var(--space-5)); display: flex; flex-direction: column; gap: 0; }
+.enroll-step {
+  position: relative;
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-md);
+  background: none; border: none; text-align: left; cursor: pointer; width: 100%;
+  color: inherit; font: inherit;
+  transition: background var(--dur-normal) var(--ease-premium);
+}
+.enroll-step:hover { background: var(--color-surface-glass-light); }
+.enroll-step::before {
+  content: ''; position: absolute; left: 31px; top: 44px; bottom: -8px; width: 2px;
+  background: var(--color-border);
+}
+.enroll-step:last-child::before { display: none; }
+.enroll-step__dot {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center;
+  background: var(--color-surface-secondary); border: 1.5px solid var(--color-border);
+  color: var(--color-text-muted); font-weight: 700; font-size: var(--fs-caption);
+  position: relative; z-index: 1;
+  transition: all var(--dur-normal) var(--ease-premium);
+}
+.enroll-step__dot svg { width: 14px; height: 14px; }
+.enroll-step__body { padding-top: 4px; }
+.enroll-step__label { font-weight: 700; font-size: var(--fs-body-sm); color: var(--color-text-muted); transition: color var(--dur-normal) var(--ease-premium); }
+.enroll-step__hint { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 1px; }
+.enroll-step.is-complete::before { background: var(--color-primary); }
+.enroll-step.is-complete .enroll-step__dot { background: var(--color-primary); border-color: var(--color-primary); color: var(--raw-white); }
+.enroll-step.is-current .enroll-step__dot { background: linear-gradient(145deg, var(--color-primary), var(--color-primary-strong)); border-color: var(--color-primary); color: var(--raw-white); box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-primary) 20%, transparent); transform: scale(1.06); }
+.enroll-step.is-current .enroll-step__label { color: var(--color-text-primary); }
+.enroll-step.is-error .enroll-step__dot { background: color-mix(in srgb, var(--color-error) 18%, transparent); border-color: var(--color-error); color: var(--color-error); }
+.enroll-step__check { animation: enrollTickIn 360ms var(--ease-premium); }
+@keyframes enrollTickIn { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ---------- card ---------- */
+.enroll-card {
+  padding: var(--space-7);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--raw-ink-850) 88%, var(--color-primary) 4%);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  min-height: 420px;
+}
+.enroll-card__inner { animation: enrollContentIn 360ms var(--ease-premium); }
+@keyframes enrollContentIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .enroll-card__inner { animation: none; } }
+
+.enroll-section-title { font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 560; margin-bottom: var(--space-1); }
+.enroll-section-text { color: var(--color-text-secondary); font-size: var(--fs-body-sm); margin-bottom: var(--space-6); }
+.enroll-subhead { font-weight: 700; font-size: var(--fs-body); margin: var(--space-6) 0 var(--space-3); display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.enroll-subhead:first-of-type { margin-top: 0; }
+
+/* ---------- field grid ---------- */
+.enroll-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+.enroll-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.enroll-grid .field--wide { grid-column: 1 / -1; }
+.enroll-field-age { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-4); height: var(--control-h-md); border-radius: var(--radius-md); background: var(--color-surface-secondary); color: var(--color-text-secondary); font-size: var(--fs-body-sm); font-weight: 600; }
+
+/* ---------- photo uploader ---------- */
+.enroll-photo { display: flex; align-items: center; gap: var(--space-5); margin-bottom: var(--space-6); }
+.enroll-photo__frame {
+  width: 96px; height: 96px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; overflow: hidden;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--color-primary) 22%, transparent), color-mix(in srgb, var(--color-secondary) 14%, transparent));
+  border: 2px dashed var(--color-border-strong);
+  color: var(--color-primary-soft);
+  transition: border-color var(--dur-normal) var(--ease-premium);
+}
+.enroll-photo__frame.has-photo { border-style: solid; border-color: var(--color-primary); }
+.enroll-photo__frame img { width: 100%; height: 100%; object-fit: cover; }
+.enroll-photo__frame svg { width: 30px; height: 30px; }
+.enroll-photo__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---------- chips (selectable, e.g. days / dietary tags) ---------- */
+.enroll-chip-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.enroll-chip {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-secondary);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm); font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-micro) var(--ease-premium);
+}
+.enroll-chip:hover { border-color: var(--color-border-strong); transform: translateY(-1px); }
+.enroll-chip.is-selected { background: linear-gradient(145deg, var(--color-primary), var(--color-primary-strong)); border-color: var(--color-primary); color: var(--raw-white); box-shadow: var(--shadow-sm); }
+.enroll-chip.is-selected:active { transform: scale(0.96); }
+
+/* ---------- family search ---------- */
+.enroll-family-search { position: relative; margin-bottom: var(--space-5); }
+.enroll-family-results { margin-top: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); }
+.enroll-family-result {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  border: 1.5px solid var(--color-border-subtle);
+  cursor: pointer;
+  transition: all var(--dur-micro) var(--ease-premium);
+}
+.enroll-family-result:hover { border-color: var(--color-primary-soft); transform: translateY(-1px); }
+.enroll-family-result.is-selected { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-secondary)); }
+.enroll-family-result__avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface-raised); font-weight: 700; font-size: var(--fs-caption); flex-shrink: 0; }
+.enroll-family-result__body { flex: 1; min-width: 0; }
+.enroll-family-result__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.enroll-family-result__sub { font-size: var(--fs-caption); color: var(--color-text-muted); }
+
+/* ---------- expandable entity cards (guardians / contacts / pickups / allergies / medications) ---------- */
+.enroll-entity { border-radius: var(--radius-lg); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); margin-bottom: var(--space-4); overflow: hidden; transition: border-color var(--dur-normal) var(--ease-premium); }
+.enroll-entity.is-restricted { border-color: color-mix(in srgb, var(--color-error) 55%, transparent); background: color-mix(in srgb, var(--color-error) 7%, var(--color-surface-secondary)); }
+.enroll-entity__head { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); cursor: pointer; }
+.enroll-entity__avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface-raised); font-weight: 700; font-size: var(--fs-caption); flex-shrink: 0; overflow: hidden; }
+.enroll-entity__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.enroll-entity__title { font-weight: 700; font-size: var(--fs-body-sm); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.enroll-entity__sub { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 1px; }
+.enroll-entity__actions { display: flex; align-items: center; gap: var(--space-1); margin-left: auto; flex-shrink: 0; }
+.enroll-entity__chevron { transition: transform var(--dur-normal) var(--ease-premium); color: var(--color-text-muted); }
+.enroll-entity.is-open .enroll-entity__chevron { transform: rotate(180deg); }
+.enroll-entity__body { max-height: 0; overflow: hidden; transition: max-height var(--dur-normal) var(--ease-premium); }
+.enroll-entity.is-open .enroll-entity__body { max-height: 900px; }
+.enroll-entity__body-inner { padding: 0 var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); }
+.enroll-entity__toggles { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+.enroll-entity__toggle { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-caption); font-weight: 600; color: var(--color-text-secondary); }
+.enroll-icon-btn { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: none; border: none; color: var(--color-text-muted); cursor: pointer; transition: all var(--dur-micro) var(--ease-premium); }
+.enroll-icon-btn:hover { color: var(--color-text-primary); background: var(--color-surface-glass-light); transform: scale(1.08); }
+.enroll-icon-btn--danger:hover { color: var(--color-error); background: color-mix(in srgb, var(--color-error) 14%, transparent); }
+.enroll-icon-btn svg { width: 15px; height: 15px; }
+.enroll-badge-primary-contact { background: color-mix(in srgb, var(--color-primary) 18%, transparent); color: var(--color-primary-soft); padding: 2px var(--space-2); border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: var(--ls-wide); }
+.enroll-badge-restricted { background: color-mix(in srgb, var(--color-error) 20%, transparent); color: var(--color-error); padding: 2px var(--space-2); border-radius: var(--radius-pill); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: var(--ls-wide); }
+
+.enroll-add-btn { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* ---------- restricted persons: safety-first, high-contrast ---------- */
+.enroll-restricted-card { border-radius: var(--radius-lg); border: 1.5px solid color-mix(in srgb, var(--color-error) 55%, transparent); background: color-mix(in srgb, var(--color-error) 9%, var(--color-surface-secondary)); padding: var(--space-4); margin-bottom: var(--space-4); }
+.enroll-restricted-card__head { display: flex; align-items: center; gap: var(--space-3); }
+.enroll-restricted-card__icon { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--color-error) 22%, transparent); color: var(--color-error); flex-shrink: 0; }
+.enroll-restricted-card__icon svg { width: 16px; height: 16px; }
+
+/* ---------- severity / priority badges ---------- */
+.enroll-severity--high { color: var(--color-error); font-weight: 700; }
+.enroll-severity--medium { color: var(--raw-warn-500); font-weight: 700; }
+.enroll-severity--low { color: var(--color-text-secondary); font-weight: 700; }
+
+/* ---------- empty state ---------- */
+.enroll-empty { text-align: center; padding: var(--space-6); color: var(--color-text-muted); font-size: var(--fs-body-sm); border: 1px dashed var(--color-border); border-radius: var(--radius-md); }
+.enroll-empty svg { width: 24px; height: 24px; margin-bottom: var(--space-2); opacity: 0.6; }
+
+/* ---------- class selection ---------- */
+.enroll-class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
+.enroll-class-card {
+  text-align: left; cursor: pointer; width: 100%;
+  padding: var(--space-5); border-radius: var(--radius-lg);
+  background: var(--color-surface-secondary); border: 2px solid var(--color-border-subtle);
+  transition: all var(--dur-normal) var(--ease-premium);
+  color: inherit; font: inherit;
+}
+.enroll-class-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--color-border-strong); }
+.enroll-class-card.is-selected { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-secondary)); box-shadow: var(--shadow-glow-primary); }
+.enroll-class-card__name { font-weight: 700; font-family: var(--font-display); font-size: var(--fs-body); }
+.enroll-class-card__meta { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 2px; }
+.enroll-class-card__cap { margin-top: var(--space-4); }
+.enroll-class-card__cap-row { display: flex; justify-content: space-between; font-size: var(--fs-caption); color: var(--color-text-secondary); margin-bottom: 6px; }
+.enroll-capacity-bar { height: 8px; border-radius: var(--radius-pill); background: var(--color-surface-raised); overflow: hidden; }
+.enroll-capacity-bar__fill { height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--color-primary-soft), var(--color-primary)); transition: width 600ms var(--ease-premium); }
+.enroll-capacity-bar__fill.is-full { background: linear-gradient(90deg, var(--raw-warn-500), var(--color-error)); }
+
+.enroll-waitlist-notice {
+  display: flex; align-items: flex-start; gap: var(--space-4);
+  padding: var(--space-5); border-radius: var(--radius-lg); margin-top: var(--space-5);
+  background: color-mix(in srgb, var(--raw-warn-500) 14%, var(--color-surface-secondary));
+  border: 1px solid color-mix(in srgb, var(--raw-warn-500) 45%, transparent);
+  animation: enrollSlideIn 320ms var(--ease-premium);
+}
+.enroll-waitlist-notice__icon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--raw-warn-500) 25%, transparent); color: var(--raw-warn-500); flex-shrink: 0; }
+.enroll-waitlist-notice__icon svg { width: 18px; height: 18px; }
+.enroll-waitlist-notice__title { font-weight: 700; }
+.enroll-waitlist-notice__text { font-size: var(--fs-body-sm); color: var(--color-text-secondary); margin-top: 2px; }
+.enroll-waitlist-notice__action { margin-top: var(--space-3); }
+
+/* ---------- footer ---------- */
+.enroll-footer {
+  position: sticky; bottom: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: var(--space-6); padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+}
+.enroll-footer__right { display: flex; gap: var(--space-3); }
+
+/* ---------- field error inline anim ---------- */
+.field.is-error { animation: enrollShake 320ms var(--ease-premium); }
+@keyframes enrollShake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-3px); } 40%, 60% { transform: translateX(3px); } }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .enroll-layout { grid-template-columns: 1fr; }
+  .enroll-stepper { display: none; }
+  .enroll-mobile-progress { display: block; }
+  .enroll-mobile-progress__row { display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-body-sm); font-weight: 700; margin-bottom: var(--space-2); }
+  .enroll-mobile-progress__label { color: var(--color-text-muted); font-weight: 600; }
+  .enroll-card { padding: var(--space-5); }
+}
+
+@media (max-width: 767px) {
+  .enroll-grid, .enroll-grid--3 { grid-template-columns: 1fr; }
+  .enroll-header__title { font-size: var(--fs-h2); }
+  .enroll-photo { flex-direction: column; align-items: flex-start; }
+  .enroll-footer { flex-direction: column-reverse; gap: var(--space-3); align-items: stretch; }
+  .enroll-footer__right { width: 100%; }
+  .enroll-footer__right .btn, .enroll-footer > .btn { width: 100%; }
+  .enroll-class-grid { grid-template-columns: 1fr; }
+}

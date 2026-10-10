@@ -69,9 +69,9 @@
     { id: 'S-3001', type: 'Staff', name: 'Nithya', relation: 'Admin', status: 'Active' },
     { id: 'S-3002', type: 'Staff', name: 'Rhea Kapoor', relation: 'Teacher · Marigold Room', status: 'Active' },
 
-    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active', startTime: '08:00' },
-    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active', startTime: '08:15' },
-    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active', startTime: '08:30' },
+    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', teacherId: 'S-3001', status: 'Active', startTime: '08:00', capacity: 14 },
+    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', teacherId: 'S-3002', status: 'Active', startTime: '08:15', capacity: 16 },
+    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', teacherId: 'S-3001', status: 'Active', startTime: '08:30', capacity: 15 },
 
     /* ---------- sample payments + incident ----------
        Payment records are matched to a child by name (the existing

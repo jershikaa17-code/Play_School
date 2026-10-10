@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enrol a Child — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="enroll.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <nav class="breadcrumbs" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
+    <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+    <span class="breadcrumbs__sep">/</span>
+    <a class="breadcrumbs__link" href="children.html">Children</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current" id="enrollBreadcrumb" aria-current="page">Enrol a child</span>
+  </nav>
+
+  <div class="enroll-header">
+    <div>
+      <h1 class="enroll-header__title" id="enrollTitle">Enrol a Child</h1>
+      <p class="enroll-header__text" id="enrollSubtitle">A guided process to capture the child's details, family information, safety information and class preferences.</p>
+    </div>
+    <div class="enroll-mobile-progress" id="enrollMobileProgress"></div>
+  </div>
+
+  <div class="enroll-duplicate" id="enrollDuplicateBanner" hidden></div>
+
+  <div class="enroll-layout">
+    <nav class="enroll-stepper" id="enrollStepper" aria-label="Enrolment steps"></nav>
+
+    <div class="enroll-card">
+      <div class="enroll-card__inner" id="enrollStepContent"></div>
+    </div>
+  </div>
+
+  <div class="enroll-footer">
+    <button class="btn btn--ghost" type="button" id="enrollBackBtn">Back</button>
+    <div class="enroll-footer__right">
+      <button class="btn btn--secondary" type="button" id="enrollDraftBtn">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save draft</span>
+      </button>
+      <button class="btn btn--primary" type="button" id="enrollNextBtn">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="enrollNextLabel">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="enroll.js"></script>
+</body>
+</html>

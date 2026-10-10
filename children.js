@@ -37,8 +37,8 @@
     custody: { label: 'Custody', icon: ICON.custody, cls: 'alert-icon--custody' },
     dietary: { label: 'Dietary', icon: ICON.dietary, cls: 'alert-icon--dietary' },
   };
-  const STATUS_OPTIONS = ['Active', 'Starting soon', 'Withdrawn', 'Graduated'];
-  const STATUS_BADGE = { 'Active': 'badge--success', 'Starting soon': 'badge--warning', 'Withdrawn': 'badge--error', 'Graduated': 'badge--neutral' };
+  const STATUS_OPTIONS = ['Active', 'Starting soon', 'Draft', 'Waitlisted', 'Withdrawn', 'Graduated'];
+  const STATUS_BADGE = { 'Active': 'badge--success', 'Starting soon': 'badge--warning', 'Draft': 'badge--neutral', 'Waitlisted': 'badge--warning', 'Withdrawn': 'badge--error', 'Graduated': 'badge--neutral' };
   const AGE_BANDS = [
     { key: 'infant', label: 'Infant (0–18mo)', min: 0, max: 18 },
     { key: 'toddler', label: 'Toddler (18mo–3y)', min: 18, max: 36 },
@@ -238,7 +238,7 @@
       $('childEmptyText').textContent = 'Once you enrol your first child, they will appear here with their class and safety details.';
       $('childEmptyAction').innerHTML = '<button class="btn btn--accent" type="button" id="childEmptyEnrolBtn">Enrol child</button>';
       const btn = $('childEmptyEnrolBtn');
-      if (btn) btn.addEventListener('click', () => openChildFormModal(null));
+      if (btn) btn.addEventListener('click', () => { window.location.href = 'enroll.html'; });
     }
   }
 
@@ -246,8 +246,8 @@
   function wireToolbar() {
     $('childSearch').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
     $('exportAllBtn').addEventListener('click', () => exportChildren(filteredChildren(), 'children-export'));
-    $('enrolBtn').addEventListener('click', () => openChildFormModal(null));
-    $('childFab').addEventListener('click', () => openChildFormModal(null));
+    $('enrolBtn').addEventListener('click', () => { window.location.href = 'enroll.html'; });
+    $('childFab').addEventListener('click', () => { window.location.href = 'enroll.html'; });
   }
 
   function renderToolbarFilters() {
@@ -593,7 +593,7 @@
     const child = allChildren().find((c) => c.id === childId);
     if (!child) return;
     if (action === 'view') window.location.href = 'record.html?id=' + encodeURIComponent(childId);
-    else if (action === 'edit') openChildFormModal(child);
+    else if (action === 'edit') window.location.href = 'enroll.html?id=' + encodeURIComponent(childId);
     else if (action === 'move') openMoveClassModal([child]);
     else if (action === 'withdraw') openWithdrawModal(child);
   }
