@@ -79,7 +79,10 @@
   function presentTodayCount() {
     const marks = {};
     attendanceToday().forEach((a) => { marks[a.childId] = a.status; });
-    return activeChildren().filter((c) => (marks[c.id] || 'Present') === 'Present').length;
+    // Present unless explicitly marked Absent — a Late arrival (set by the
+    // Live Attendance page once the child actually checks in) still counts
+    // as present for the day, same as an unmarked child defaults to present.
+    return activeChildren().filter((c) => (marks[c.id] || 'Present') !== 'Absent').length;
   }
   function attendanceRate() {
     const total = activeChildren().length;

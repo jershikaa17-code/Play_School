@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Live Attendance — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="attendance.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <div id="attLocked" class="att-locked" hidden>
+    <div class="att-locked__icon" id="attLockedIcon"></div>
+    <p class="att-locked__text">Live Attendance is included in the <b>Standard</b> plan as part of <b>Attendance &amp; Check-in</b>.</p>
+    <div id="attLockedAction"></div>
+  </div>
+
+  <div id="attMain">
+    <div class="att-page-header">
+      <div>
+        <h1 class="att-page-header__heading">Live Attendance</h1>
+        <p class="att-page-header__text">Monitor arrivals, departures and daily attendance.</p>
+      </div>
+    </div>
+
+    <div class="att-toolbar">
+      <div class="att-toolbar__row">
+        <div class="field att-toolbar__field">
+          <label class="field__label" for="attClassSelect">Class</label>
+          <select class="select" id="attClassSelect"></select>
+        </div>
+        <div class="att-toolbar__date">
+          <label class="field__label" for="attDateInput">Date</label>
+          <div class="att-date-controls">
+            <button class="btn btn--icon" id="attPrevDay" type="button" aria-label="Previous day">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <input class="input" id="attDateInput" type="date" />
+            <button class="btn btn--icon" id="attNextDay" type="button" aria-label="Next day">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="btn btn--secondary btn--sm" id="attTodayBtn" type="button">Today</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="att-counters" id="attCounters"></div>
+    </div>
+
+    <div class="att-filters" id="attFilters" role="tablist" aria-label="Filter by status"></div>
+
+    <div class="att-bulkbar" id="attBulkBar"></div>
+
+    <div id="attSkeleton" class="att-skeleton"><div class="skeleton" style="height:360px; border-radius: var(--radius-lg);"></div></div>
+
+    <div id="attGrid" class="att-grid" hidden></div>
+
+    <div class="att-undo-bar" id="attUndoBar" hidden>
+      <span id="attUndoText"></span>
+      <button class="btn btn--text btn--sm" type="button" id="attUndoBtn" style="color: var(--raw-white);">Undo</button>
+    </div>
+
+    <div class="state-panel" id="attEmptyState" hidden>
+      <div class="state-panel__icon" id="attEmptyIcon"></div>
+      <div class="state-panel__title" id="attEmptyTitle"></div>
+      <p class="state-panel__text" id="attEmptyText"></p>
+      <div class="state-panel__action" id="attEmptyAction"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Check-in modal (fast, single step) ============ -->
+<div class="modal-backdrop" id="checkinModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Check in child">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="att-modal-child" id="checkinChildHead"></div>
+    <h3 class="modal__title">Check in</h3>
+    <form id="checkinForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="checkinTime">Check-in time</label>
+        <input class="input" id="checkinTime" type="time" />
+        <p class="field__hint" id="checkinLateHint"></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="checkinDroppedBy">Dropped off by <span style="text-transform:none; font-weight:400; color:var(--color-text-muted);">(optional)</span></label>
+        <select class="select" id="checkinDroppedBy"></select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="checkinCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="checkinConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Check in</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Check-out modal (safety-critical) ============ -->
+<div class="modal-backdrop" id="checkoutModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Check out child">
+  <div class="modal att-checkout-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="att-modal-child" id="checkoutChildHead"></div>
+    <div class="att-modal-scroll">
+      <p class="field__label" style="margin-top: var(--space-4);">Who is collecting this child? <span class="req">*</span></p>
+      <div class="att-pickup-list" id="checkoutPickupList"></div>
+
+      <div id="checkoutSomeoneElseWarning" class="att-warning-box" hidden style="margin-top: var(--space-4);"></div>
+
+      <div class="field" id="checkoutPasscodeField" hidden style="margin-top: var(--space-4);">
+        <label class="field__label" for="checkoutPasscode">Enter pickup passcode <span class="req">*</span></label>
+        <input class="input" id="checkoutPasscode" type="password" inputmode="numeric" autocomplete="off" />
+        <p class="field__error" id="err-checkoutPasscode" hidden></p>
+        <p class="field__hint">Ask the collector for their 4-digit passcode. This demo verifies it only in the browser — see the security note in the project report.</p>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="checkoutCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="checkoutConfirm" disabled>
+        <span class="btn__spinner" aria-hidden="true"></span><span>Confirm check-out</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Attendance details (Out / audit view) ============ -->
+<div class="modal-backdrop" id="detailsModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Attendance details">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="att-modal-child" id="detailsChildHead"></div>
+    <h3 class="modal__title">Today's attendance</h3>
+    <div id="detailsBody" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-3);"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="detailsClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Absence modal (single + edit) ============ -->
+<div class="modal-backdrop" id="absenceModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Mark absent">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="att-modal-child" id="absenceChildHead"></div>
+    <h3 class="modal__title">Mark absent</h3>
+    <form id="absenceForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label">Reason <span class="req">*</span></label>
+        <div class="att-chip-row" id="absenceReasonChips">
+          <button class="att-chip" type="button" data-reason="Sick">Sick</button>
+          <button class="att-chip" type="button" data-reason="Holiday">Holiday</button>
+          <button class="att-chip" type="button" data-reason="Unknown">Unknown</button>
+          <button class="att-chip" type="button" data-reason="Other">Other</button>
+        </div>
+        <p class="field__hint" id="absenceUnknownHint" hidden>We'll remind the front desk to contact the family if this is still unresolved after 10:00.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="absenceNote">Note</label>
+        <input class="input" id="absenceNote" type="text" placeholder="Optional" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="absenceCancel">Cancel</button>
+      <button class="btn btn--destructive" type="button" id="absenceConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="absenceConfirmLabel">Mark absent</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Bulk absence modal ============ -->
+<div class="modal-backdrop" id="bulkAbsenceModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Mark selected absent">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Mark selected absent</h3>
+    <p class="modal__text" id="bulkAbsenceFor"></p>
+    <form id="bulkAbsenceForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label">Reason <span class="req">*</span></label>
+        <div class="att-chip-row" id="bulkAbsenceReasonChips">
+          <button class="att-chip" type="button" data-reason="Sick">Sick</button>
+          <button class="att-chip" type="button" data-reason="Holiday">Holiday</button>
+          <button class="att-chip" type="button" data-reason="Unknown">Unknown</button>
+          <button class="att-chip" type="button" data-reason="Other">Other</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="bulkAbsenceNote">Note</label>
+        <input class="input" id="bulkAbsenceNote" type="text" placeholder="Optional" />
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="bulkAbsenceCancel">Cancel</button>
+      <button class="btn btn--destructive" type="button" id="bulkAbsenceConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Mark absent</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="attendance.js"></script>
+</body>
+</html>

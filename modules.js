@@ -51,7 +51,7 @@
     {
       id: 'attendance',
       navLabel: 'Attendance & Check-in',
-      href: 'module.html?id=attendance',
+      href: 'attendance.html',
       requiredPlan: 'Standard',
       name: 'Attendance & Check-in',
       icon: ICONS.attendance,

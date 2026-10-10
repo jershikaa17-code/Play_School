@@ -11,31 +11,52 @@
       id: 'C-1001', type: 'Child', name: 'Amara Osei', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
       dob: '2023-06-10', startDate: '2025-09-02',
       alerts: [{ type: 'allergy', detail: 'Severe peanut allergy — EpiPen in office', allergen: 'peanuts' }],
+      authorizedPickups: [
+        { id: 'PU-10011', name: 'Folasade Osei', relation: 'Mother', restricted: false, passcode: '4821' },
+        { id: 'PU-10012', name: 'Kwame Osei', relation: 'Father', restricted: false, passcode: null },
+      ],
     },
     {
       id: 'C-1002', type: 'Child', name: 'Rhea Kapoor', room: 'Marigold Room', status: 'Active', guardianId: 'G-2002',
       dob: '2024-02-10', startDate: '2026-02-10',
       alerts: [{ type: 'dietary', detail: 'Vegetarian diet only — no meat or fish' }],
+      authorizedPickups: [
+        { id: 'PU-10021', name: 'Nikhil Kapoor', relation: 'Father', restricted: false, passcode: null },
+      ],
     },
     {
       id: 'C-1003', type: 'Child', name: 'Leo Fernandes', room: 'Daisy Room', status: 'Starting soon', guardianId: 'G-2003',
       dob: '2024-12-10', startDate: '2026-11-03',
       alerts: [],
+      authorizedPickups: [
+        { id: 'PU-10031', name: 'Priya Fernandes', relation: 'Mother', restricted: false, passcode: null },
+      ],
     },
     {
       id: 'C-1004', type: 'Child', name: 'Noor Haddad', room: 'Sunflower Room', status: 'Withdrawn', guardianId: 'G-2004',
       dob: '2022-08-15', startDate: '2024-09-01', withdrawnDate: '2026-01-14', withdrawnReason: 'Family relocated out of the district.',
       alerts: [{ type: 'medical', detail: 'Asthma — rescue inhaler kept in classroom cabinet' }],
+      authorizedPickups: [
+        { id: 'PU-10041', name: 'Sara Haddad', relation: 'Mother', restricted: false, passcode: null },
+      ],
     },
     {
       id: 'C-1005', type: 'Child', name: 'Ananya Raj', room: 'Marigold Room', status: 'Active', guardianId: 'G-2005',
       dob: '2022-11-10', startDate: '2025-01-13',
       alerts: [{ type: 'custody', detail: 'Only Aanya Kumar and the listed grandparents may collect Ananya — see custody order on file' }],
+      authorizedPickups: [
+        { id: 'PU-10051', name: 'Aanya Kumar', relation: 'Mother', restricted: false, passcode: '7730' },
+        { id: 'PU-10052', name: 'Meena Kumar', relation: 'Grandmother', restricted: false, passcode: null },
+        { id: 'PU-10053', name: 'Rohan Raj', relation: 'Father', restricted: true, restrictionReason: 'Custody order on file — do not release.' },
+      ],
     },
     {
       id: 'C-1006', type: 'Child', name: 'Kabir Siddiqui', room: 'Daisy Room', status: 'Graduated', guardianId: 'G-2006',
       dob: '2020-09-02', startDate: '2022-09-01',
       alerts: [],
+      authorizedPickups: [
+        { id: 'PU-10061', name: 'Imran Siddiqui', relation: 'Father', restricted: false, passcode: null },
+      ],
     },
 
     { id: 'G-2001', type: 'Guardian', name: 'Folasade Osei', relation: 'Parent of Amara Osei', status: 'Active', contact: 'folasade.osei@example.com' },
@@ -48,9 +69,9 @@
     { id: 'S-3001', type: 'Staff', name: 'Nithya', relation: 'Admin', status: 'Active' },
     { id: 'S-3002', type: 'Staff', name: 'Rhea Kapoor', relation: 'Teacher · Marigold Room', status: 'Active' },
 
-    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active' },
-    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active' },
-    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active' },
+    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', status: 'Active', startTime: '08:00' },
+    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', status: 'Active', startTime: '08:15' },
+    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', status: 'Active', startTime: '08:30' },
 
     /* ---------- weekly menu template ----------
        One record per weekday (0=Sunday … 6=Saturday), each item tagged with
@@ -160,6 +181,69 @@
       rsvps: { 'G-2001': 'yes', 'G-2003': 'yes', 'G-2005': 'no' }, consents: {},
     },
   ];
+
+  /* ---------- roster expansion ----------
+     A handful of hand-written seed children is enough to exercise every
+     feature, but it leaves each class with only 0–2 Active children, which
+     makes the Live Attendance page's counters/ratio look sparse and
+     unrealistic. This fills each class out to a believable size. Written as
+     a compact table + loop (not 29 duplicated record blocks) for the same
+     child/guardian/authorizedPickup shape used by the hand-written seed
+     children above — nothing here is hidden or computed differently. */
+  (function expandRoster() {
+    const ROSTER = [
+      // [firstName, lastName, room, dob, guardianFirst, guardianLast, relation]
+      ['Zara', 'Mehta', 'Sunflower Room', '2024-05-14', 'Kavya', 'Mehta', 'Mother'],
+      ['Ishaan', 'Das', 'Sunflower Room', '2023-11-02', 'Arjun', 'Das', 'Father'],
+      ['Lily', 'Thompson', 'Sunflower Room', '2024-01-20', 'Grace', 'Thompson', 'Mother'],
+      ['Tariq', 'Hassan', 'Sunflower Room', '2023-09-08', 'Yusuf', 'Hassan', 'Father'],
+      ['Nora', 'Lindqvist', 'Sunflower Room', '2024-03-30', 'Elin', 'Lindqvist', 'Mother'],
+      ['Kai', 'Nakamura', 'Sunflower Room', '2023-07-17', 'Sato', 'Nakamura', 'Father'],
+      ['Amelia', 'Santos', 'Sunflower Room', '2024-02-11', 'Camila', 'Santos', 'Mother'],
+
+      ['Dev', 'Patel', 'Marigold Room', '2021-06-05', 'Nisha', 'Patel', 'Mother'],
+      ['Ella', 'Morgan', 'Marigold Room', '2020-12-19', 'James', 'Morgan', 'Father'],
+      ['Rohan', 'Verma', 'Marigold Room', '2021-04-22', 'Sunita', 'Verma', 'Mother'],
+      ['Grace', 'Okafor', 'Marigold Room', '2020-08-30', 'Chidi', 'Okafor', 'Father'],
+      ['Vikram', 'Rao', 'Marigold Room', '2021-01-15', 'Lakshmi', 'Rao', 'Mother'],
+      ['Sofia', 'Garcia', 'Marigold Room', '2020-10-09', 'Elena', 'Garcia', 'Mother'],
+      ['Anika', 'Chowdhury', 'Marigold Room', '2021-07-02', 'Rafiq', 'Chowdhury', 'Father'],
+      ['Noah', 'Mitchell', 'Marigold Room', '2020-11-25', 'Hannah', 'Mitchell', 'Mother'],
+      ['Priya', 'Iyer', 'Marigold Room', '2021-03-18', 'Ramesh', 'Iyer', 'Father'],
+      ['Liam', "O'Connor", 'Marigold Room', '2020-09-14', 'Siobhan', "O'Connor", 'Mother'],
+      ['Tara', 'Krishnan', 'Marigold Room', '2021-05-27', 'Deepa', 'Krishnan', 'Mother'],
+      ['Omar', 'Ali', 'Marigold Room', '2020-07-11', 'Fatima', 'Ali', 'Mother'],
+      ['Isla', 'Fraser', 'Marigold Room', '2021-02-08', 'Robert', 'Fraser', 'Father'],
+      ['Yash', 'Gupta', 'Marigold Room', '2020-06-21', 'Anjali', 'Gupta', 'Mother'],
+
+      ['Maya', 'Bose', 'Daisy Room', '2018-04-16', 'Rina', 'Bose', 'Mother'],
+      ['Arjun', 'Nair', 'Daisy Room', '2017-11-30', 'Divya', 'Nair', 'Mother'],
+      ['Nina', 'Castillo', 'Daisy Room', '2018-08-05', 'Marco', 'Castillo', 'Father'],
+      ['Rafael', 'Silva', 'Daisy Room', '2017-06-12', 'Beatriz', 'Silva', 'Mother'],
+      ['Chloe', 'Bennett', 'Daisy Room', '2018-02-27', 'David', 'Bennett', 'Father'],
+      ['Advait', 'Joshi', 'Daisy Room', '2017-09-19', 'Meera', 'Joshi', 'Mother'],
+      ['Layla', 'Ibrahim', 'Daisy Room', '2018-01-08', 'Khalid', 'Ibrahim', 'Father'],
+      ['Felix', 'Andersson', 'Daisy Room', '2017-12-03', 'Karin', 'Andersson', 'Mother'],
+    ];
+    ROSTER.forEach((row, i) => {
+      const [first, last, room, dob, gFirst, gLast, relation] = row;
+      const n = 1101 + i;
+      const childId = 'C-' + n;
+      const guardianId = 'G-' + n;
+      const pickupId = 'PU-' + n;
+      const fullName = first + ' ' + last;
+      const guardianName = gFirst + ' ' + gLast;
+      records.push({
+        id: childId, type: 'Child', name: fullName, room, status: 'Active', guardianId,
+        dob, startDate: '2026-01-12', alerts: [],
+        authorizedPickups: [{ id: pickupId, name: guardianName, relation, restricted: false, passcode: null }],
+      });
+      records.push({
+        id: guardianId, type: 'Guardian', name: guardianName, relation: 'Parent of ' + fullName, status: 'Active',
+        contact: (gFirst + '.' + gLast).toLowerCase().replace(/[^a-z.]/g, '') + '@example.com',
+      });
+    });
+  })();
 
   /* ---------- persisted additions (classes, staff, etc. added post-seed) ----------
      The static `records` above is the seed dataset. Anything added at runtime
