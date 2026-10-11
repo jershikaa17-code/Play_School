@@ -1306,7 +1306,7 @@ body {
   background: var(--color-surface-glass);
 }
 .state-panel__icon {
-  width: 56px; height: 56px; margin-inline: auto var(--space-4);
+  width: 56px; height: 56px; margin: 0 auto var(--space-4);
   border-radius: 50%;
   display: grid; place-items: center;
   background: var(--color-surface-glass-light);

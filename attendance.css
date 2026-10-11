@@ -11,7 +11,7 @@
 
 /* ---------- locked (plan-gated) state ---------- */
 .att-locked { text-align: center; padding: var(--space-9) var(--space-6); max-width: 440px; margin-inline: auto; }
-.att-locked__icon { width: 48px; height: 48px; margin-inline: auto var(--space-4); border-radius: 50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display: grid; place-items: center; }
+.att-locked__icon { width: 48px; height: 48px; margin: 0 auto var(--space-4); border-radius: 50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display: grid; place-items: center; }
 .att-locked__icon svg { width: 22px; height: 22px; }
 .att-locked__text { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
 

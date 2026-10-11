@@ -165,6 +165,7 @@
   }
   function renderLocked() {
     $('attLocked').hidden = false;
+    $('attMain').hidden = true;
     $('attLockedIcon').innerHTML = ICON.lock;
     const isAdminish = role === 'Director' || role === 'Admin';
     $('attLockedAction').innerHTML = isAdminish

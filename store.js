@@ -244,6 +244,64 @@
     { id: 'RES-5', type: 'Resource', classId: 'CLS-9003', name: 'Science explorer kit', category: 'stem', status: 'Needs restock' },
     { id: 'RES-6', type: 'Resource', classId: 'CLS-9003', name: 'Class library — chapter books', category: 'books', status: 'Available' },
     { id: 'RES-7', type: 'Resource', classId: 'CLS-9003', name: 'Outdoor sports equipment bag', category: 'outdoor', status: 'Available' },
+
+    /* ---------- learning framework outcomes (Weekly & Monthly Planner — S27) ----------
+       A small real outcome bank activities can link to — there is no existing
+       curriculum-framework model in this project, so this is the actual data
+       "Activity.outcomeIds" references (not invented per-render). */
+    { id: 'OUT-1', type: 'FrameworkOutcome', code: 'PL.1', area: 'practical-life', label: 'Develops independence in everyday self-care routines' },
+    { id: 'OUT-2', type: 'FrameworkOutcome', code: 'PL.2', area: 'practical-life', label: 'Builds fine motor control through purposeful movement' },
+    { id: 'OUT-3', type: 'FrameworkOutcome', code: 'SEN.1', area: 'sensorial', label: 'Refines visual discrimination of size, shape and dimension' },
+    { id: 'OUT-4', type: 'FrameworkOutcome', code: 'SEN.2', area: 'sensorial', label: 'Develops auditory and tactile discrimination' },
+    { id: 'OUT-5', type: 'FrameworkOutcome', code: 'LANG.1', area: 'language', label: 'Builds phonemic awareness through sound and language games' },
+    { id: 'OUT-6', type: 'FrameworkOutcome', code: 'LANG.2', area: 'language', label: 'Expands vocabulary through naming and classification' },
+    { id: 'OUT-7', type: 'FrameworkOutcome', code: 'MATH.1', area: 'mathematics', label: 'Understands one-to-one correspondence with concrete materials' },
+    { id: 'OUT-8', type: 'FrameworkOutcome', code: 'MATH.2', area: 'mathematics', label: 'Recognises and extends simple patterns and sequences' },
+    { id: 'OUT-9', type: 'FrameworkOutcome', code: 'ART.1', area: 'creative', label: 'Expresses ideas through open-ended creative materials' },
+    { id: 'OUT-10', type: 'FrameworkOutcome', code: 'ART.2', area: 'creative', label: 'Develops gross motor confidence through active, outdoor play' },
+
+    /* ---------- activity library (Weekly & Monthly Planner — S27) ----------
+       Reused across the weekly grid, monthly themes and the activity-detail
+       modal. `ageRangeMonths` and `outcomeIds` are real fields other UI reads
+       — never fabricated at render time. */
+    { id: 'ACT-1', type: 'Activity', name: 'Pouring & spooning practice', area: 'practical-life', description: 'Transferring dry rice between small pitchers using a spoon, then a ladle.', objectives: 'Build hand-eye coordination and the concentration needed for independent self-care.', materials: ['Small pitcher', 'Tray', 'Dry rice', 'Spoon'], ageRangeMonths: [18, 36], outcomeIds: ['OUT-1', 'OUT-2'], notes: '' },
+    { id: 'ACT-2', type: 'Activity', name: 'Dressing frames', area: 'practical-life', description: 'Practising buttons, zips and buckles on wooden dressing frames.', objectives: 'Develop the fine motor skills and sequencing needed for independent dressing.', materials: ['Dressing frame set'], ageRangeMonths: [24, 48], outcomeIds: ['OUT-1', 'OUT-2'], notes: '' },
+    { id: 'ACT-3', type: 'Activity', name: 'Pink tower', area: 'sensorial', description: 'Building a tower from ten pink cubes graded by size.', objectives: 'Refine visual discrimination of dimension and develop a sense of order.', materials: ['Pink tower set'], ageRangeMonths: [30, 60], outcomeIds: ['OUT-3'], notes: '' },
+    { id: 'ACT-4', type: 'Activity', name: 'Sound cylinders', area: 'sensorial', description: 'Matching pairs of cylinders by the sound they make when shaken.', objectives: 'Sharpen auditory discrimination and careful listening.', materials: ['Sound cylinder set'], ageRangeMonths: [36, 72], outcomeIds: ['OUT-4'], notes: '' },
+    { id: 'ACT-5', type: 'Activity', name: 'I-spy sound games', area: 'language', description: 'Guessing objects around the room from their beginning sound.', objectives: 'Build phonemic awareness ahead of early reading.', materials: ['Small object basket'], ageRangeMonths: [36, 72], outcomeIds: ['OUT-5'], notes: '' },
+    { id: 'ACT-6', type: 'Activity', name: 'Storytime & retelling', area: 'language', description: 'A read-aloud story followed by children retelling it in their own words.', objectives: 'Expand vocabulary and build narrative sequencing.', materials: ['Picture book'], ageRangeMonths: [24, 84], outcomeIds: ['OUT-6'], notes: '' },
+    { id: 'ACT-7', type: 'Activity', name: 'Number rods', area: 'mathematics', description: 'Associating quantity 1–10 with graduated wooden rods.', objectives: 'Build a concrete sense of quantity before symbolic numbers.', materials: ['Number rod set'], ageRangeMonths: [36, 72], outcomeIds: ['OUT-7'], notes: '' },
+    { id: 'ACT-8', type: 'Activity', name: 'Pattern block sequencing', area: 'mathematics', description: 'Continuing and creating repeating patterns with coloured blocks.', objectives: 'Recognise, extend and create simple patterns.', materials: ['Pattern blocks'], ageRangeMonths: [42, 84], outcomeIds: ['OUT-8'], notes: '' },
+    { id: 'ACT-9', type: 'Activity', name: 'Watercolour exploration', area: 'creative', description: 'Open-ended painting with watercolours on large paper.', objectives: 'Encourage free expression and experimentation with colour.', materials: ['Watercolour set', 'Paper', 'Brushes', 'Aprons'], ageRangeMonths: [24, 84], outcomeIds: ['OUT-9'], notes: '' },
+    { id: 'ACT-10', type: 'Activity', name: 'Obstacle course', area: 'creative', description: 'A simple outdoor obstacle course of hoops, cones and a balance beam.', objectives: 'Build gross motor confidence, balance and coordination.', materials: ['Cones', 'Hoops', 'Balance beam'], ageRangeMonths: [30, 84], outcomeIds: ['OUT-10'], notes: '' },
+    { id: 'ACT-11', type: 'Activity', name: 'Nature walk & collection', area: 'creative', description: 'A guided walk collecting leaves, seeds and other natural materials to sort back in class.', objectives: 'Connect outdoor movement with observation and later sorting activities.', materials: ['Collection baskets'], ageRangeMonths: [24, 84], outcomeIds: ['OUT-10'], notes: '' },
+    { id: 'ACT-12', type: 'Activity', name: 'Practical life: table washing', area: 'practical-life', description: 'A full washing sequence — wetting, soaping, scrubbing and drying a small table.', objectives: 'Build a complete, ordered work cycle and care for the environment.', materials: ['Basin', 'Sponge', 'Apron', 'Drying cloth'], ageRangeMonths: [30, 60], outcomeIds: ['OUT-1'], notes: '' },
+
+    /* ---------- monthly themes (Weekly & Monthly Planner — S27) ---------- */
+    { id: 'THM-1', type: 'MonthlyTheme', classId: 'CLS-9001', month: '2026-10', weekStart: '2026-10-05', name: 'Getting to know our garden', focusAreas: ['sensorial', 'practical-life'], vocabulary: ['soil', 'seed', 'root', 'watering can'], description: 'Hands-on exploration of the school garden — textures, smells and simple planting.', linkedActivityIds: ['ACT-1', 'ACT-3'] },
+    { id: 'THM-2', type: 'MonthlyTheme', classId: 'CLS-9001', month: '2026-10', weekStart: '2026-10-12', name: 'Colours all around us', focusAreas: ['sensorial', 'creative'], vocabulary: ['primary', 'mix', 'bright', 'pale'], description: 'Noticing and naming colour in nature, then mixing and painting with it.', linkedActivityIds: ['ACT-9'] },
+    { id: 'THM-3', type: 'MonthlyTheme', classId: 'CLS-9001', month: '2026-10', weekStart: '2026-10-19', name: 'Autumn harvest', focusAreas: ['practical-life', 'mathematics'], vocabulary: ['harvest', 'pumpkin', 'count', 'basket'], description: 'Sorting and counting autumn produce while building practical-life care routines.', linkedActivityIds: ['ACT-7', 'ACT-12'] },
+    { id: 'THM-4', type: 'MonthlyTheme', classId: 'CLS-9001', month: '2026-10', weekStart: '2026-10-26', name: 'Sounds and rhymes', focusAreas: ['language'], vocabulary: ['rhyme', 'syllable', 'loud', 'quiet'], description: 'Playful sound games and rhyming stories to build early literacy.', linkedActivityIds: ['ACT-5', 'ACT-6'] },
+
+    /* ---------- weekly plan (Weekly & Monthly Planner — S27) ----------
+       One real prior week, already approved, so "Copy last week" has
+       genuine source data to demonstrate against from the very first load.
+       `assignments` keys are `Day::routineBlockId`, matching CLS-9001's own
+       RoutineBlock rows (RTN-S1..RTN-S8) — the same timetable Class
+       Workspace's Schedule tab reads/writes, so both pages share one truth. */
+    {
+      id: 'WP-1', type: 'WeeklyPlan', classId: 'CLS-9001', weekStart: '2026-09-28', status: 'Approved',
+      assignments: {
+        'Mon::RTN-S2': ['ACT-1'], 'Mon::RTN-S7': ['ACT-9'],
+        'Tue::RTN-S2': ['ACT-3'], 'Tue::RTN-S4': ['ACT-10'],
+        'Wed::RTN-S2': ['ACT-1', 'ACT-12'],
+        'Thu::RTN-S2': ['ACT-5'], 'Thu::RTN-S7': ['ACT-9'],
+        'Fri::RTN-S4': ['ACT-11'],
+      },
+      submittedBy: 'Meera Fernandes', submittedAt: '2026-09-25T09:00:00.000Z',
+      reviewedBy: 'Nithya', reviewedAt: '2026-09-25T14:00:00.000Z', reviewComment: null,
+      createdAt: '2026-09-24T10:00:00.000Z', updatedAt: '2026-09-25T14:00:00.000Z',
+    },
   ];
 
   /* ---------- roster expansion ----------

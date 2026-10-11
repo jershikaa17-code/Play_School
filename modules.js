@@ -100,7 +100,7 @@
     {
       id: 'curriculum',
       navLabel: 'Curriculum & Lesson Planning',
-      href: 'module.html?id=curriculum',
+      href: 'planner.html',
       requiredPlan: 'Premium',
       name: 'Curriculum & Lesson Planning',
       icon: ICONS.curriculum,

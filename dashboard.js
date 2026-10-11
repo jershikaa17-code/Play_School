@@ -23,6 +23,7 @@
     megaphone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2Z"/><path d="M11.6 16.8A3 3 0 1 1 7 13"/></svg>',
     lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
     inbox: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>',
   };
 
   let role = window.PlayShell.getDemoRole();
@@ -163,6 +164,7 @@
     { id: 'incidents', title: 'Recent incidents', roles: ['Director', 'Admin', 'Teacher'], module: 'health-safety', render: renderIncidentsWidget },
     { id: 'announcements', title: 'Announcements', roles: ['Director', 'Admin', 'Teacher'], module: 'communication', render: renderAnnouncementsWidget },
     { id: 'upcoming-events', title: 'Upcoming events', roles: ['Director', 'Admin', 'Teacher'], module: null, render: renderUpcomingEventsWidget },
+    { id: 'today-plan', title: "Today's plan", roles: ['Director', 'Admin', 'Teacher'], module: 'curriculum', render: renderTodayPlanWidget },
   ];
   function prefsKey() { return 'ps_dashboard_widgets_' + role; }
   function getWidgetPrefs() {
@@ -418,6 +420,37 @@
           <div class="dash-list-row__meta">${date.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}${event.allDay ? ' · All day' : ' · ' + event.startTime}</div>
         </div>
       </a>`).join('')}</div>`;
+  }
+  /** Teacher dashboard widget (S04) for the Weekly & Monthly Planner (S27).
+      This demo has one fixed signed-in identity with no per-teacher class
+      assignment, so it honestly shows the first active class's plan (named
+      in the widget) rather than pretending to be personalised. */
+  function renderTodayPlanWidget(el) {
+    const classes = window.PlayStore.getByType('Class').filter((c) => c.status !== 'Archived');
+    const cls = classes[0];
+    if (!cls) { el.innerHTML = emptyState('No classes have been set up yet.'); return; }
+    const today = new Date();
+    const abbrs = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const todayAbbr = abbrs[today.getDay()];
+    const diff = today.getDay() === 0 ? -6 : 1 - today.getDay();
+    const monday = new Date(today); monday.setDate(today.getDate() + diff);
+    const weekStart = monday.toISOString().slice(0, 10);
+    const plan = window.PlayStore.getByType('WeeklyPlan').find((p) => p.classId === cls.id && p.weekStart === weekStart);
+    const statusLine = `<div class="dash-list-row__meta" style="margin-bottom: var(--space-3);">${escapeHtml(cls.name)} · ${plan ? escapeHtml(plan.status) : 'No plan yet'}</div>`;
+    const openLink = `<a class="dash-list-row" style="justify-content:center; font-weight:700; color:var(--color-primary-soft);" href="planner.html?classId=${encodeURIComponent(cls.id)}">Open full weekly planner →</a>`;
+    if (['Sat', 'Sun'].includes(todayAbbr)) { el.innerHTML = statusLine + emptyState('No school today.') + openLink; return; }
+    const blocks = window.PlayStore.getByType('RoutineBlock').filter((b) => b.classId === cls.id).sort((a, b) => a.startTime.localeCompare(b.startTime));
+    if (!blocks.length) { el.innerHTML = statusLine + emptyState(`No timetable configured for ${cls.name} yet.`) + openLink; return; }
+    const rows = blocks.slice(0, 5).map((b) => {
+      const activityIds = (plan && plan.assignments && plan.assignments[todayAbbr + '::' + b.id]) || [];
+      const names = activityIds.map((id) => { const a = window.PlayStore.getById(id); return a ? a.name : null; }).filter(Boolean);
+      return { title: b.activity, meta: formatTimeRange12(b.startTime, b.endTime) + (names.length ? ' · ' + names.join(', ') : ' · Not planned yet') };
+    });
+    el.innerHTML = statusLine + listRows(rows) + openLink;
+  }
+  function formatTimeRange12(start, end) {
+    function fmt(hhmm) { const [h, m] = hhmm.split(':').map(Number); const period = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 === 0 ? 12 : h % 12; return h12 + ':' + String(m).padStart(2, '0') + ' ' + period; }
+    return fmt(start) + ' – ' + fmt(end);
   }
   function listRows(rows) {
     return `<div class="dash-list">${rows.map((r) => `

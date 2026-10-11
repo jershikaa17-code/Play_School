@@ -99,7 +99,7 @@
 
 /* ---------- empty state ---------- */
 .notif-empty { text-align: center; padding: var(--space-9) var(--space-6); }
-.notif-empty__icon { width: 64px; height: 64px; margin-inline: auto var(--space-4); border-radius: 50%; background: var(--color-surface-glass-light); color: var(--color-text-muted); display: grid; place-items: center; }
+.notif-empty__icon { width: 64px; height: 64px; margin: 0 auto var(--space-4); border-radius: 50%; background: var(--color-surface-glass-light); color: var(--color-text-muted); display: grid; place-items: center; }
 .notif-empty__icon svg { width: 28px; height: 28px; }
 .notif-empty__title { font-weight: 700; font-size: var(--fs-h3); font-family: var(--font-display); }
 .notif-empty__text { margin-top: var(--space-2); color: var(--color-text-secondary); max-width: 40ch; margin-inline: auto; font-size: var(--fs-body-sm); }

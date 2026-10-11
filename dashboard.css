@@ -71,7 +71,7 @@
 /* ---------- grid ---------- */
 .dash-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-5); }
 .dash-span-3 { grid-column: span 3; }
-.dash-span-6 { grid-column: span 6; }
+.dash-span-6 { grid-column: span 6; display: flex; }
 .dash-span-12 { grid-column: span 12; }
 
 /* ---------- KPI card ---------- */
@@ -100,6 +100,10 @@
 
 /* ---------- widget card ---------- */
 .dash-widget {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--color-surface-primary);
@@ -108,7 +112,7 @@
 .dash-widget__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
 .dash-widget__title { font-weight: 700; font-size: var(--fs-body); }
 .dash-widget__link { font-size: var(--fs-caption); color: var(--color-primary-soft); }
-.dash-widget__empty { padding: var(--space-6) 0; text-align: center; color: var(--color-text-muted); font-size: var(--fs-body-sm); }
+.dash-widget__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-6) 0; text-align: center; color: var(--color-text-muted); font-size: var(--fs-body-sm); }
 .dash-widget__empty svg { width: 28px; height: 28px; margin-bottom: var(--space-2); opacity: 0.6; }
 
 /* ---------- simple bar chart ---------- */
@@ -142,8 +146,8 @@
 .ratio-row--alert .ratio-row__bar-fill { background: var(--color-error); }
 
 /* ---------- locked widget ---------- */
-.dash-locked { position: relative; text-align: center; padding: var(--space-6) var(--space-5); }
-.dash-locked__icon { width: 40px; height: 40px; margin-inline: auto var(--space-3); border-radius: 50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display: grid; place-items: center; }
+.dash-locked { position: relative; text-align: center; padding: var(--space-6) var(--space-5); flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.dash-locked__icon { width: 40px; height: 40px; margin: 0 auto var(--space-3); border-radius: 50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display: grid; place-items: center; }
 .dash-locked__icon svg { width: 18px; height: 18px; }
 .dash-locked__text { font-size: var(--fs-body-sm); color: var(--color-text-secondary); max-width: 32ch; margin-inline: auto; }
 .dash-locked__action { margin-top: var(--space-4); }

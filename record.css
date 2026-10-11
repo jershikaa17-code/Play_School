@@ -143,7 +143,7 @@
 
 /* ---------- locked states (plan-locked vs role-restricted) ---------- */
 .profile-locked { text-align: center; padding: var(--space-8) var(--space-6); }
-.profile-locked__icon { width: 44px; height: 44px; margin-inline: auto var(--space-4); border-radius: 50%; display: grid; place-items: center; }
+.profile-locked__icon { width: 44px; height: 44px; margin: 0 auto var(--space-4); border-radius: 50%; display: grid; place-items: center; }
 .profile-locked__icon svg { width: 20px; height: 20px; }
 .profile-locked--plan .profile-locked__icon { background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); }
 .profile-locked--role .profile-locked__icon { background: color-mix(in srgb, var(--color-error) 16%, transparent); color: var(--color-error); }

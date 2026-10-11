@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weekly &amp; Monthly Planner — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="planner.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <div id="plLocked" class="ws-skeleton" style="text-align:center; padding: var(--space-9) var(--space-6); max-width:440px; margin-inline:auto;" hidden>
+    <div id="plLockedIcon" style="width:48px; height:48px; margin:0 auto var(--space-4); border-radius:50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display:grid; place-items:center;"></div>
+    <p style="font-size: var(--fs-body-sm); color: var(--color-text-secondary);">Weekly &amp; Monthly Planner is included in the <b>Premium</b> plan as part of <b>Curriculum &amp; Lesson Planning</b>.</p>
+    <div id="plLockedAction" style="margin-top: var(--space-4);"></div>
+  </div>
+
+  <div id="plSkeleton" class="ws-skeleton">
+    <div class="card" style="height:200px;"></div>
+    <div class="card" style="height:400px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="plMain" hidden>
+    <div id="plBody" hidden>
+
+      <!-- ---------- header ---------- -->
+      <header class="pl-header">
+        <div class="pl-header__glow" aria-hidden="true"></div>
+        <div class="pl-header__top">
+          <div class="pl-header__intro">
+            <span class="eyebrow">Teaching &amp; learning</span>
+            <h1 class="pl-header__heading">Weekly &amp; Monthly Planner</h1>
+            <p class="pl-header__text">Plan meaningful learning experiences for every day.</p>
+          </div>
+          <div class="pl-header__controls">
+            <select class="select pl-header__class" id="plClassSelect" aria-label="Class"></select>
+            <div class="pl-week-switcher">
+              <button class="btn btn--icon" type="button" id="plWeekPrev" aria-label="Previous week">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span class="pl-week-switcher__label" id="plWeekLabel"></span>
+              <button class="btn btn--icon" type="button" id="plWeekNext" aria-label="Next week">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <span class="pl-status-chip" id="plStatusChip"></span>
+          </div>
+        </div>
+        <div class="pl-header__actions">
+          <button class="btn btn--secondary" type="button" id="plCopyBtn">Copy last week</button>
+          <button class="btn btn--secondary" type="button" id="plRequestChangesBtn" hidden>Request changes</button>
+          <button class="btn btn--accent" type="button" id="plApproveBtn" hidden>Approve plan</button>
+          <button class="btn btn--accent" type="button" id="plSubmitBtn">Submit for review</button>
+        </div>
+      </header>
+
+      <div class="pl-review-banner" id="plReviewBanner" hidden></div>
+
+      <!-- ---------- summary ---------- -->
+      <div class="pl-summary" id="plSummary"></div>
+
+      <!-- ---------- tabs ---------- -->
+      <nav class="pl-tabs" id="plTabs" role="tablist" aria-label="Planner sections"></nav>
+
+      <!-- ---------- tab panel ---------- -->
+      <div class="pl-tab-panel" id="plTabPanel" role="tabpanel"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ mobile activity library bottom sheet ============ -->
+<div class="sheet-backdrop" id="plLibrarySheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Activity library">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Activity library</div>
+    <div id="plLibrarySheetBody"></div>
+  </div>
+</div>
+
+<!-- ============ Submit for review modal ============ -->
+<div class="modal-backdrop" id="submitModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Submit for review">
+  <div class="modal">
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+    </div>
+    <h3 class="modal__title">Submit for review?</h3>
+    <p class="modal__text" id="submitModalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="submitCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="submitConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Submit</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Request changes modal ============ -->
+<div class="modal-backdrop" id="reviewModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Request changes">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Request changes</h3>
+    <p class="modal__text">Explain what needs to change before this plan can be approved.</p>
+    <div class="field" style="margin-top: var(--space-4);">
+      <label class="field__label" for="reviewComment">Comment <span class="req">*</span></label>
+      <textarea class="textarea" id="reviewComment" rows="3" placeholder="e.g. Please add more outdoor time on Wednesday."></textarea>
+      <p class="field__error" id="err-reviewComment" hidden></p>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="reviewCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="reviewConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Send to teacher</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Copy last week modal ============ -->
+<div class="modal-backdrop" id="copyModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Copy last week">
+  <div class="modal">
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    </div>
+    <h3 class="modal__title">Copy last week?</h3>
+    <p class="modal__text" id="copyModalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="copyCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="copyConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Copy week</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Create / edit monthly theme modal ============ -->
+<div class="modal-backdrop" id="themeModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Create or edit theme">
+  <div class="modal ws-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="themeModalTitle">Create theme</h3>
+    <div class="ws-modal-scroll">
+      <div class="field">
+        <label class="field__label" for="thmName">Theme name <span class="req">*</span></label>
+        <input class="input" id="thmName" type="text" placeholder="e.g. Getting to know our garden" />
+        <p class="field__error" id="err-thmName" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="thmWeekStart">Week of</label>
+        <input class="input" id="thmWeekStart" type="date" />
+      </div>
+      <div class="field">
+        <label class="field__label">Learning focus areas</label>
+        <div class="pl-area-chip-row" id="thmAreas"></div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="thmVocabulary">Key vocabulary (comma separated)</label>
+        <input class="input" id="thmVocabulary" type="text" placeholder="e.g. seed, soil, root" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="thmDescription">Description / notes</label>
+        <textarea class="textarea" id="thmDescription" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="thmCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="thmSave"><span class="btn__spinner" aria-hidden="true"></span><span>Save theme</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Add / edit routine block modal (Timetable) ============ -->
+<div class="modal-backdrop" id="routineModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add or edit routine block">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="routineModalTitle">Add routine block</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="rbActivity">Activity</label>
+        <input class="input" id="rbActivity" type="text" placeholder="e.g. Outdoor play" />
+        <p class="field__error" id="err-rbActivity" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="rbKind">Type</label>
+        <select class="select" id="rbKind"></select>
+      </div>
+      <div class="cls-form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="rbStart">Start time</label>
+          <input class="input" id="rbStart" type="time" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="rbEnd">End time</label>
+          <input class="input" id="rbEnd" type="time" />
+        </div>
+      </div>
+      <p class="field__error" id="err-rbStart" hidden></p>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="rbCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="rbSave"><span class="btn__spinner" aria-hidden="true"></span><span>Save block</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Add activity to day modal (accessible alternative to drag-drop) ============ -->
+<div class="modal-backdrop" id="addActivityModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add activity to day">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add activity</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="addActActivitySelect">Activity</label>
+        <select class="select" id="addActActivitySelect"></select>
+      </div>
+      <div class="cls-form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="addActDaySelect">Day</label>
+          <select class="select" id="addActDaySelect"></select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="addActBlockSelect">Routine block</label>
+          <select class="select" id="addActBlockSelect"></select>
+          <p class="field__error" id="err-addActBlockSelect" hidden></p>
+        </div>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="addActCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="addActConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Add to plan</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Activity detail / edit modal ============ -->
+<div class="modal-backdrop" id="actDetailModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Activity details">
+  <div class="modal ws-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="actDetailTitle">Activity</h3>
+    <div class="ws-modal-scroll" id="actDetailBody"></div>
+    <div class="modal__actions" id="actDetailFooter"></div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="planner.js"></script>
+</body>
+</html>
