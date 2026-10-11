@@ -199,6 +199,7 @@
     { id: 'calendar', label: 'Calendar', href: 'calendar.html' },
     { id: 'care-log', label: 'Daily Care Log', href: 'care-log.html' },
     { id: 'resources', label: 'Rooms & Resources', href: 'resources.html' },
+    { id: 'announcements', label: 'Announcements', href: 'announcements.html' },
   ];
 
   function resolveNavItems() {

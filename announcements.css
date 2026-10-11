@@ -1,0 +1,204 @@
+/* ==========================================================================
+   PLAY SCHOOL — Announcements & Emergency Broadcast (S30)
+   Depends on tokens + components from styles.css, the app shell from
+   shell.css, class-workspace.css (.ws-skeleton, .ws-modal-scroll,
+   .ws-icon-btn, .state-panel) and planner.css (.pl-area-chip — class
+   selection reuses the same chip taxonomy as other pages). Only this
+   page's own layout/widgets live here, prefixed `ann-`.
+   ========================================================================== */
+
+/* ---------- header ---------- */
+.ann-header {
+  position: relative;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-navy-strong) 70%, var(--color-surface-primary)), var(--color-surface-primary));
+  border: 1px solid var(--color-border-subtle);
+  overflow: hidden;
+  margin-bottom: var(--space-5);
+  animation: annFadeUp 360ms var(--ease-premium);
+}
+@keyframes annFadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.ann-header__glow { position: absolute; top: -60%; right: -8%; width: 45%; height: 220%; background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-blue) 35%, transparent), transparent 70%); pointer-events: none; }
+.ann-header__top { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-5); }
+.ann-header__intro { max-width: 480px; }
+.ann-header__heading { margin-top: var(--space-2); font-family: var(--font-display); font-weight: 560; font-size: var(--fs-h1); background: linear-gradient(135deg, var(--color-text-primary), var(--color-brand-blue-soft)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ann-header__text { margin-top: var(--space-2); color: var(--color-text-secondary); font-size: var(--fs-body-sm); }
+.ann-header__controls { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+#annNewBtn svg, #annEmergencyBtn svg, #annEmptyNewBtn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ---------- solid red CTA (no equivalent high-emphasis danger button exists
+   in styles.css — .btn--destructive is an outline/muted treatment meant for
+   confirmation dialogs; the Emergency broadcast action needs to read as an
+   always-visible, unmistakable alarm control) ---------- */
+.btn--danger {
+  background: linear-gradient(145deg, var(--color-error), var(--color-error-strong));
+  color: var(--raw-white);
+  box-shadow: var(--shadow-sm);
+}
+.btn--danger:hover { box-shadow: 0 10px 30px -6px color-mix(in srgb, var(--color-error) 55%, transparent); transform: translateY(-1px); }
+.btn--danger:disabled { background: var(--color-surface-glass-light); color: var(--color-text-muted); box-shadow: none; transform: none; cursor: not-allowed; }
+.ann-emergency-btn { animation: annPulseRing 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .ann-emergency-btn { animation: none; } }
+@keyframes annPulseRing {
+  0%, 100% { box-shadow: var(--shadow-sm), 0 0 0 0 color-mix(in srgb, var(--color-error) 45%, transparent); }
+  50% { box-shadow: var(--shadow-sm), 0 0 0 7px color-mix(in srgb, var(--color-error) 0%, transparent); }
+}
+
+/* ---------- overview metrics ---------- */
+.ann-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-5); }
+.ann-summary-card {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-4) var(--space-5); border-radius: var(--radius-lg);
+  background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle);
+  transition: transform var(--dur-normal) var(--ease-premium), box-shadow var(--dur-normal) var(--ease-premium);
+  opacity: 0; transform: translateY(10px); animation: annFadeUp 420ms var(--ease-premium) forwards;
+}
+.ann-summary-card:nth-child(2) { animation-delay: 60ms; }
+.ann-summary-card:nth-child(3) { animation-delay: 120ms; }
+.ann-summary-card:nth-child(4) { animation-delay: 180ms; }
+.ann-summary-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ann-summary-card__icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--color-brand-blue) 16%, transparent); color: var(--color-brand-blue-soft); flex-shrink: 0; }
+.ann-summary-card__icon svg { width: 19px; height: 19px; }
+.ann-summary-card__value { font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 600; }
+.ann-summary-card__label { font-size: var(--fs-caption); color: var(--color-text-muted); }
+
+/* ---------- tabs ---------- */
+.ann-tabs { display: flex; gap: var(--space-2); margin-bottom: var(--space-5); overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; border-bottom: 1px solid var(--color-border-subtle); }
+.ann-tabs::-webkit-scrollbar { display: none; }
+.ann-tab { position: relative; padding: var(--space-3) var(--space-4); font-size: var(--fs-body-sm); font-weight: 600; color: var(--color-text-muted); background: none; border: none; cursor: pointer; white-space: nowrap; transition: color var(--dur-normal) var(--ease-premium); }
+.ann-tab:hover { color: var(--color-text-primary); }
+.ann-tab::after { content: ''; position: absolute; left: var(--space-2); right: var(--space-2); bottom: -1px; height: 2px; background: var(--color-accent-yellow); border-radius: var(--radius-pill); transform: scaleX(0); transition: transform var(--dur-normal) var(--ease-premium); }
+.ann-tab[aria-selected="true"] { color: var(--color-text-primary); }
+.ann-tab[aria-selected="true"]::after { transform: scaleX(1); }
+.ann-tab-panel { opacity: 0; transform: translateY(6px); transition: opacity var(--dur-normal) var(--ease-premium), transform var(--dur-normal) var(--ease-premium); }
+.ann-tab-panel.ann-tab-panel--in { opacity: 1; transform: translateY(0); }
+
+/* ---------- table rows ---------- */
+.ann-row, .ann-card { cursor: pointer; opacity: 0; transform: translateY(8px); animation: annFadeUp 320ms var(--ease-premium) forwards; }
+.ann-row:hover { background: var(--color-surface-glass-light); }
+.ann-channel-icon { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: var(--color-surface-glass-light); color: var(--color-text-muted); align-items: center; justify-content: center; margin-right: 4px; }
+.ann-channel-icon svg { width: 12px; height: 12px; }
+.ann-read-bar { display: flex; align-items: center; gap: var(--space-2); min-width: 110px; }
+.ann-read-bar .progress-linear { flex: 1; }
+.ann-read-bar span { font-size: var(--fs-caption); font-weight: 600; color: var(--color-text-secondary); white-space: nowrap; }
+.progress-linear__bar { transition: width 700ms var(--ease-premium); }
+
+/* ---------- composer ---------- */
+.ann-composer-modal { max-width: 560px; }
+.ann-step-indicator { display: flex; gap: var(--space-2); margin: var(--space-4) 0 var(--space-5); flex-wrap: wrap; }
+.ann-step-dot { font-size: var(--fs-caption); font-weight: 600; color: var(--color-text-muted); padding: 5px var(--space-3); border-radius: var(--radius-pill); background: var(--color-surface-glass-light); transition: background var(--dur-normal) var(--ease-premium), color var(--dur-normal) var(--ease-premium); }
+.ann-step-dot.is-active { background: color-mix(in srgb, var(--color-accent-yellow) 24%, transparent); color: var(--color-accent-yellow-strong); }
+.ann-step-dot.is-done { color: var(--color-success); }
+.ann-composer-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+.ann-composer-actions__right { display: flex; gap: var(--space-3); margin-left: auto; }
+
+.ann-audience-options { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.ann-audience-opt {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-4); border-radius: var(--radius-md);
+  background: var(--color-surface-glass-light); border: 1px solid transparent; color: var(--color-text-secondary);
+  font-size: var(--fs-body-sm); font-weight: 600; cursor: pointer;
+  transition: background var(--dur-micro) var(--ease-premium), color var(--dur-micro) var(--ease-premium), border-color var(--dur-micro) var(--ease-premium);
+}
+.ann-audience-opt svg { width: 15px; height: 15px; }
+.ann-audience-opt:hover { border-color: var(--color-border-strong); }
+.ann-audience-opt.is-active { background: color-mix(in srgb, var(--color-brand-blue) 20%, transparent); color: var(--color-brand-blue-soft); border-color: color-mix(in srgb, var(--color-brand-blue) 45%, transparent); }
+.ann-recipient-count { margin-top: var(--space-3); font-size: var(--fs-caption); color: var(--color-text-muted); }
+
+.ann-preview-card { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface-glass-light); border: 1px solid var(--color-border-subtle); }
+.ann-preview-card__title { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-body-lg); }
+.ann-preview-card__body { margin-top: var(--space-2); font-size: var(--fs-body-sm); color: var(--color-text-secondary); white-space: pre-wrap; }
+.ann-preview-card__meta { margin-top: var(--space-4); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--color-border-subtle); }
+.ann-preview-card__meta div { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-caption); }
+.ann-preview-card__meta span { color: var(--color-text-muted); }
+.ann-preview-card__meta b { color: var(--color-text-primary); font-weight: 600; }
+
+/* ---------- drawer ---------- */
+.ann-drawer-backdrop { justify-content: flex-end; }
+.ann-drawer {
+  width: 440px; max-width: 100vw; height: 100%; background: var(--color-surface-primary);
+  border-left: 1px solid var(--color-border-subtle); display: flex; flex-direction: column;
+  transform: translateX(16px); opacity: 0; transition: transform var(--dur-slow) var(--ease-premium), opacity var(--dur-slow) var(--ease-premium);
+}
+.ann-drawer-backdrop.is-open .ann-drawer { transform: translateX(0); opacity: 1; }
+.ann-drawer__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-5) var(--space-5) var(--space-4); border-bottom: 1px solid var(--color-border-subtle); }
+.ann-drawer__title { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h3); }
+.ann-drawer__scroll { flex: 1; overflow-y: auto; padding: var(--space-5); }
+.ann-drawer__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-top: 1px solid var(--color-border-subtle); }
+
+.ann-drawer-head { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.ann-drawer-message { margin-top: var(--space-4); font-size: var(--fs-body-sm); color: var(--color-text-secondary); white-space: pre-wrap; }
+.ann-drawer-meta { margin-top: var(--space-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-glass-light); }
+.ann-drawer-meta div { display: flex; flex-direction: column; gap: 2px; font-size: var(--fs-caption); }
+.ann-drawer-meta span { color: var(--color-text-muted); }
+.ann-drawer-meta b { color: var(--color-text-primary); font-weight: 600; }
+.ann-drawer-progress { margin-top: var(--space-5); }
+.ann-drawer-progress__row { display: flex; justify-content: space-between; font-size: var(--fs-body-sm); font-weight: 600; margin-bottom: var(--space-2); }
+
+.ann-recipient-toolbar { margin-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+.ann-recipient-list { margin-top: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); max-height: 320px; overflow-y: auto; }
+.ann-recipient-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-glass-light); }
+.ann-recipient-row__name { flex: 1; font-size: var(--fs-body-sm); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ann-recipient-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700; padding: 3px var(--space-2); border-radius: var(--radius-pill); white-space: nowrap; }
+.ann-recipient-chip svg { width: 10px; height: 10px; }
+.ann-recipient-chip--unread { background: var(--color-surface-secondary); color: var(--color-text-muted); }
+.ann-recipient-chip--read { background: color-mix(in srgb, var(--color-brand-blue) 18%, transparent); color: var(--color-brand-blue-soft); }
+.ann-recipient-chip--acked { background: color-mix(in srgb, var(--color-success) 16%, transparent); color: var(--color-success); }
+
+/* ---------- confirm modal ---------- */
+.ann-confirm-text { margin-top: var(--space-3); font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
+
+/* ---------- emergency modal ---------- */
+.ann-emergency-modal { max-width: 540px; }
+.ann-emergency-modal__title { display: flex; align-items: center; gap: var(--space-2); color: var(--color-error); }
+.ann-emergency-modal__title svg { width: 20px; height: 20px; }
+.ann-emergency-warning { display: flex; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-error) 12%, transparent); border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent); color: var(--color-error); margin-bottom: var(--space-5); font-size: var(--fs-body-sm); line-height: var(--lh-snug); }
+.ann-emergency-warning svg { width: 20px; height: 20px; flex-shrink: 0; }
+.ann-preview-card--emergency { border-color: color-mix(in srgb, var(--color-error) 36%, transparent); background: color-mix(in srgb, var(--color-error) 8%, var(--color-surface-glass-light)); }
+.ann-preview-card--emergency .ann-preview-card__title { color: var(--color-error); display: flex; align-items: center; gap: var(--space-2); }
+.ann-preview-card--emergency .ann-preview-card__title svg { width: 22px; height: 22px; flex-shrink: 0; }
+.ann-emergency-note { margin-top: var(--space-4); font-size: var(--fs-caption); color: var(--color-text-muted); }
+#emConfirmPhrase { font-weight: 700; letter-spacing: var(--ls-wide); }
+
+/* ---------- empty state new button spacing (reuses .state-panel) ---------- */
+.state-panel { padding: var(--space-9) var(--space-6); }
+
+/* ==========================================================================
+   RESPONSIVE — desktop ≥1024px, tablet 768–1023px, mobile <768px
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .ann-summary { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 767px) {
+  .ann-header { padding: var(--space-5); }
+  .ann-header__top { flex-direction: column; align-items: stretch; }
+  .ann-header__controls { flex-direction: column; align-items: stretch; }
+  .ann-header__controls .btn { width: 100%; justify-content: center; }
+  .ann-emergency-btn { order: -1; }
+
+  .ann-summary { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .ann-summary-card { padding: var(--space-3) var(--space-4); }
+  .ann-summary-card__value { font-size: var(--fs-h4, var(--fs-body-lg)); }
+
+  .ann-preview-card__meta { grid-template-columns: 1fr; }
+  .ann-drawer-meta { grid-template-columns: 1fr; }
+
+  /* composer becomes a full-screen step wizard (the base .modal mobile rule
+     already turns it into a sheet — this stretches that sheet to fill the
+     screen instead of the default 86vh, since a multi-step wizard needs the
+     room) */
+  .ann-composer-modal, .ann-emergency-modal {
+    height: 100%; max-height: 100%; border-radius: 0;
+    display: flex; flex-direction: column;
+  }
+  .ann-composer-modal .ws-modal-scroll, .ann-emergency-modal .ws-modal-scroll { flex: 1; }
+  .ann-composer-actions { flex-direction: column-reverse; align-items: stretch; }
+  .ann-composer-actions__right { margin-left: 0; flex-direction: column; width: 100%; }
+  .ann-composer-actions__right .btn, .ann-composer-actions #composerBack { width: 100%; justify-content: center; }
+
+  .ann-drawer { width: 100vw; }
+
+  .ann-recipient-toolbar .rs-filter-row { margin-bottom: 0; }
+}

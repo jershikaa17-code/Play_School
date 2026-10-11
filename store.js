@@ -369,6 +369,39 @@
     { id: 'MSG-SEED-5', type: 'Message', conversationId: 'CONV-2', subject: '', body: "Yes, I'll be there.", recipientGuardianIds: [], date: '2026-10-11', createdAt: '2026-10-11T08:31:00.000Z', senderType: 'Staff', senderId: 'S-3002', senderName: 'Rhea Kapoor', status: 'sent', attachments: [], readBy: [] },
 
     { id: 'MSG-SEED-6', type: 'Message', conversationId: 'CONV-3', subject: 'Reminder', body: "Reminder: it's library day tomorrow — please send your child's library bag in!", recipientGuardianIds: ['G-2001', 'G-1101', 'G-1102', 'G-1103', 'G-1104', 'G-1105', 'G-1106', 'G-1107'], date: '2026-10-10', createdAt: '2026-10-10T16:00:00.000Z', senderType: 'Staff', senderId: 'S-3001', senderName: 'Nithya', status: 'sent', attachments: [], readBy: ['S-3001'] },
+
+    /* ---------- announcements (S30) ----------
+       Extends the SAME Announcement type dashboard.js's quick composer
+       already creates (title/message/audience/date) — audienceType/classIds
+       add real targeting, reads/acks mirror the Event record's existing
+       rsvps/consents map convention (keyed by Family id, not a separate
+       per-recipient table). Legacy dashboard-created announcements simply
+       lack these fields and are shown with an honest "no recipient data"
+       state rather than a fabricated recipient list. */
+    {
+      id: 'ANN-1', type: 'Announcement', title: 'Harvest Festival — Saturday 24th', message: "We're excited to welcome families to our Harvest Festival this Saturday from 10am. Expect songs, crafts and a potluck lunch — see you there!",
+      audienceType: 'all', classIds: [], audience: 'All families', channels: ['in-app', 'email'], requireAck: false,
+      status: 'Sent', date: '2026-10-08', sentAt: '2026-10-08T09:00:00.000Z', createdAt: '2026-10-08T08:55:00.000Z',
+      reads: { 'FAM-G-2001': '2026-10-08T10:00:00.000Z', 'FAM-G-2002': '2026-10-08T11:00:00.000Z', 'FAM-G-1101': '2026-10-08T12:00:00.000Z', 'FAM-G-1102': '2026-10-09T09:00:00.000Z', 'FAM-G-1103': '2026-10-09T10:00:00.000Z' }, acks: {},
+    },
+    {
+      id: 'ANN-2', type: 'Announcement', title: 'Farm visit — permission required', message: "Daisy Room's farm visit is on 22 October. Please confirm you've seen this message so we can finalise transport.",
+      audienceType: 'classes', classIds: ['CLS-9003'], audience: 'Daisy Room', channels: ['in-app', 'email', 'push'], requireAck: true,
+      status: 'Sent', date: '2026-10-09', sentAt: '2026-10-09T08:00:00.000Z', createdAt: '2026-10-09T07:55:00.000Z',
+      reads: { 'FAM-G-1121': '2026-10-09T09:00:00.000Z', 'FAM-G-1122': '2026-10-09T10:30:00.000Z' }, acks: { 'FAM-G-1121': '2026-10-09T09:01:00.000Z' },
+    },
+    {
+      id: 'ANN-3', type: 'Announcement', title: 'Half-term closure reminder', message: 'A reminder that the school will be closed for the autumn half-term from 2–6 November.',
+      audienceType: 'all', classIds: [], audience: 'All families', channels: ['in-app'], requireAck: false,
+      status: 'Scheduled', date: null, scheduledFor: '2026-10-13T09:00:00.000Z', createdAt: '2026-10-11T08:00:00.000Z',
+      reads: {}, acks: {},
+    },
+    {
+      id: 'ANN-4', type: 'Announcement', title: 'Sunflower Room — new sensory materials', message: "We've added new sensory play materials to Sunflower Room this week — ask your child what they explored today!",
+      audienceType: 'classes', classIds: ['CLS-9001'], audience: 'Sunflower Room', channels: ['in-app'], requireAck: false,
+      status: 'Draft', date: null, createdAt: '2026-10-11T07:00:00.000Z',
+      reads: {}, acks: {},
+    },
   ];
 
   /* ---------- roster expansion ----------
@@ -584,6 +617,17 @@
     });
   }
   processDueScheduledMessages();
+
+  /** Same honest pattern as processDueScheduledMessages/applyDueClassMoves —
+      a 'Scheduled' Announcement whose time has arrived becomes 'Sent' the
+      next time any page loads the store (S30). */
+  function processDueScheduledAnnouncements() {
+    const now = new Date().toISOString();
+    records.filter((r) => r.type === 'Announcement' && r.status === 'Scheduled' && r.scheduledFor && r.scheduledFor <= now).forEach((a) => {
+      updateRecord(a.id, { status: 'Sent', sentAt: a.scheduledFor, date: a.scheduledFor.slice(0, 10) });
+    });
+  }
+  processDueScheduledAnnouncements();
 
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,

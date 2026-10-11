@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Announcements — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="classes.css" />
+<link rel="stylesheet" href="planner.css" />
+<link rel="stylesheet" href="announcements.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- locked state ---------- -->
+  <div id="annLocked" class="ws-skeleton" style="text-align:center; padding: var(--space-9) var(--space-6); max-width:440px; margin-inline:auto;" hidden>
+    <div id="annLockedIcon" style="width:48px; height:48px; margin:0 auto var(--space-4); border-radius:50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display:grid; place-items:center;"></div>
+    <p style="font-size: var(--fs-body-sm); color: var(--color-text-secondary);">Announcements is included in the <b>Premium</b> plan as part of <b>Parent Communication Hub</b>.</p>
+    <div id="annLockedAction" style="margin-top: var(--space-4);"></div>
+  </div>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="annSkeleton" class="ws-skeleton">
+    <div class="card" style="height:150px;"></div>
+    <div class="card" style="height:90px; margin-top:var(--space-5);"></div>
+    <div class="card" style="height:400px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="annMain" hidden>
+    <div id="annBody" hidden>
+
+      <!-- ---------- header ---------- -->
+      <header class="ann-header">
+        <div class="ann-header__glow" aria-hidden="true"></div>
+        <div class="ann-header__top">
+          <div class="ann-header__intro">
+            <span class="eyebrow">Parent communication hub</span>
+            <h1 class="ann-header__heading">Announcements</h1>
+            <p class="ann-header__text">Send updates to families, track who's seen them, and broadcast urgent alerts when it matters most.</p>
+          </div>
+          <div class="ann-header__controls">
+            <button class="btn btn--accent" type="button" id="annNewBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New announcement</span>
+            </button>
+            <button class="btn btn--danger ann-emergency-btn" type="button" id="annEmergencyBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21h14"/><path d="M12 2v2"/><path d="M4.2 9 6 9.8"/><path d="M19.8 9 18 9.8"/><line x1="7" y1="18" x2="17" y2="18"/></svg>
+              <span>Emergency broadcast</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ---------- overview metrics ---------- -->
+      <div class="ann-summary" id="annSummary"></div>
+
+      <!-- ---------- tabs ---------- -->
+      <nav class="ann-tabs" id="annTabs" role="tablist" aria-label="Announcement sections"></nav>
+
+      <!-- ---------- tab panel ---------- -->
+      <div class="ann-tab-panel" id="annTabPanel" role="tabpanel"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ Composer modal (Audience → Message → Options → Preview) ============ -->
+<div class="modal-backdrop" id="composerModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="New announcement">
+  <div class="modal ws-modal ann-composer-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="composerTitle">New announcement</h3>
+    <div class="ann-step-indicator" id="composerStepIndicator"></div>
+    <div class="ws-modal-scroll" id="composerBody"></div>
+    <div class="modal__actions ann-composer-actions">
+      <button class="btn btn--ghost" type="button" id="composerBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Back</span>
+      </button>
+      <div class="ann-composer-actions__right">
+        <button class="btn btn--secondary" type="button" id="composerSaveDraft">Save as draft</button>
+        <button class="btn btn--accent" type="button" id="composerNext"><span class="btn__spinner" aria-hidden="true"></span><span>Continue</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Detail drawer ============ -->
+<div class="modal-backdrop ann-drawer-backdrop" id="drawerModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Announcement details">
+  <div class="ann-drawer">
+    <div class="ann-drawer__head">
+      <h3 class="ann-drawer__title" id="drawerTitle"></h3>
+      <button class="modal__close" type="button" data-close aria-label="Close drawer">&times;</button>
+    </div>
+    <div class="ann-drawer__scroll" id="drawerBody"></div>
+    <div class="ann-drawer__actions">
+      <button class="btn btn--secondary" type="button" id="drawerEditBtn" hidden>Edit</button>
+      <button class="btn btn--accent" type="button" id="drawerSendNowBtn" hidden>Send now</button>
+      <button class="btn btn--ghost" type="button" id="drawerRemindBtn" hidden>Remind unread</button>
+      <button class="btn btn--destructive" type="button" id="drawerCancelBtn" hidden>Cancel announcement</button>
+      <button class="btn btn--destructive" type="button" id="drawerDeleteBtn" hidden>Delete draft</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generic confirmation modal ============ -->
+<div class="modal-backdrop" id="confirmModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm action">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="confirmTitle"></h3>
+    <p class="ann-confirm-text" id="confirmText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="confirmActionBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Emergency broadcast modal ============ -->
+<div class="modal-backdrop ann-emergency-backdrop" id="emergencyModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Emergency broadcast">
+  <div class="modal ws-modal ann-emergency-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title ann-emergency-modal__title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21h14"/><path d="M12 2v2"/><path d="M4.2 9 6 9.8"/><path d="M19.8 9 18 9.8"/><line x1="7" y1="18" x2="17" y2="18"/></svg>
+      <span>Emergency broadcast</span>
+    </h3>
+    <div class="ws-modal-scroll" id="emergencyBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="emergencyCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="emergencyNext">Review broadcast</button>
+      <button class="btn btn--danger" type="button" id="emergencyConfirmBtn" hidden disabled><span class="btn__spinner" aria-hidden="true"></span><span>Send emergency broadcast</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="announcements.js"></script>
+</body>
+</html>
