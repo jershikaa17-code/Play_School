@@ -10,7 +10,7 @@
 
   const PLAN_KEY = 'ps_plan';
   const PLAN_ORDER = ['Starter', 'Standard', 'Premium'];
-  const DEFAULT_PLAN = 'Starter';
+  const DEFAULT_PLAN = 'Premium';
 
   function getCurrentPlan() {
     try {
@@ -85,7 +85,7 @@
     {
       id: 'communication',
       navLabel: 'Parent Communication Hub',
-      href: 'module.html?id=communication',
+      href: 'messages.html',
       requiredPlan: 'Premium',
       name: 'Parent Communication Hub',
       icon: ICONS.communication,

@@ -349,6 +349,26 @@
       reviewedBy: 'Nithya', reviewedAt: '2026-09-25T14:00:00.000Z', reviewComment: null,
       createdAt: '2026-09-24T10:00:00.000Z', updatedAt: '2026-09-25T14:00:00.000Z',
     },
+
+    /* ---------- messaging hub (S29) ----------
+       Conversation is new; Message is the SAME type family.js/children.js
+       already create (subject/body/recipientGuardianIds/date) — this just
+       adds conversationId/senderType/createdAt/attachments/status/readBy so
+       one thread model serves both the legacy broadcast composer and this
+       full hub. `recipientGuardianIds` stays populated on family messages
+       so family.js's existing message list keeps working unchanged. */
+    { id: 'CONV-1', type: 'Conversation', kind: 'family', familyId: 'FAM-G-2001', childId: 'C-1001', createdAt: '2026-10-10T08:00:00.000Z', lastMessageAt: '2026-10-11T09:20:00.000Z' },
+    { id: 'CONV-2', type: 'Conversation', kind: 'staff', staffId: 'S-3002', createdAt: '2026-10-11T08:25:00.000Z', lastMessageAt: '2026-10-11T08:31:00.000Z' },
+    { id: 'CONV-3', type: 'Conversation', kind: 'group', classId: 'CLS-9001', createdAt: '2026-10-10T16:00:00.000Z', lastMessageAt: '2026-10-10T16:00:00.000Z' },
+
+    { id: 'MSG-SEED-1', type: 'Message', conversationId: 'CONV-1', subject: '', body: "Hi Folasade, just confirming Amara's EpiPen is up to date in our office — could you double check the expiry date when you get a chance?", recipientGuardianIds: ['G-2001'], date: '2026-10-11', createdAt: '2026-10-11T09:00:00.000Z', senderType: 'Staff', senderId: 'S-3001', senderName: 'Nithya', status: 'sent', attachments: [], readBy: ['S-3001'] },
+    { id: 'MSG-SEED-2', type: 'Message', conversationId: 'CONV-1', subject: '', body: "Thank you for the heads up — I'll check tonight and send a new one if needed.", recipientGuardianIds: [], date: '2026-10-11', createdAt: '2026-10-11T09:15:00.000Z', senderType: 'Guardian', senderId: 'G-2001', senderName: 'Folasade Osei', status: 'sent', attachments: [], readBy: [] },
+    { id: 'MSG-SEED-3', type: 'Message', conversationId: 'CONV-1', subject: '', body: 'Wonderful, thank you Folasade!', recipientGuardianIds: ['G-2001'], date: '2026-10-11', createdAt: '2026-10-11T09:20:00.000Z', senderType: 'Staff', senderId: 'S-3001', senderName: 'Nithya', status: 'sent', attachments: [], readBy: ['S-3001'] },
+
+    { id: 'MSG-SEED-4', type: 'Message', conversationId: 'CONV-2', subject: '', body: 'Morning! Can you cover the 3pm handover for Marigold today?', recipientGuardianIds: [], date: '2026-10-11', createdAt: '2026-10-11T08:25:00.000Z', senderType: 'Staff', senderId: 'S-3001', senderName: 'Nithya', status: 'sent', attachments: [], readBy: ['S-3001'] },
+    { id: 'MSG-SEED-5', type: 'Message', conversationId: 'CONV-2', subject: '', body: "Yes, I'll be there.", recipientGuardianIds: [], date: '2026-10-11', createdAt: '2026-10-11T08:31:00.000Z', senderType: 'Staff', senderId: 'S-3002', senderName: 'Rhea Kapoor', status: 'sent', attachments: [], readBy: [] },
+
+    { id: 'MSG-SEED-6', type: 'Message', conversationId: 'CONV-3', subject: 'Reminder', body: "Reminder: it's library day tomorrow — please send your child's library bag in!", recipientGuardianIds: ['G-2001', 'G-1101', 'G-1102', 'G-1103', 'G-1104', 'G-1105', 'G-1106', 'G-1107'], date: '2026-10-10', createdAt: '2026-10-10T16:00:00.000Z', senderType: 'Staff', senderId: 'S-3001', senderName: 'Nithya', status: 'sent', attachments: [], readBy: ['S-3001'] },
   ];
 
   /* ---------- roster expansion ----------
@@ -528,6 +548,42 @@
     });
   }
   applyDueClassMoves();
+
+  /* ---------- messaging hub (S29) ----------
+     Backfills a `conversationId` onto any legacy broadcast Message created
+     by the existing family.js/children.js composer (which only ever wrote
+     subject/body/recipientGuardianIds/date) so every message — old or new —
+     lives in exactly one per-family thread. Runs after
+     ensureFamiliesForAllChildren so every guardian already has a Family. */
+  function migrateLegacyMessages() {
+    records.filter((r) => r.type === 'Message' && !r.conversationId).forEach((msg) => {
+      const guardianId = (msg.recipientGuardianIds || [])[0];
+      const family = guardianId && records.find((r) => r.type === 'Family' && (r.guardianIds || []).includes(guardianId));
+      if (!family) return;
+      let conv = records.find((r) => r.type === 'Conversation' && r.kind === 'family' && r.familyId === family.id);
+      if (!conv) {
+        const child = records.find((r) => r.type === 'Child' && (family.childIds || []).includes(r.id));
+        conv = addRecord({ id: 'CONV-' + family.id, type: 'Conversation', kind: 'family', familyId: family.id, childId: child ? child.id : null, createdAt: msg.date + 'T00:00:00.000Z', lastMessageAt: msg.date + 'T00:00:00.000Z' });
+      }
+      updateRecord(msg.id, { conversationId: conv.id, senderType: msg.senderType || 'Staff', senderId: msg.senderId || 'S-3001', senderName: msg.senderName || 'Nithya', status: msg.status || 'sent', attachments: msg.attachments || [], readBy: msg.readBy || ['S-3001'], createdAt: msg.createdAt || (msg.date + 'T12:00:00.000Z') });
+      if (!conv.lastMessageAt || conv.lastMessageAt < msg.date) updateRecord(conv.id, { lastMessageAt: msg.date + 'T12:00:00.000Z' });
+    });
+  }
+  migrateLegacyMessages();
+
+  /** A scheduled message has no real backend to send it later, so — same
+      honest pattern as applyDueClassMoves — any 'scheduled' Message whose
+      time has arrived is converted to 'sent' the next time any page loads
+      this store, rather than pretending a server will deliver it. */
+  function processDueScheduledMessages() {
+    const now = new Date().toISOString();
+    records.filter((r) => r.type === 'Message' && r.status === 'scheduled' && r.scheduledFor && r.scheduledFor <= now).forEach((msg) => {
+      updateRecord(msg.id, { status: 'sent', date: msg.scheduledFor.slice(0, 10), createdAt: msg.scheduledFor });
+      const conv = records.find((r) => r.type === 'Conversation' && r.id === msg.conversationId);
+      if (conv) updateRecord(conv.id, { lastMessageAt: msg.scheduledFor });
+    });
+  }
+  processDueScheduledMessages();
 
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
