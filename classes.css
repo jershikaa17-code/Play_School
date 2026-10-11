@@ -61,12 +61,14 @@
 }
 @keyframes clsCardIn { to { opacity: 1; transform: translateY(0); } }
 .cls-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--color-border-strong); }
+.cls-card[data-open-workspace]:not([data-open-workspace=""]) { cursor: pointer; }
+.cls-card[data-open-workspace]:not([data-open-workspace=""]):hover .cls-card__name { color: var(--color-brand-blue-soft); }
 .cls-card--archived { opacity: 0.6; }
 .cls-card--archived:hover { transform: none; box-shadow: none; }
 .cls-card__bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--cls-color); }
 
 .cls-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-1); }
-.cls-card__name { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h3); }
+.cls-card__name { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h3); transition: color var(--dur-normal) var(--ease-premium); }
 .cls-card__meta { margin-top: var(--space-1); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
 .cls-card__age { font-size: var(--fs-caption); color: var(--color-text-muted); }
 

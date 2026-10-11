@@ -202,6 +202,48 @@
       description: 'Families welcome to join us for songs, crafts and a harvest potluck.',
       rsvps: { 'G-2001': 'yes', 'G-2003': 'yes', 'G-2005': 'no' }, consents: {},
     },
+
+    /* ---------- daily routine blocks (Class Workspace — S24) ----------
+       Each class's actual configured routine, editable from the Class
+       Workspace's Schedule tab. `kind` drives the timeline icon. */
+    { id: 'RTN-S1', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Arrival & welcome', startTime: '08:00', endTime: '08:30', kind: 'arrival' },
+    { id: 'RTN-S2', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Sensory exploration', startTime: '08:30', endTime: '09:30', kind: 'work-cycle' },
+    { id: 'RTN-S3', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Morning snack', startTime: '09:30', endTime: '09:45', kind: 'snack' },
+    { id: 'RTN-S4', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Outdoor play', startTime: '09:45', endTime: '10:30', kind: 'outdoor' },
+    { id: 'RTN-S5', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Lunch', startTime: '10:30', endTime: '11:15', kind: 'lunch' },
+    { id: 'RTN-S6', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Nap time', startTime: '11:15', endTime: '13:00', kind: 'nap' },
+    { id: 'RTN-S7', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Afternoon activities', startTime: '13:00', endTime: '14:30', kind: 'afternoon' },
+    { id: 'RTN-S8', type: 'RoutineBlock', classId: 'CLS-9001', activity: 'Departure', startTime: '14:30', endTime: '15:00', kind: 'departure' },
+
+    { id: 'RTN-M1', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Arrival & circle time', startTime: '08:15', endTime: '08:45', kind: 'arrival' },
+    { id: 'RTN-M2', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Work cycle', startTime: '08:45', endTime: '10:00', kind: 'work-cycle' },
+    { id: 'RTN-M3', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Snack', startTime: '10:00', endTime: '10:15', kind: 'snack' },
+    { id: 'RTN-M4', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Outdoor play', startTime: '10:15', endTime: '11:00', kind: 'outdoor' },
+    { id: 'RTN-M5', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Lunch', startTime: '11:00', endTime: '11:45', kind: 'lunch' },
+    { id: 'RTN-M6', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Rest time', startTime: '11:45', endTime: '13:00', kind: 'nap' },
+    { id: 'RTN-M7', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Afternoon activities', startTime: '13:00', endTime: '14:45', kind: 'afternoon' },
+    { id: 'RTN-M8', type: 'RoutineBlock', classId: 'CLS-9002', activity: 'Departure', startTime: '14:45', endTime: '15:15', kind: 'departure' },
+
+    { id: 'RTN-D1', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Arrival & morning meeting', startTime: '08:30', endTime: '09:00', kind: 'arrival' },
+    { id: 'RTN-D2', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Work cycle', startTime: '09:00', endTime: '10:15', kind: 'work-cycle' },
+    { id: 'RTN-D3', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Snack', startTime: '10:15', endTime: '10:30', kind: 'snack' },
+    { id: 'RTN-D4', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Outdoor play', startTime: '10:30', endTime: '11:15', kind: 'outdoor' },
+    { id: 'RTN-D5', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Lunch', startTime: '11:15', endTime: '12:00', kind: 'lunch' },
+    { id: 'RTN-D6', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Afternoon activities & projects', startTime: '12:00', endTime: '13:30', kind: 'afternoon' },
+    { id: 'RTN-D7', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Second work cycle', startTime: '13:30', endTime: '14:15', kind: 'work-cycle' },
+    { id: 'RTN-D8', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Departure', startTime: '14:15', endTime: '14:45', kind: 'departure' },
+
+    /* ---------- room resources (Class Workspace — S24) ----------
+       Materials/equipment assigned to each room. No inventory/quantity
+       system exists in this project, so status is a simple real field
+       rather than a fabricated count. */
+    { id: 'RES-1', type: 'Resource', classId: 'CLS-9001', name: 'Sensory bin — rice & scoops', category: 'sensory', status: 'Available' },
+    { id: 'RES-2', type: 'Resource', classId: 'CLS-9001', name: 'Board books set', category: 'books', status: 'Available' },
+    { id: 'RES-3', type: 'Resource', classId: 'CLS-9002', name: 'Wooden building blocks', category: 'stem', status: 'In use' },
+    { id: 'RES-4', type: 'Resource', classId: 'CLS-9002', name: 'Art & craft trolley', category: 'creative', status: 'Available' },
+    { id: 'RES-5', type: 'Resource', classId: 'CLS-9003', name: 'Science explorer kit', category: 'stem', status: 'Needs restock' },
+    { id: 'RES-6', type: 'Resource', classId: 'CLS-9003', name: 'Class library — chapter books', category: 'books', status: 'Available' },
+    { id: 'RES-7', type: 'Resource', classId: 'CLS-9003', name: 'Outdoor sports equipment bag', category: 'outdoor', status: 'Available' },
   ];
 
   /* ---------- roster expansion ----------
@@ -362,6 +404,25 @@
     });
   }
   ensureFamiliesForAllChildren();
+
+  /* ---------- scheduled class moves (Class Workspace — S24) ----------
+     "Move child" can be given a future effective date. There is no
+     scheduler/cron in this static project, so a scheduled move is stored as
+     a 'ClassMove' record with status 'Scheduled' and left untouched until
+     its effective date arrives — this runs on every load (same precedent as
+     ensureFamiliesForAllChildren above) so the child's `room` only changes
+     once the date is actually reached, on whichever page the user happens
+     to open next, rather than being applied immediately against the
+     requested semantics. */
+  function applyDueClassMoves() {
+    const today = (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+    records.filter((r) => r.type === 'ClassMove' && r.status === 'Scheduled' && r.effectiveDate <= today).forEach((move) => {
+      const child = records.find((r) => r.id === move.childId);
+      if (child) updateRecord(child.id, { room: move.toClassName });
+      updateRecord(move.id, { status: 'Applied', appliedAt: new Date().toISOString() });
+    });
+  }
+  applyDueClassMoves();
 
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,

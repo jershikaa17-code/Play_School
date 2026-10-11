@@ -90,7 +90,9 @@
     $('attMain').hidden = false;
 
     const classes = classOptions();
-    selectedClassId = classes.length ? classes[0].id : null;
+    const requestedClassId = new URLSearchParams(window.location.search).get('classId');
+    const requested = requestedClassId && classes.find((c) => c.id === requestedClassId);
+    selectedClassId = requested ? requested.id : (classes.length ? classes[0].id : null);
     populateClassSelect();
     $('attDateInput').value = selectedDate;
 

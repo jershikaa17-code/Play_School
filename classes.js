@@ -222,7 +222,7 @@
       ? [['restore', ICON.restore, 'Restore class', false]]
       : [['edit', ICON.edit, 'Edit', false], ['duplicate', ICON.copy, 'Duplicate', false], ['archive', ICON.archive, 'Archive', true]];
     return `
-      <article class="cls-card${archived ? ' cls-card--archived' : ''}" data-class-id="${cls.id}" style="--cls-color: var(${colorVar(cls.color)}); animation-delay: ${Math.min(index, 8) * 50}ms;">
+      <article class="cls-card${archived ? ' cls-card--archived' : ''}" data-class-id="${cls.id}" data-open-workspace="${archived ? '' : cls.id}" style="--cls-color: var(${colorVar(cls.color)}); animation-delay: ${Math.min(index, 8) * 50}ms;">
         <div class="cls-card__bar"></div>
         <div class="cls-card__head">
           <div>
@@ -331,7 +331,10 @@
         const cls = window.PlayStore.getById(menu.dataset.menu);
         if (!cls) return;
         handleMenuAction(actionBtn.dataset.action, cls);
+        return;
       }
+      const card = e.target.closest('[data-open-workspace]');
+      if (card && card.dataset.openWorkspace) window.location.href = 'class-workspace.html?id=' + encodeURIComponent(card.dataset.openWorkspace);
     });
     document.addEventListener('click', (e) => {
       if (!e.target.closest('[data-menu]')) document.querySelectorAll('.cls-card__menu.is-open').forEach((m) => m.classList.remove('is-open'));

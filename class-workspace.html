@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Class Workspace — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <a class="ws-back-link" href="classes.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span>Classes</span>
+  </a>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="wsSkeleton" class="ws-skeleton">
+    <div class="card" style="height:160px;"></div>
+    <div class="card" style="height:320px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="wsBody" hidden>
+
+    <!-- ---------- class header ---------- -->
+    <header class="ws-header">
+      <div class="ws-header__glow" aria-hidden="true"></div>
+      <div class="ws-header__main">
+        <h1 class="ws-header__name" id="wsClassName"></h1>
+        <div class="ws-header__meta">
+          <span id="wsAgeRange"></span>
+          <span class="ws-header__dot">·</span>
+          <span id="wsRoom"></span>
+        </div>
+        <div class="ws-header__capacity">
+          <span class="ws-header__capacity-label" id="wsCapacityLabel"></span>
+          <div class="progress-linear ws-header__capacity-bar"><div class="progress-linear__bar ws-capacity-fill" id="wsCapacityFill" style="width:0%;"></div></div>
+          <span id="wsRatioBadge"></span>
+        </div>
+      </div>
+      <div class="ws-header__side">
+        <div class="ws-header__staff" id="wsHeaderStaff"></div>
+        <a class="btn btn--accent ws-header__attendance-btn" id="wsTakeAttendanceBtn" href="attendance.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg>
+          <span>Take attendance</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- ---------- tabs ---------- -->
+    <nav class="ws-tabs" id="wsTabs" role="tablist" aria-label="Class workspace sections"></nav>
+
+    <!-- ---------- tab panel ---------- -->
+    <div class="ws-tab-panel" id="wsTabPanel" role="tabpanel"></div>
+
+  </div>
+</div>
+
+<!-- ============ Child quick-view drawer ============ -->
+<div class="drawer-backdrop" id="wsDrawerBackdrop"></div>
+<aside class="drawer ws-drawer" id="wsDrawer" role="dialog" aria-modal="true" aria-label="Child quick view">
+  <div class="drawer__head">
+    <h3 class="drawer__title" id="wsDrawerTitle">Child</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="wsDrawerBody"></div>
+  <div class="ws-drawer-footer">
+    <button class="btn btn--secondary" type="button" id="wsDrawerMoveBtn">Move class</button>
+    <a class="btn btn--accent" id="wsDrawerOpenProfile" href="#">Open full profile</a>
+  </div>
+</aside>
+
+<!-- ============ Move child modal ============ -->
+<div class="modal-backdrop" id="moveModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move child">
+  <div class="modal ws-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Move child</h3>
+    <div class="ws-modal-scroll">
+      <div class="field">
+        <label class="field__label" for="moveChildSelect">Child</label>
+        <select class="select" id="moveChildSelect"></select>
+        <p class="field__error" id="err-moveChildSelect" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label">Destination class</label>
+        <div class="ws-move-grid" id="moveClassOptions"></div>
+        <p class="field__error" id="err-moveClassOptions" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="moveEffectiveDate">Effective date</label>
+        <input class="input" id="moveEffectiveDate" type="date" />
+      </div>
+      <div class="field">
+        <label class="field__label">Review</label>
+        <div class="ws-review-box" id="moveReviewBox"></div>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="moveCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="moveConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Confirm move</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Assign substitute modal ============ -->
+<div class="modal-backdrop" id="subModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Assign substitute">
+  <div class="modal ws-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Assign substitute</h3>
+    <div class="ws-modal-scroll">
+      <div class="field">
+        <label class="field__label" for="subDate">Date</label>
+        <input class="input" id="subDate" type="date" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="subOriginalSelect">Staff member being replaced</label>
+        <select class="select" id="subOriginalSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field__label">Available substitute</label>
+        <div class="ws-sub-grid" id="subCandidates"></div>
+        <p class="field__error" id="err-subCandidates" hidden></p>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="subCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="subConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Confirm substitute</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Add / Edit routine block modal ============ -->
+<div class="modal-backdrop" id="routineModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add or edit routine block">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="routineModalTitle">Add routine block</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="rbActivity">Activity</label>
+        <input class="input" id="rbActivity" type="text" placeholder="e.g. Outdoor play" />
+        <p class="field__error" id="err-rbActivity" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="rbKind">Type</label>
+        <select class="select" id="rbKind"></select>
+      </div>
+      <div class="cls-form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="rbStart">Start time</label>
+          <input class="input" id="rbStart" type="time" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="rbEnd">End time</label>
+          <input class="input" id="rbEnd" type="time" />
+        </div>
+      </div>
+      <p class="field__error" id="err-rbStart" hidden></p>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="rbCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="rbSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Save block</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="class-workspace.js"></script>
+</body>
+</html>
