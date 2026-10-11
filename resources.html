@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rooms &amp; Resources — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="planner.css" />
+<link rel="stylesheet" href="resources.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="rsSkeleton" class="ws-skeleton">
+    <div class="card" style="height:160px;"></div>
+    <div class="card" style="height:400px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="rsBody" hidden>
+
+    <!-- ---------- header ---------- -->
+    <header class="rs-header">
+      <div class="rs-header__glow" aria-hidden="true"></div>
+      <div class="rs-header__top">
+        <div class="rs-header__intro">
+          <span class="eyebrow">Resource management</span>
+          <h1 class="rs-header__heading">Rooms &amp; Resources</h1>
+          <p class="rs-header__text">Keep learning spaces, materials, books and supplies organised.</p>
+        </div>
+        <div class="rs-header__controls">
+          <div class="input-wrap rs-header__search" id="rsSearchWrap" hidden>
+            <span class="input-wrap__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input class="input" id="rsSearch" type="text" placeholder="Search…" />
+          </div>
+          <button class="btn btn--accent" type="button" id="rsHeaderActionBtn"></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ---------- summary ---------- -->
+    <div class="rs-summary" id="rsSummary"></div>
+
+    <!-- ---------- tabs ---------- -->
+    <nav class="rs-tabs" id="rsTabs" role="tablist" aria-label="Resource sections"></nav>
+
+    <!-- ---------- tab panel ---------- -->
+    <div class="rs-tab-panel" id="rsTabPanel" role="tabpanel"></div>
+
+  </div>
+</div>
+
+<!-- ============ Book room modal ============ -->
+<div class="modal-backdrop" id="bookingModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Book room">
+  <div class="modal ws-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Book room</h3>
+    <div class="ws-modal-scroll">
+      <div id="bkClashNotice" class="rs-clash-notice" hidden></div>
+      <div class="field">
+        <label class="field__label" for="bkRoomSelect">Room</label>
+        <select class="select" id="bkRoomSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="bkTitle">Booking title</label>
+        <input class="input" id="bkTitle" type="text" placeholder="e.g. Pottery workshop" />
+        <p class="field__error" id="err-bkTitle" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="bkClassSelect">Class</label>
+        <select class="select" id="bkClassSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="bkDate">Date</label>
+        <input class="input" id="bkDate" type="date" />
+        <p class="field__error" id="err-bkDate" hidden></p>
+      </div>
+      <div class="cls-form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="bkStart">Start time</label>
+          <input class="input" id="bkStart" type="time" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="bkEnd">End time</label>
+          <input class="input" id="bkEnd" type="time" />
+        </div>
+      </div>
+      <p class="field__error" id="err-bkStart" hidden></p>
+      <div class="field">
+        <label class="field__label" for="bkNotes">Notes</label>
+        <textarea class="textarea" id="bkNotes" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="bkCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="bkConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Confirm booking</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Update material condition modal ============ -->
+<div class="modal-backdrop" id="conditionModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Update material condition">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="condModalTitle">Update condition</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="condSelect">Condition</label>
+        <select class="select" id="condSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="condNotes">Notes (optional)</label>
+        <textarea class="textarea" id="condNotes" rows="2" placeholder="What happened?"></textarea>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="condCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="condConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Save</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Lend book modal ============ -->
+<div class="modal-backdrop" id="lendModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Lend book">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Lend book</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="lendBookSelect">Book</label>
+        <select class="select" id="lendBookSelect"></select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="lendBorrowerType">Borrower type</label>
+        <select class="select" id="lendBorrowerType">
+          <option value="Child">Child</option>
+          <option value="Staff">Staff</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="lendBorrowerSelect">Borrower</label>
+        <select class="select" id="lendBorrowerSelect"></select>
+        <p class="field__error" id="err-lendBorrowerSelect" hidden></p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="lendDueDate">Due date</label>
+        <input class="input" id="lendDueDate" type="date" />
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="lendCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="lendConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Lend book</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Adjust stock modal ============ -->
+<div class="modal-backdrop" id="adjustModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Adjust stock">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Adjust stock</h3>
+    <div class="ws-modal-scroll" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="adjItemSelect">Item</label>
+        <select class="select" id="adjItemSelect"></select>
+      </div>
+      <div class="cls-form-grid" style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-4);">
+        <div class="field">
+          <label class="field__label" for="adjType">Adjustment</label>
+          <select class="select" id="adjType">
+            <option value="Add">Add</option>
+            <option value="Remove">Remove</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="adjQty">Quantity</label>
+          <input class="input" id="adjQty" type="number" min="1" />
+          <p class="field__error" id="err-adjQty" hidden></p>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="adjReason">Reason</label>
+        <textarea class="textarea" id="adjReason" rows="2" placeholder="e.g. Restocked from supplier order"></textarea>
+        <p class="field__error" id="err-adjReason" hidden></p>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="adjCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="adjConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Save adjustment</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="resources.js"></script>
+</body>
+</html>

@@ -233,17 +233,64 @@
     { id: 'RTN-D7', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Second work cycle', startTime: '13:30', endTime: '14:15', kind: 'work-cycle' },
     { id: 'RTN-D8', type: 'RoutineBlock', classId: 'CLS-9003', activity: 'Departure', startTime: '14:15', endTime: '14:45', kind: 'departure' },
 
-    /* ---------- room resources (Class Workspace — S24) ----------
-       Materials/equipment assigned to each room. No inventory/quantity
-       system exists in this project, so status is a simple real field
-       rather than a fabricated count. */
-    { id: 'RES-1', type: 'Resource', classId: 'CLS-9001', name: 'Sensory bin — rice & scoops', category: 'sensory', status: 'Available' },
-    { id: 'RES-2', type: 'Resource', classId: 'CLS-9001', name: 'Board books set', category: 'books', status: 'Available' },
-    { id: 'RES-3', type: 'Resource', classId: 'CLS-9002', name: 'Wooden building blocks', category: 'stem', status: 'In use' },
-    { id: 'RES-4', type: 'Resource', classId: 'CLS-9002', name: 'Art & craft trolley', category: 'creative', status: 'Available' },
-    { id: 'RES-5', type: 'Resource', classId: 'CLS-9003', name: 'Science explorer kit', category: 'stem', status: 'Needs restock' },
-    { id: 'RES-6', type: 'Resource', classId: 'CLS-9003', name: 'Class library — chapter books', category: 'books', status: 'Available' },
-    { id: 'RES-7', type: 'Resource', classId: 'CLS-9003', name: 'Outdoor sports equipment bag', category: 'outdoor', status: 'Available' },
+    /* ---------- room resources (Class Workspace S24 / Rooms & Resources S28) ----------
+       Materials/equipment assigned to each room. `category`+`status` are the
+       original S24 fields Class Workspace's Room & Resources tab already
+       reads; `curriculumArea`+`condition`+`lastChecked` are added for the
+       Materials tab (S28) — same records, no parallel data store. No
+       quantity/inventory system exists for these, so condition is a simple
+       real field rather than a fabricated count. */
+    { id: 'RES-1', type: 'Resource', classId: 'CLS-9001', name: 'Sensory bin — rice & scoops', category: 'sensory', status: 'Available', curriculumArea: 'sensorial', condition: 'Good', lastChecked: '2026-10-06' },
+    { id: 'RES-2', type: 'Resource', classId: 'CLS-9001', name: 'Board books set', category: 'books', status: 'Available', curriculumArea: 'language', condition: 'Good', lastChecked: '2026-10-08' },
+    { id: 'RES-3', type: 'Resource', classId: 'CLS-9002', name: 'Wooden building blocks', category: 'stem', status: 'In use', curriculumArea: 'mathematics', condition: 'Needs repair', lastChecked: '2026-10-09' },
+    { id: 'RES-4', type: 'Resource', classId: 'CLS-9002', name: 'Art & craft trolley', category: 'creative', status: 'Available', curriculumArea: 'culture', condition: 'Good', lastChecked: '2026-10-04' },
+    { id: 'RES-5', type: 'Resource', classId: 'CLS-9003', name: 'Science explorer kit', category: 'stem', status: 'Needs restock', curriculumArea: 'culture', condition: 'Missing pieces', lastChecked: '2026-10-07' },
+    { id: 'RES-6', type: 'Resource', classId: 'CLS-9003', name: 'Class library — chapter books', category: 'books', status: 'Available', curriculumArea: 'language', condition: 'Good', lastChecked: '2026-10-10' },
+    { id: 'RES-7', type: 'Resource', classId: 'CLS-9003', name: 'Outdoor sports equipment bag', category: 'outdoor', status: 'Available', curriculumArea: 'practical-life', condition: 'Good', lastChecked: '2026-10-05' },
+    { id: 'RES-8', type: 'Resource', classId: 'CLS-9001', name: 'Pouring & spooning tray', category: 'sensory', status: 'Available', curriculumArea: 'practical-life', condition: 'Good', lastChecked: '2026-10-03' },
+
+    /* ---------- rooms & bookings (S28) ----------
+       Each class's own classroom is a Room too (classId set — "current class
+       assignment"); the shared spaces below have no fixed class and are the
+       ones actually booked via the Rooms tab. */
+    { id: 'ROOM-1', type: 'Room', name: 'Sunflower Room', roomType: 'Classroom', location: 'Ground Floor · Room 1', capacity: 14, classId: 'CLS-9001' },
+    { id: 'ROOM-2', type: 'Room', name: 'Marigold Room', roomType: 'Classroom', location: 'Ground Floor · Room 2', capacity: 16, classId: 'CLS-9002' },
+    { id: 'ROOM-3', type: 'Room', name: 'Daisy Room', roomType: 'Classroom', location: 'First Floor · Room 1', capacity: 15, classId: 'CLS-9003' },
+    { id: 'ROOM-4', type: 'Room', name: 'Art Studio', roomType: 'Creative studio', location: 'Ground Floor · Annex', capacity: 12, classId: null },
+    { id: 'ROOM-5', type: 'Room', name: 'Multi-Purpose Hall', roomType: 'Hall', location: 'First Floor · Hall', capacity: 60, classId: null },
+    { id: 'ROOM-6', type: 'Room', name: 'Outdoor Yard', roomType: 'Outdoor space', location: 'Garden level', capacity: 40, classId: null },
+
+    { id: 'BK-1', type: 'RoomBooking', roomId: 'ROOM-4', title: 'Weekend pottery workshop', classId: 'CLS-9002', staffId: null, date: '2026-10-11', startTime: '10:00', endTime: '11:30', notes: 'Bring aprons', createdAt: '2026-10-07T09:00:00.000Z' },
+    { id: 'BK-2', type: 'RoomBooking', roomId: 'ROOM-5', title: 'Staff training session', classId: null, staffId: 'S-3001', date: '2026-10-11', startTime: '09:00', endTime: '10:00', notes: '', createdAt: '2026-10-06T09:00:00.000Z' },
+
+    /* ---------- book library & loans (S28) ----------
+       `availableCopies` is always computed live from totalCopies minus
+       active (unreturned) BookLoan records — never stored, so it can't
+       drift out of sync with the loan records themselves. No cover-image
+       asset pipeline exists in this project, so books use an honest
+       placeholder icon rather than a fabricated image URL. */
+    { id: 'BOOK-1', type: 'Book', title: 'The Very Hungry Caterpillar', author: 'Eric Carle', totalCopies: 3 },
+    { id: 'BOOK-2', type: 'Book', title: 'Brown Bear, Brown Bear, What Do You See?', author: 'Bill Martin Jr.', totalCopies: 2 },
+    { id: 'BOOK-3', type: 'Book', title: 'Where the Wild Things Are', author: 'Maurice Sendak', totalCopies: 2 },
+    { id: 'BOOK-4', type: 'Book', title: 'The Gruffalo', author: 'Julia Donaldson', totalCopies: 3 },
+    { id: 'BOOK-5', type: 'Book', title: 'Montessori: The Science Behind the Genius', author: 'Angeline Stoll Lillard', totalCopies: 1 },
+    { id: 'BOOK-6', type: 'Book', title: 'Goodnight Moon', author: 'Margaret Wise Brown', totalCopies: 2 },
+    { id: 'BOOK-7', type: 'Book', title: "We're Going on a Bear Hunt", author: 'Michael Rosen', totalCopies: 2 },
+    { id: 'BOOK-8', type: 'Book', title: 'How to Talk So Kids Will Listen', author: 'Adele Faber', totalCopies: 1 },
+
+    { id: 'LOAN-1', type: 'BookLoan', bookId: 'BOOK-1', borrowerType: 'Child', borrowerId: 'C-1001', borrowerName: 'Amara Osei', loanDate: '2026-10-01', dueDate: '2026-10-08', returnedAt: null },
+    { id: 'LOAN-2', type: 'BookLoan', bookId: 'BOOK-5', borrowerType: 'Staff', borrowerId: 'S-3003', borrowerName: 'Meera Fernandes', loanDate: '2026-10-09', dueDate: '2026-10-23', returnedAt: null },
+    { id: 'LOAN-3', type: 'BookLoan', bookId: 'BOOK-4', borrowerType: 'Child', borrowerId: 'C-1101', borrowerName: 'Zara Mehta', loanDate: '2026-09-20', dueDate: '2026-09-27', returnedAt: '2026-09-26T10:00:00.000Z' },
+
+    /* ---------- consumable inventory (S28) ----------
+       Status (OK/LOW/OUT) is always computed from quantity vs reorderLevel,
+       never stored, so it can never go stale relative to the real quantity. */
+    { id: 'INV-1', type: 'InventoryItem', name: 'A4 printer paper', category: 'Office supplies', quantity: 4, unit: 'reams', reorderLevel: 5, lastUpdated: '2026-10-09T08:00:00.000Z' },
+    { id: 'INV-2', type: 'InventoryItem', name: 'Finger paint sets', category: 'Art supplies', quantity: 0, unit: 'sets', reorderLevel: 3, lastUpdated: '2026-10-05T08:00:00.000Z' },
+    { id: 'INV-3', type: 'InventoryItem', name: 'Hand sanitiser', category: 'Health & hygiene', quantity: 18, unit: 'bottles', reorderLevel: 6, lastUpdated: '2026-10-07T08:00:00.000Z' },
+    { id: 'INV-4', type: 'InventoryItem', name: 'Nappies (size 4)', category: 'Health & hygiene', quantity: 30, unit: 'packs', reorderLevel: 10, lastUpdated: '2026-10-10T08:00:00.000Z' },
+    { id: 'INV-5', type: 'InventoryItem', name: 'Glue sticks', category: 'Art supplies', quantity: 12, unit: 'packs', reorderLevel: 4, lastUpdated: '2026-10-02T08:00:00.000Z' },
+    { id: 'INV-6', type: 'InventoryItem', name: 'Tissue boxes', category: 'Health & hygiene', quantity: 2, unit: 'boxes', reorderLevel: 8, lastUpdated: '2026-10-08T08:00:00.000Z' },
 
     /* ---------- learning framework outcomes (Weekly & Monthly Planner — S27) ----------
        A small real outcome bank activities can link to — there is no existing
