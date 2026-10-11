@@ -50,6 +50,13 @@
   --raw-warn-600: #e0901a;
   --raw-warn-500: #ffb020;
 
+  --raw-blue-700: #1f3fae;
+  --raw-blue-600: #2f5bd6;
+  --raw-blue-500: #4d7bf2;
+  --raw-blue-400: #7fa0ff;
+  --raw-navy-900: #0a1530;
+  --raw-navy-800: #101f45;
+
   /* Brand */
   --color-primary: var(--raw-violet-600);
   --color-primary-strong: var(--raw-violet-700);
@@ -58,6 +65,13 @@
   --color-secondary-strong: var(--raw-teal-600);
   --color-accent-yellow: var(--raw-amber-500);
   --color-accent-yellow-strong: var(--raw-amber-600);
+
+  /* Brand — Classes module (royal blue / deep navy) */
+  --color-brand-blue: var(--raw-blue-600);
+  --color-brand-blue-strong: var(--raw-blue-700);
+  --color-brand-blue-soft: var(--raw-blue-400);
+  --color-brand-navy: var(--raw-navy-900);
+  --color-brand-navy-strong: var(--raw-navy-800);
 
   /* Backgrounds / surfaces (depth levels) */
   --color-background: var(--raw-ink-950);

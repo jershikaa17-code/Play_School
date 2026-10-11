@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Classes — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="classes.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="cls-page-header">
+    <div class="cls-page-header__glow" aria-hidden="true"></div>
+    <div class="cls-page-header__intro">
+      <span class="eyebrow">Learning environment</span>
+      <h1 class="cls-page-header__heading" id="clsHeading">Classes</h1>
+      <p class="cls-page-header__text">Manage classrooms, capacity and today's staff coverage.</p>
+    </div>
+    <div class="cls-page-header__actions">
+      <button class="btn btn--secondary" id="clsArchivedToggleBtn" type="button" hidden></button>
+      <button class="btn btn--accent" id="addClassBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add class</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- summary row ---------- -->
+  <div class="cls-summary" id="clsSummary"></div>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="clsSkeleton" class="cls-grid">
+    <div class="card" style="height:280px;"><span class="skeleton skeleton--title" style="width:60%;"></span><span class="skeleton skeleton--text" style="margin-top:16px; width:40%;"></span><span class="skeleton skeleton--text" style="margin-top:24px; width:80%;"></span><span class="skeleton skeleton--button" style="margin-top:24px; width:100%; height:8px;"></span></div>
+    <div class="card" style="height:280px;"><span class="skeleton skeleton--title" style="width:60%;"></span><span class="skeleton skeleton--text" style="margin-top:16px; width:40%;"></span><span class="skeleton skeleton--text" style="margin-top:24px; width:80%;"></span><span class="skeleton skeleton--button" style="margin-top:24px; width:100%; height:8px;"></span></div>
+    <div class="card" style="height:280px;"><span class="skeleton skeleton--title" style="width:60%;"></span><span class="skeleton skeleton--text" style="margin-top:16px; width:40%;"></span><span class="skeleton skeleton--text" style="margin-top:24px; width:80%;"></span><span class="skeleton skeleton--button" style="margin-top:24px; width:100%; height:8px;"></span></div>
+  </div>
+
+  <!-- ---------- empty / error state ---------- -->
+  <div class="state-panel" id="clsEmptyState" hidden>
+    <div class="state-panel__icon" id="clsEmptyIcon"></div>
+    <div class="state-panel__title" id="clsEmptyTitle"></div>
+    <p class="state-panel__text" id="clsEmptyText"></p>
+    <div class="state-panel__action" id="clsEmptyAction"></div>
+  </div>
+
+  <!-- ---------- class card grid ---------- -->
+  <div class="cls-grid" id="clsGrid" hidden></div>
+
+  <!-- ---------- mobile floating add action ---------- -->
+  <button class="fab" id="clsFab" type="button" aria-label="Add class">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+</div>
+
+<!-- ============ Add / Edit class modal ============ -->
+<div class="modal-backdrop" id="classModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add or edit class">
+  <div class="modal cls-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="classModalTitle">Add class</h3>
+    <div class="cls-modal-scroll">
+
+      <div class="field">
+        <label class="field__label" for="cmName">Class name <span class="req">*</span></label>
+        <input class="input" id="cmName" type="text" placeholder="e.g. Sunflower Room" />
+        <p class="field__error" id="err-cmName" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="field__label">Class colour</label>
+        <div class="cls-color-swatches" id="cmColorSwatches"></div>
+      </div>
+
+      <div class="cls-form-grid">
+        <div class="field">
+          <label class="field__label" for="cmMinAge">Minimum age (months) <span class="req">*</span></label>
+          <input class="input" id="cmMinAge" type="number" min="0" max="216" placeholder="e.g. 18" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="cmMaxAge">Maximum age (months) <span class="req">*</span></label>
+          <input class="input" id="cmMaxAge" type="number" min="0" max="216" placeholder="e.g. 36" />
+        </div>
+      </div>
+      <p class="field__error" id="err-cmMinAge" hidden></p>
+
+      <label class="cls-toggle-row">
+        <span class="toggle"><input type="checkbox" id="cmMixedAge" /><span class="toggle__track"><span class="toggle__thumb"></span></span></span>
+        <span>
+          <span class="cls-toggle-row__label">Mixed-age class</span>
+          <span class="cls-toggle-row__hint">Children outside the usual age band may be placed here.</span>
+        </span>
+      </label>
+
+      <div class="field">
+        <label class="field__label" for="cmRoom">Room <span class="req">*</span></label>
+        <input class="input" id="cmRoom" type="text" placeholder="e.g. Ground Floor · Room 1" />
+        <p class="field__error" id="err-cmRoom" hidden></p>
+      </div>
+
+      <div class="cls-form-grid">
+        <div class="field">
+          <label class="field__label" for="cmCapacity">Maximum capacity <span class="req">*</span></label>
+          <input class="input" id="cmCapacity" type="number" min="1" placeholder="e.g. 14" />
+          <p class="field__error" id="err-cmCapacity" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="cmRatio">Children per adult <span class="req">*</span></label>
+          <input class="input" id="cmRatio" type="number" min="1" placeholder="e.g. 4" />
+          <p class="field__error" id="err-cmRatio" hidden></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="cmLeadTeacher">Lead teacher</label>
+        <select class="select" id="cmLeadTeacher"></select>
+        <p class="field__error" id="err-cmLeadTeacher" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="cmStaffSearch">Additional staff</label>
+        <input class="input" id="cmStaffSearch" type="text" placeholder="Search a staff member to add…" />
+        <div id="cmStaffResults" class="cls-picker-results" hidden></div>
+        <div id="cmStaffChips" class="cls-chip-row"></div>
+      </div>
+
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="cmCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="cmSave">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="cmSaveLabel">Save class</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Duplicate confirm modal ============ -->
+<div class="modal-backdrop" id="duplicateModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Duplicate class">
+  <div class="modal">
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </div>
+    <h3 class="modal__title">Duplicate this class?</h3>
+    <p class="modal__text" id="duplicateModalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="duplicateCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="duplicateConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Duplicate</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Archive confirm modal ============ -->
+<div class="modal-backdrop" id="archiveModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Archive class">
+  <div class="modal">
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><line x1="10" y1="13" x2="14" y2="13"/></svg>
+    </div>
+    <h3 class="modal__title">Archive this class?</h3>
+    <p class="modal__text" id="archiveModalText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="archiveCancel">Cancel</button>
+      <button class="btn btn--destructive" type="button" id="archiveConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Archive class</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Archive blocked modal ============ -->
+<div class="modal-backdrop" id="archiveBlockedBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="This class can't be archived yet">
+  <div class="modal">
+    <div class="modal__icon modal__icon--error">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="modal__title">This class can't be archived yet</h3>
+    <p class="modal__text" id="archiveBlockedText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="archiveBlockedClose">Close</button>
+      <button class="btn btn--secondary" type="button" id="archiveBlockedGoToChildren">Go to Children</button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="classes.js"></script>
+</body>
+</html>

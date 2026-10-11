@@ -101,9 +101,10 @@
     return s.classRatioLimit || 10;
   }
   function computeClassRatios() {
-    const limit = classRatioLimit();
+    const defaultLimit = classRatioLimit();
     const children = activeChildren();
     const staff = allStaff();
+    const classRecords = window.PlayStore.getByType('Class');
     const rooms = {};
     children.forEach((c) => { rooms[c.room] = rooms[c.room] || { children: 0, staff: 0 }; rooms[c.room].children += 1; });
     staff.forEach((s) => {
@@ -115,6 +116,8 @@
       const r = rooms[name];
       const staffCount = Math.max(r.staff, 1);
       const ratio = r.children / staffCount;
+      const cls = classRecords.find((c) => c.name === name);
+      const limit = (cls && cls.ratioLimit) || defaultLimit;
       return { name, children: r.children, staff: r.staff, ratio, limit, exceeded: ratio > limit };
     });
   }

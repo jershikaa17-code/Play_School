@@ -178,7 +178,7 @@
   function currentStaff() { return { id: 'S-3001', name: 'Nithya' }; }
 
   /* ---------- data helpers ---------- */
-  function classOptions() { return window.PlayStore.getByType('Class'); }
+  function classOptions() { return window.PlayStore.getByType('Class').filter((c) => c.status !== 'Archived'); }
   function classById(id) { return window.PlayStore.getById(id); }
   function classNameById(id) { const c = classById(id); return c ? c.name : ''; }
   function childrenInSelectedClass() {
@@ -197,7 +197,10 @@
   function staffCountForClass(className) {
     return window.PlayStore.getByType('Staff').filter((s) => s.relation && s.relation.indexOf(className) !== -1).length;
   }
-  function classRatioLimit() { return window.PlayStore.getSettings().classRatioLimit || 10; }
+  function classRatioLimit() {
+    const cls = classById(selectedClassId);
+    return (cls && cls.ratioLimit) || window.PlayStore.getSettings().classRatioLimit || 10;
+  }
 
   /* ---------- holiday / closure detection (reuses Calendar's Event records) ----------
      A lightweight same-day-range check — calendar.js owns the full recurrence

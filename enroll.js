@@ -116,7 +116,7 @@
     wireFooter();
   }
 
-  function classRecords() { return window.PlayStore.getByType('Class'); }
+  function classRecords() { return window.PlayStore.getByType('Class').filter((c) => c.status !== 'Archived'); }
   function enrolledCountFor(classRecord) {
     return window.PlayStore.getByType('Child').filter((c) => c.room === classRecord.name && c.status === 'Active' && c.id !== formState.id).length;
   }

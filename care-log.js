@@ -113,7 +113,7 @@
   }
 
   /* ---------- data helpers ---------- */
-  function classOptions() { return window.PlayStore.getByType('Class'); }
+  function classOptions() { return window.PlayStore.getByType('Class').filter((c) => c.status !== 'Archived'); }
   function classNameById(id) { const c = window.PlayStore.getById(id); return c ? c.name : ''; }
   function childById(id) { return window.PlayStore.getById(id); }
   function childrenInSelectedClass() {

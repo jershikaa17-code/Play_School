@@ -191,7 +191,7 @@
      sidebar working, just without module lock state. */
   const FALLBACK_NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html' },
-    { id: 'classrooms', label: 'Classrooms', href: 'dashboard.html#classrooms' },
+    { id: 'classrooms', label: 'Classes', href: 'classes.html' },
     { id: 'children', label: 'Children', href: 'children.html' },
     { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },

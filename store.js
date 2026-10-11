@@ -67,11 +67,23 @@
     { id: 'G-2006', type: 'Guardian', name: 'Imran Siddiqui', relation: 'Parent of Kabir Siddiqui', status: 'Active', contact: 'imran.siddiqui@example.com' },
 
     { id: 'S-3001', type: 'Staff', name: 'Nithya', relation: 'Admin', status: 'Active' },
-    { id: 'S-3002', type: 'Staff', name: 'Rhea Kapoor', relation: 'Teacher · Marigold Room', status: 'Active' },
+    { id: 'S-3002', type: 'Staff', name: 'Rhea Kapoor', relation: 'Teacher · Marigold Room', status: 'Active', classNames: ['Marigold Room'] },
+    { id: 'S-3003', type: 'Staff', name: 'Meera Fernandes', relation: 'Teacher · Sunflower Room', status: 'Active', classNames: ['Sunflower Room'] },
+    { id: 'S-3004', type: 'Staff', name: 'Divya Shah', relation: 'Staff · Sunflower Room', status: 'Active', classNames: ['Sunflower Room'] },
+    { id: 'S-3005', type: 'Staff', name: 'Arjun Mehta', relation: 'Teacher · Daisy Room', status: 'Active', classNames: ['Daisy Room'] },
+    { id: 'S-3006', type: 'Staff', name: 'Kavya Iyer', relation: 'Staff · Marigold Room', status: 'Active', classNames: ['Marigold Room'] },
+    { id: 'S-3007', type: 'Staff', name: 'Ron Dsouza', relation: 'Staff · Daisy Room', status: 'Active', classNames: ['Daisy Room'] },
 
-    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', teacherName: 'Nithya', teacherId: 'S-3001', status: 'Active', startTime: '08:00', capacity: 14 },
-    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', teacherName: 'Rhea Kapoor', teacherId: 'S-3002', status: 'Active', startTime: '08:15', capacity: 16 },
-    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', teacherName: 'Nithya', teacherId: 'S-3001', status: 'Active', startTime: '08:30', capacity: 15 },
+    /* Classes (S20) — `room` is the physical room/location label shown on the
+       class card; the class's own `name` (e.g. "Sunflower Room") remains the
+       identifier every child's `child.room` field is matched against
+       (children.js, enroll.js, attendance.js, families.js, dashboard.js all
+       key off this convention) — renaming a class migrates that field, see
+       classes.js's save handler. `ratioLimit` is a per-class override of the
+       school-wide `classRatioLimit` setting (children allowed per adult). */
+    { id: 'CLS-9001', type: 'Class', name: 'Sunflower Room', ageGroup: 'Toddler · 18mo–3y', room: 'Ground Floor · Room 1', color: 'blue', minAgeMonths: 18, maxAgeMonths: 36, mixedAge: false, teacherName: 'Meera Fernandes', teacherId: 'S-3003', status: 'Active', startTime: '08:00', capacity: 14, ratioLimit: 4 },
+    { id: 'CLS-9002', type: 'Class', name: 'Marigold Room', ageGroup: 'Primary · 3–6y', room: 'Ground Floor · Room 2', color: 'violet', minAgeMonths: 36, maxAgeMonths: 72, mixedAge: false, teacherName: 'Rhea Kapoor', teacherId: 'S-3002', status: 'Active', startTime: '08:15', capacity: 16, ratioLimit: 10 },
+    { id: 'CLS-9003', type: 'Class', name: 'Daisy Room', ageGroup: 'Lower Elementary · 6–9y', room: 'First Floor · Room 1', color: 'amber', minAgeMonths: 72, maxAgeMonths: 108, mixedAge: false, teacherName: 'Arjun Mehta', teacherId: 'S-3005', status: 'Active', startTime: '08:30', capacity: 15, ratioLimit: 14 },
 
     /* ---------- sample payments + incident ----------
        Payment records are matched to a child by name (the existing
