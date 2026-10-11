@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Family Forms — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="classes.css" />
+<link rel="stylesheet" href="planner.css" />
+<link rel="stylesheet" href="announcements.css" />
+<link rel="stylesheet" href="forms.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- locked state ---------- -->
+  <div id="frmLocked" class="ws-skeleton" style="text-align:center; padding: var(--space-9) var(--space-6); max-width:440px; margin-inline:auto;" hidden>
+    <div id="frmLockedIcon" style="width:48px; height:48px; margin:0 auto var(--space-4); border-radius:50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display:grid; place-items:center;"></div>
+    <p style="font-size: var(--fs-body-sm); color: var(--color-text-secondary);">Family Forms is included in the <b>Premium</b> plan as part of <b>Parent Communication Hub</b>.</p>
+    <div id="frmLockedAction" style="margin-top: var(--space-4);"></div>
+  </div>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="frmSkeleton" class="ws-skeleton">
+    <div class="card" style="height:150px;"></div>
+    <div class="card" style="height:90px; margin-top:var(--space-5);"></div>
+    <div class="card" style="height:400px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="frmMain" hidden>
+    <div id="frmBody" hidden>
+
+      <!-- ====================== LIST SCENE ====================== -->
+      <section id="formsListScene">
+        <header class="ann-header">
+          <div class="ann-header__glow" aria-hidden="true"></div>
+          <div class="ann-header__top">
+            <div class="ann-header__intro">
+              <span class="eyebrow">Parent communication hub</span>
+              <h1 class="ann-header__heading">Family Forms</h1>
+              <p class="ann-header__text">Gather feedback, manage permissions, and collect signed acknowledgements.</p>
+            </div>
+            <div class="ann-header__controls">
+              <button class="btn btn--accent" type="button" id="frmCreateBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>Create form</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="ann-summary" id="frmSummary"></div>
+
+        <div class="frm-toolbar">
+          <nav class="ann-tabs" id="frmTabs" role="tablist" aria-label="Form filters"></nav>
+          <div class="input-wrap frm-search">
+            <span class="input-wrap__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input class="input" id="frmSearch" type="text" placeholder="Search forms…" />
+          </div>
+        </div>
+
+        <div class="ann-tab-panel" id="frmTabPanel" role="tabpanel"></div>
+      </section>
+
+      <!-- ====================== BUILDER SCENE ====================== -->
+      <section id="formsBuilderScene" hidden>
+
+        <!-- mobile notice — shown instead of the panels below 768px -->
+        <div id="formsBuilderBlocked" class="state-panel" hidden>
+          <div class="state-panel__icon" id="blockedIcon"></div>
+          <div class="state-panel__title">Edit on a larger screen</div>
+          <p class="state-panel__text">The form builder works best on a tablet or desktop. You can still view forms and results on your phone.</p>
+          <div class="state-panel__action"><button class="btn btn--accent" type="button" id="blockedBackBtn">Back to forms list</button></div>
+        </div>
+
+        <div id="formsBuilderDesktop">
+          <div class="frm-builder-topbar">
+            <button class="ws-icon-btn" type="button" id="builderBackBtn" aria-label="Back to forms list" title="Back to forms list">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="frm-builder-topbar__fields">
+              <input class="frm-title-input" id="builderTitleInput" type="text" placeholder="Untitled form" />
+              <div class="frm-builder-topbar__meta">
+                <select class="select frm-type-select" id="builderTypeSelect">
+                  <option value="Survey">Survey</option>
+                  <option value="Permission">Permission</option>
+                  <option value="Acknowledgement">Acknowledgement</option>
+                </select>
+                <span class="frm-qcount" id="builderQCount">0 questions</span>
+              </div>
+              <textarea class="frm-desc-input" id="builderDescInput" rows="1" placeholder="Short description for families…"></textarea>
+            </div>
+            <div class="frm-builder-topbar__actions">
+              <button class="btn btn--secondary" type="button" id="builderPreviewBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>Preview as parent</span>
+              </button>
+              <button class="btn btn--ghost" type="button" id="builderCloseFormBtn" hidden>Close form</button>
+              <button class="btn btn--ghost" type="button" id="builderRemindBtn" hidden>Remind unread</button>
+              <button class="btn btn--accent" type="button" id="builderPublishBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span>Publish</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="frm-builder-grid">
+            <aside class="frm-palette" id="frmPalette">
+              <h3 class="frm-panel-title">Add a question</h3>
+              <div class="frm-palette-list" id="frmPaletteList"></div>
+            </aside>
+
+            <div class="frm-canvas" id="frmCanvas"></div>
+
+            <aside class="frm-settings" id="frmSettings">
+              <div class="state-panel-mini" id="frmSettingsEmpty">
+                <div class="state-panel-mini__icon" id="settingsEmptyIcon"></div>
+                <p>Select a question to edit its settings.</p>
+              </div>
+              <div id="frmSettingsBody" hidden></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== RESULTS SCENE ====================== -->
+      <section id="formsResultsScene" hidden>
+        <div class="frm-results-header">
+          <button class="ws-icon-btn" type="button" id="resultsBackBtn" aria-label="Back to forms list" title="Back to forms list">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="frm-results-header__main" id="resultsHeaderMain"></div>
+          <div class="frm-results-header__actions" id="resultsHeaderActions"></div>
+        </div>
+
+        <div class="frm-results-meta" id="resultsMeta"></div>
+
+        <h2 class="frm-section-title">Question results</h2>
+        <div class="frm-results-questions" id="resultsQuestions"></div>
+
+        <div class="frm-responses-head">
+          <h2 class="frm-section-title">Individual responses</h2>
+          <div class="input-wrap frm-search" style="width:220px;">
+            <span class="input-wrap__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input class="input" id="responsesSearch" type="text" placeholder="Search respondents…" />
+          </div>
+        </div>
+        <div class="frm-responses-panel" id="resultsResponses"></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ Publish modal (Audience → Due date → Confirmation) ============ -->
+<div class="modal-backdrop" id="publishModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Publish form">
+  <div class="modal ws-modal frm-publish-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Publish form</h3>
+    <div class="ann-step-indicator" id="publishStepIndicator"></div>
+    <div class="ws-modal-scroll" id="publishBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="publishBack" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Back</span>
+      </button>
+      <button class="btn btn--accent" type="button" id="publishNext" style="margin-left:auto;"><span class="btn__spinner" aria-hidden="true"></span><span>Continue</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Parent preview — phone frame ============ -->
+<div class="modal-backdrop" id="previewModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Preview as parent">
+  <div class="modal frm-preview-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Preview as parent</h3>
+    <p class="modal__text" style="margin-bottom: var(--space-4);">This is a live, interactive preview — try answering it the way a family would.</p>
+    <div class="frm-phone">
+      <div class="frm-phone__notch"></div>
+      <div class="frm-phone__screen" id="previewScreen"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generic confirmation modal ============ -->
+<div class="modal-backdrop" id="confirmModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm action">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="confirmTitle"></h3>
+    <p class="ann-confirm-text" id="confirmText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="confirmActionBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Response detail drawer ============ -->
+<div class="modal-backdrop ann-drawer-backdrop" id="responseDrawerBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Response details">
+  <div class="ann-drawer">
+    <div class="ann-drawer__head">
+      <h3 class="ann-drawer__title" id="responseDrawerTitle"></h3>
+      <button class="modal__close" type="button" data-close aria-label="Close drawer">&times;</button>
+    </div>
+    <div class="ann-drawer__scroll" id="responseDrawerBody"></div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="forms.js"></script>
+</body>
+</html>

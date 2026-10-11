@@ -6,6 +6,13 @@
 (function () {
   'use strict';
 
+  /* A single shared demo signature image (S31 Family Forms) — represents an
+     already-captured signature in seed/historical data only. Real signatures
+     collected through the Forms builder are drawn live on a canvas and
+     stored as their own data URL; nothing here is presented as a live
+     parent signature. */
+  const DEMO_SIGNATURE_DATA_URL = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80"><path d="M10 58 C28 12,48 70,68 28 S108 10,128 48 S168 68,200 22" stroke="#1d2340" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M58 52 C72 34,84 58,98 42" stroke="#1d2340" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>');
+
   const records = [
     {
       id: 'C-1001', type: 'Child', name: 'Amara Osei', preferredName: 'Ami', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
@@ -401,6 +408,98 @@
       audienceType: 'classes', classIds: ['CLS-9001'], audience: 'Sunflower Room', channels: ['in-app'], requireAck: false,
       status: 'Draft', date: null, createdAt: '2026-10-11T07:00:00.000Z',
       reads: {}, acks: {},
+    },
+
+    /* ---------- Family Forms (S31) ----------
+       FormDef holds the question list + conditional logic + audience/due date;
+       FormResponse is one submission per respondent, keyed by Family id (same
+       convention as Announcement reads/acks). File-question answers only ever
+       store {name,size,type} metadata — the actual file bytes are never kept,
+       so results never show a fake download link. */
+    {
+      id: 'FORM-1', type: 'FormDef', title: 'Autumn Activity Feedback', formType: 'Survey',
+      description: "A quick check-in on how this term's activities have gone for your family.",
+      status: 'Open', audienceType: 'all', classIds: [], dueDate: '2026-10-20',
+      createdAt: '2026-10-04T09:00:00.000Z', publishedAt: '2026-10-05T09:00:00.000Z', closedAt: null,
+      lastReminderAt: null, lastReminderCount: 0,
+      questions: [
+        { id: 'Q-1A', type: 'single', title: 'Which activity did your child enjoy most this term?', description: '', required: true, options: [{ id: 'OPT-1A1', label: 'Music & Movement' }, { id: 'OPT-1A2', label: 'Outdoor Play' }, { id: 'OPT-1A3', label: 'Arts & Crafts' }, { id: 'OPT-1A4', label: 'Story Time' }], showIf: null },
+        { id: 'Q-1B', type: 'rating', title: 'How satisfied are you with our communication?', description: '1 = not satisfied, 5 = very satisfied', required: true, options: [], showIf: null },
+        { id: 'Q-1C', type: 'long', title: "Tell us about your child's experience this term.", description: '', required: false, options: [], showIf: null },
+        { id: 'Q-1D', type: 'short', title: 'What would you like us to improve?', description: '', required: false, options: [], showIf: null },
+      ],
+    },
+    {
+      id: 'RESP-1A', type: 'FormResponse', formId: 'FORM-1', familyId: 'FAM-G-2001', respondentName: 'Osei Family', submittedAt: '2026-10-06T10:00:00.000Z',
+      answers: { 'Q-1A': 'OPT-1A2', 'Q-1B': 5, 'Q-1C': 'Amara comes home talking about the garden every day!', 'Q-1D': '' },
+    },
+    {
+      id: 'RESP-1B', type: 'FormResponse', formId: 'FORM-1', familyId: 'FAM-G-2002', respondentName: 'Kapoor Family', submittedAt: '2026-10-06T14:30:00.000Z',
+      answers: { 'Q-1A': 'OPT-1A3', 'Q-1B': 4, 'Q-1C': '', 'Q-1D': 'More updates on nap times would help.' },
+    },
+    {
+      id: 'RESP-1C', type: 'FormResponse', formId: 'FORM-1', familyId: 'FAM-G-1101', respondentName: 'Thompson Family', submittedAt: '2026-10-07T08:45:00.000Z',
+      answers: { 'Q-1A': 'OPT-1A1', 'Q-1B': 5, 'Q-1C': 'Lily loves music time, she sings the songs at home.', 'Q-1D': '' },
+    },
+    {
+      id: 'RESP-1D', type: 'FormResponse', formId: 'FORM-1', familyId: 'FAM-G-1102', respondentName: 'Hassan Family', submittedAt: '2026-10-08T09:10:00.000Z',
+      answers: { 'Q-1A': 'OPT-1A4', 'Q-1B': 3, 'Q-1C': '', 'Q-1D': 'Could the story list be shared with families?' },
+    },
+    {
+      id: 'RESP-1E', type: 'FormResponse', formId: 'FORM-1', familyId: 'FAM-G-1121', respondentName: 'Gupta Family', submittedAt: '2026-10-09T16:00:00.000Z',
+      answers: { 'Q-1A': 'OPT-1A2', 'Q-1B': 4, 'Q-1C': 'Yash has been much more confident outdoors.', 'Q-1D': '' },
+    },
+
+    {
+      id: 'FORM-2', type: 'FormDef', title: 'Local Trip Permission', formType: 'Permission',
+      description: 'Daisy Room is visiting the local park on 24 October — please confirm permission by the due date.',
+      status: 'Open', audienceType: 'classes', classIds: ['CLS-9003'], dueDate: '2026-10-22',
+      createdAt: '2026-10-08T08:00:00.000Z', publishedAt: '2026-10-09T08:00:00.000Z', closedAt: null,
+      lastReminderAt: null, lastReminderCount: 0,
+      questions: [
+        { id: 'Q-2A', type: 'yesno', title: 'Do you give permission for the local park trip on 24 October?', description: '', required: true, options: [], showIf: null },
+        { id: 'Q-2B', type: 'short', title: 'Please tell us why you cannot give permission.', description: '', required: true, options: [], showIf: { questionId: 'Q-2A', equals: 'No' } },
+      ],
+    },
+    {
+      id: 'RESP-2A', type: 'FormResponse', formId: 'FORM-2', familyId: 'FAM-G-1123', respondentName: 'Nair Family', submittedAt: '2026-10-09T18:00:00.000Z',
+      answers: { 'Q-2A': 'Yes' },
+    },
+    {
+      id: 'RESP-2B', type: 'FormResponse', formId: 'FORM-2', familyId: 'FAM-G-1122', respondentName: 'Bose Family', submittedAt: '2026-10-10T07:30:00.000Z',
+      answers: { 'Q-2A': 'No', 'Q-2B': 'Away on a family trip that week.' },
+    },
+
+    {
+      id: 'FORM-3', type: 'FormDef', title: 'Updated Collection Policy', formType: 'Acknowledgement',
+      description: 'Please read the updated end-of-day collection policy and sign to confirm you have seen it.',
+      status: 'Closed', audienceType: 'all', classIds: [], dueDate: '2026-09-30',
+      createdAt: '2026-09-12T09:00:00.000Z', publishedAt: '2026-09-15T09:00:00.000Z', closedAt: '2026-10-01T09:00:00.000Z',
+      lastReminderAt: '2026-09-27T09:00:00.000Z', lastReminderCount: 12,
+      questions: [
+        { id: 'Q-3A', type: 'yesno', title: 'Have you read the updated collection policy?', description: 'Children may now only be collected by guardians listed on their authorised pickup list.', required: true, options: [], showIf: null },
+        { id: 'Q-3B', type: 'signature', title: 'Parent or guardian signature', description: 'Sign using your finger or mouse to confirm you accept the policy.', required: true, options: [], showIf: null },
+      ],
+    },
+    {
+      id: 'RESP-3A', type: 'FormResponse', formId: 'FORM-3', familyId: 'FAM-G-2001', respondentName: 'Osei Family', submittedAt: '2026-09-18T10:00:00.000Z',
+      answers: { 'Q-3A': 'Yes', 'Q-3B': { dataUrl: DEMO_SIGNATURE_DATA_URL, signedAt: '2026-09-18T10:00:00.000Z' } },
+    },
+    {
+      id: 'RESP-3B', type: 'FormResponse', formId: 'FORM-3', familyId: 'FAM-G-2002', respondentName: 'Kapoor Family', submittedAt: '2026-09-19T11:20:00.000Z',
+      answers: { 'Q-3A': 'Yes', 'Q-3B': { dataUrl: DEMO_SIGNATURE_DATA_URL, signedAt: '2026-09-19T11:20:00.000Z' } },
+    },
+    {
+      id: 'RESP-3C', type: 'FormResponse', formId: 'FORM-3', familyId: 'FAM-G-1101', respondentName: 'Thompson Family', submittedAt: '2026-09-20T08:05:00.000Z',
+      answers: { 'Q-3A': 'Yes', 'Q-3B': { dataUrl: DEMO_SIGNATURE_DATA_URL, signedAt: '2026-09-20T08:05:00.000Z' } },
+    },
+
+    {
+      id: 'FORM-4', type: 'FormDef', title: 'New Parent Handbook Review', formType: 'Survey',
+      description: '', status: 'Draft', audienceType: null, classIds: [], dueDate: null,
+      createdAt: '2026-10-11T07:30:00.000Z', publishedAt: null, closedAt: null,
+      lastReminderAt: null, lastReminderCount: 0,
+      questions: [],
     },
   ];
 
