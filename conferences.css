@@ -1,0 +1,150 @@
+/* ==========================================================================
+   PLAY SCHOOL — Parent–Teacher Conferences (S32)
+   Depends on styles.css (tokens, badges, tables, modals, toggle, progress),
+   shell.css, class-workspace.css (.ws-skeleton, .ws-modal-scroll, .ws-icon-btn,
+   .state-panel), classes.css (.cls-form-grid/.cls-toggle-row), planner.css
+   (.pl-area-chip) and announcements.css (.ann-header/.ann-summary/.ann-tabs/
+   .ann-drawer*/.ann-audience-opt/.ann-preview-card/.ann-read-bar — reused
+   outright). Only this page's own grid/booking/record widgets live here,
+   prefixed `conf-`.
+   ========================================================================== */
+
+#confBookBtn svg { width: 16px; height: 16px; flex-shrink: 0; }
+#confGenerateBtn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ---------- shared controls row ---------- */
+.conf-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
+.conf-date-nav { display: flex; align-items: center; gap: var(--space-2); }
+.conf-date-nav__label { font-weight: 700; font-size: var(--fs-body-sm); white-space: nowrap; padding-inline: var(--space-2); min-width: 150px; text-align: center; }
+.conf-teacher-filters { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* ==========================================================================
+   AVAILABILITY — desktop weekly grid
+   ========================================================================== */
+.conf-grid-wrap { display: block; overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--color-border-subtle); background: var(--color-surface-primary); }
+.conf-grid { display: grid; grid-template-columns: 150px repeat(7, minmax(120px, 1fr)); min-width: 900px; }
+.conf-grid__corner, .conf-grid__daycol {
+  padding: var(--space-3); border-bottom: 1px solid var(--color-border-subtle); border-left: 1px solid var(--color-border-subtle);
+  position: sticky; top: 0; background: var(--color-surface-primary); z-index: 1; text-align: center;
+}
+.conf-grid__corner { border-left: none; position: sticky; left: 0; z-index: 2; }
+.conf-grid__daycol.is-today { background: color-mix(in srgb, var(--color-brand-blue) 10%, var(--color-surface-primary)); }
+.conf-grid__daycol-day { font-size: var(--fs-caption); font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: var(--ls-wide); }
+.conf-grid__daycol-date { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-body); margin-top: 2px; }
+.conf-grid__teacher {
+  padding: var(--space-3); border-bottom: 1px solid var(--color-border-subtle);
+  position: sticky; left: 0; background: var(--color-surface-primary); z-index: 1;
+  display: flex; align-items: center; gap: var(--space-2); font-weight: 600; font-size: var(--fs-body-sm);
+}
+.conf-grid__teacher-avatar { width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--color-brand-blue) 18%, transparent); color: var(--color-brand-blue-soft); display: grid; place-items: center; font-size: 0.68rem; font-weight: 700; flex-shrink: 0; }
+.conf-grid__cell { padding: var(--space-2); border-bottom: 1px solid var(--color-border-subtle); border-left: 1px solid var(--color-border-subtle); min-height: 64px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.conf-grid__cell.is-today { background: color-mix(in srgb, var(--color-brand-blue) 5%, transparent); }
+
+.conf-slot-pill {
+  display: block; width: 100%; padding: 4px var(--space-2); border-radius: var(--radius-sm); border: 1px solid transparent;
+  font-size: 0.68rem; font-weight: 700; text-align: center; cursor: pointer; white-space: nowrap;
+  transition: transform var(--dur-micro) var(--ease-premium), box-shadow var(--dur-micro) var(--ease-premium);
+}
+.conf-slot-pill:hover { transform: translateY(-1px); }
+.conf-slot-pill.is-open { background: color-mix(in srgb, var(--color-success) 16%, transparent); color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 35%, transparent); }
+.conf-slot-pill.is-open:hover { box-shadow: var(--shadow-sm); background: color-mix(in srgb, var(--color-success) 24%, transparent); }
+.conf-slot-pill.is-booked { background: var(--color-surface-glass-light); color: var(--color-text-muted); cursor: default; }
+.conf-slot-pill.is-booked:hover { transform: none; }
+.conf-slot-pill.is-cancelled { background: color-mix(in srgb, var(--color-error) 10%, transparent); color: var(--color-error); text-decoration: line-through; }
+.conf-grid__empty { font-size: 0.68rem; color: var(--color-text-muted); text-align: center; padding: var(--space-2) 0; opacity: 0.6; }
+
+/* ---------- mobile day list ---------- */
+.conf-day-list { display: none; flex-direction: column; gap: var(--space-4); }
+.conf-day-teacher { padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle); }
+.conf-day-teacher__head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); font-weight: 700; font-size: var(--fs-body-sm); }
+.conf-day-teacher__slots { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.conf-day-teacher__slots .conf-slot-pill { width: auto; padding: var(--space-2) var(--space-3); font-size: var(--fs-caption); }
+
+/* ==========================================================================
+   BOOKINGS
+   ========================================================================== */
+.conf-filter-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); margin-bottom: var(--space-5); padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface-glass-light); }
+.conf-filter-field { display: flex; flex-direction: column; gap: 4px; }
+.conf-filter-field label { font-size: var(--fs-caption); color: var(--color-text-muted); font-weight: 600; }
+.conf-filter-field .input, .conf-filter-field .select { height: 36px; min-width: 140px; }
+.conf-filter-field--search { flex: 1; min-width: 200px; }
+
+.conf-date-group { margin-bottom: var(--space-6); }
+.conf-date-group__label { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-body-lg); margin-bottom: var(--space-3); }
+
+.conf-mode-badge { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-caption); font-weight: 600; color: var(--color-text-secondary); }
+.conf-mode-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+.conf-row-actions { display: flex; gap: var(--space-2); justify-content: flex-end; }
+.conf-row-actions .ws-icon-btn { width: 30px; height: 30px; }
+
+/* ==========================================================================
+   CONFERENCE RECORDS
+   ========================================================================== */
+.conf-record-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-5); }
+.conf-record-card { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle); display: flex; flex-direction: column; gap: var(--space-3); cursor: pointer; transition: transform var(--dur-normal) var(--ease-premium), box-shadow var(--dur-normal) var(--ease-premium); opacity: 0; transform: translateY(8px); animation: annFadeUp 320ms var(--ease-premium) forwards; }
+.conf-record-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.conf-record-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.conf-record-card__title { font-weight: 700; font-size: var(--fs-body); }
+.conf-record-card__meta { font-size: var(--fs-caption); color: var(--color-text-muted); }
+.conf-record-card__notes { font-size: var(--fs-body-sm); color: var(--color-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.conf-record-card__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle); }
+.conf-followup-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700; padding: 3px var(--space-2); border-radius: var(--radius-pill); }
+.conf-followup-chip.is-overdue { background: color-mix(in srgb, var(--color-error) 16%, transparent); color: var(--color-error); }
+.conf-followup-chip.is-upcoming { background: color-mix(in srgb, var(--color-warning) 18%, transparent); color: var(--color-warning); }
+.conf-followup-chip.is-none { background: var(--color-surface-glass-light); color: var(--color-text-muted); }
+.conf-followup-chip svg { width: 11px; height: 11px; flex-shrink: 0; }
+.conf-record-links { display: flex; gap: var(--space-3); }
+.conf-record-links a { font-size: var(--fs-caption); font-weight: 600; color: var(--color-brand-blue-soft); }
+.conf-record-links a:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   MODALS — generate / book / record editor
+   ========================================================================== */
+.conf-generate-modal, .conf-book-modal, .conf-record-modal { max-width: 560px; }
+
+.conf-preview-card { margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface-glass-light); border: 1px solid var(--color-border-subtle); }
+.conf-preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); margin-bottom: var(--space-3); }
+.conf-preview-grid div { display: flex; flex-direction: column; gap: 2px; }
+.conf-preview-grid span { font-size: var(--fs-caption); color: var(--color-text-muted); }
+.conf-preview-grid b { font-family: var(--font-display); font-size: var(--fs-h3); font-weight: 600; }
+.conf-preview-skip { font-size: var(--fs-caption); color: var(--color-warning); margin-top: var(--space-2); }
+.conf-preview-skip svg { display: inline-block; width: 13px; height: 13px; vertical-align: -2px; flex-shrink: 0; }
+
+.conf-slot-grid { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.conf-slot-choice {
+  padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); border: 1.5px solid var(--color-border);
+  background: none; font-size: var(--fs-body-sm); font-weight: 600; cursor: pointer; transition: all var(--dur-micro) var(--ease-premium);
+}
+.conf-slot-choice:hover { border-color: var(--color-brand-blue-soft); }
+.conf-slot-choice.is-selected { background: var(--color-brand-blue); border-color: var(--color-brand-blue); color: var(--raw-white); }
+
+.conf-actions-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.conf-action-row { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); align-items: start; padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-glass-light); }
+.conf-action-row__check { padding-top: 6px; }
+.conf-action-row__fields { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+.conf-action-row__fields-row { display: grid; grid-template-columns: 1fr 140px; gap: var(--space-2); }
+.conf-action-row__remove { grid-column: 1 / -1; justify-self: end; }
+.conf-action-add { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-caption); font-weight: 600; color: var(--color-brand-blue-soft); background: none; border: none; cursor: pointer; }
+.conf-action-add svg { width: 13px; height: 13px; }
+
+/* ==========================================================================
+   RESPONSIVE — desktop ≥1024px, tablet 768–1023px, mobile <768px
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .conf-grid { grid-template-columns: 130px repeat(7, minmax(100px, 1fr)); }
+  .conf-filter-bar { gap: var(--space-2); }
+}
+
+@media (max-width: 767px) {
+  .ann-header__controls .btn { width: 100%; justify-content: center; }
+  .conf-grid-wrap { display: none; }
+  .conf-day-list { display: flex; }
+  .conf-controls { flex-direction: column; align-items: stretch; }
+  .conf-date-nav { justify-content: center; }
+  .conf-filter-bar { flex-direction: column; align-items: stretch; }
+  .conf-filter-field .input, .conf-filter-field .select { width: 100%; min-width: 0; }
+  .conf-record-grid { grid-template-columns: 1fr; }
+  .conf-action-row__fields-row { grid-template-columns: 1fr; }
+  .conf-preview-grid { grid-template-columns: 1fr 1fr; }
+}

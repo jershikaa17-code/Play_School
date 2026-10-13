@@ -52,6 +52,7 @@
     { id: 'resources', navLabel: 'Rooms & Resources', href: 'resources.html', requiredPlan: 'Starter', core: true },
     { id: 'announcements', navLabel: 'Announcements', href: 'announcements.html', requiredPlan: 'Premium', core: true },
     { id: 'forms', navLabel: 'Family Forms', href: 'forms.html', requiredPlan: 'Premium', core: true },
+    { id: 'conferences', navLabel: 'Conferences', href: 'conferences.html', requiredPlan: 'Premium', core: true },
     {
       id: 'attendance',
       navLabel: 'Attendance & Check-in',

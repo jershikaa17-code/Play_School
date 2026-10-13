@@ -87,7 +87,11 @@
     document.getElementById('pageContent').hidden = false;
     document.getElementById('appContent').appendChild(document.getElementById('pageContent'));
 
-    if (record.type === 'Child') { $('profileView').hidden = false; initChildProfile(); }
+    if (record.type === 'Child') {
+      const requestedTab = params.get('tab');
+      if (requestedTab && TABS.some((t) => t.key === requestedTab)) activeTab = requestedTab;
+      $('profileView').hidden = false; initChildProfile();
+    }
     else { $('genericView').hidden = false; initGenericRecord(); }
   }
   function displayTitle(r) { return r.preferredName ? r.name + ' (' + r.preferredName + ')' : r.name; }
@@ -312,6 +316,7 @@
     const present = attRecords.filter((a) => a.status !== 'Absent').length;
     const consentEvents = relevantConsentEvents(child);
     const pendingConsents = consentEvents.filter((ev) => !ev.consents || !ev.consents[child.id]).length;
+    const conferenceRecords = window.PlayStore.getByType('ConferenceRecord').filter((r) => r.childId === child.id).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
 
     $('profileTabPanel').innerHTML = `
       <div class="profile-cards">
@@ -353,6 +358,14 @@
         <div class="profile-card profile-card--wide">
           <div class="profile-card__head"><span class="profile-card__title">Recent Daily Diary entries</span></div>
           ${diaryEntries.length ? `<div class="profile-list">${diaryEntries.map((e) => `<div class="profile-list-row"><div><div class="profile-list-row__title">${escapeHtml(e.entryType.charAt(0).toUpperCase() + e.entryType.slice(1))}</div><div class="profile-list-row__meta">${formatDateMed(e.date)}${e.time ? ' · ' + formatTime12(e.time) : ''}</div></div></div>`).join('')}</div>` : emptyStateHtml('No Daily Care Log entries yet.')}
+        </div>
+
+        <div class="profile-card profile-card--wide">
+          <div class="profile-card__head"><span class="profile-card__title">Parent–Teacher Conferences</span><a class="profile-card__edit" href="conferences.html?childId=${encodeURIComponent(child.id)}" aria-label="Open Conferences" title="Open Conferences">${ICON.pencil}</a></div>
+          ${conferenceRecords.length ? `<div class="profile-list">${conferenceRecords.map((r) => {
+            const teacher = window.PlayStore.getById(r.teacherId);
+            return `<div class="profile-list-row"><div><div class="profile-list-row__title">${formatDateMed(r.date)} with ${escapeHtml(teacher ? teacher.name : 'Staff')}</div><div class="profile-list-row__meta">${escapeHtml((r.notes || '').slice(0, 80))}${r.notes && r.notes.length > 80 ? '…' : ''}</div></div><span class="badge ${r.sharedWithFamily ? 'badge--success' : 'badge--neutral'}">${r.sharedWithFamily ? 'Shared' : 'Private'}</span></div>`;
+          }).join('')}</div>` : emptyStateHtml('No conference records yet.')}
         </div>
 
         <div class="profile-card">

@@ -201,6 +201,7 @@
     { id: 'resources', label: 'Rooms & Resources', href: 'resources.html' },
     { id: 'announcements', label: 'Announcements', href: 'announcements.html' },
     { id: 'forms', label: 'Family Forms', href: 'forms.html' },
+    { id: 'conferences', label: 'Conferences', href: 'conferences.html' },
   ];
 
   function resolveNavItems() {

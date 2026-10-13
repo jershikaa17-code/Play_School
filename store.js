@@ -13,6 +13,19 @@
      parent signature. */
   const DEMO_SIGNATURE_DATA_URL = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80"><path d="M10 58 C28 12,48 70,68 28 S108 10,128 48 S168 68,200 22" stroke="#1d2340" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M58 52 C72 34,84 58,98 42" stroke="#1d2340" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>');
 
+  /* Relative seed dates (S32 Parent–Teacher Conferences) — computed from the
+     real current date so the demo availability grid always shows a sensible
+     "this week" of slots regardless of when the app is opened. */
+  function confPad2(n) { return String(n).padStart(2, '0'); }
+  function confIsoPlusDays(n) {
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + confPad2(d.getMonth() + 1) + '-' + confPad2(d.getDate());
+  }
+  const CONF_PAST = confIsoPlusDays(-5);
+  const CONF_D1 = confIsoPlusDays(1);
+  const CONF_D2 = confIsoPlusDays(2);
+  const CONF_D3 = confIsoPlusDays(3);
+
   const records = [
     {
       id: 'C-1001', type: 'Child', name: 'Amara Osei', preferredName: 'Ami', room: 'Sunflower Room', status: 'Active', guardianId: 'G-2001',
@@ -500,6 +513,39 @@
       createdAt: '2026-10-11T07:30:00.000Z', publishedAt: null, closedAt: null,
       lastReminderAt: null, lastReminderCount: 0,
       questions: [],
+    },
+
+    /* ---------- Parent–Teacher Conferences (S32) ----------
+       ConferenceSlot = one bookable window for one teacher; ConferenceBooking
+       = a family's confirmed meeting against a slot; ConferenceRecord = the
+       notes/actions/follow-up captured after a meeting, one per booking. */
+    { id: 'CSLOT-1', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D1, startTime: '15:00', endTime: '15:15', status: 'Open', bookingId: null },
+    { id: 'CSLOT-2', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D1, startTime: '15:15', endTime: '15:30', status: 'Open', bookingId: null },
+    { id: 'CSLOT-3', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D1, startTime: '15:30', endTime: '15:45', status: 'Booked', bookingId: 'CBK-1' },
+    { id: 'CSLOT-4', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D2, startTime: '15:00', endTime: '15:15', status: 'Open', bookingId: null },
+    { id: 'CSLOT-5', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D2, startTime: '15:15', endTime: '15:30', status: 'Open', bookingId: null },
+    { id: 'CSLOT-12', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_D2, startTime: '15:30', endTime: '15:45', status: 'Open', bookingId: null },
+    { id: 'CSLOT-6', type: 'ConferenceSlot', teacherId: 'S-3002', date: CONF_D1, startTime: '16:00', endTime: '16:15', status: 'Open', bookingId: null },
+    { id: 'CSLOT-7', type: 'ConferenceSlot', teacherId: 'S-3002', date: CONF_D1, startTime: '16:15', endTime: '16:30', status: 'Booked', bookingId: 'CBK-2' },
+    { id: 'CSLOT-8', type: 'ConferenceSlot', teacherId: 'S-3002', date: CONF_D2, startTime: '16:00', endTime: '16:15', status: 'Open', bookingId: null },
+    { id: 'CSLOT-9', type: 'ConferenceSlot', teacherId: 'S-3002', date: CONF_D3, startTime: '16:00', endTime: '16:15', status: 'Open', bookingId: null },
+    { id: 'CSLOT-10', type: 'ConferenceSlot', teacherId: 'S-3002', date: CONF_D3, startTime: '16:15', endTime: '16:30', status: 'Open', bookingId: null },
+    { id: 'CSLOT-11', type: 'ConferenceSlot', teacherId: 'S-3003', date: CONF_PAST, startTime: '14:00', endTime: '14:15', status: 'Booked', bookingId: 'CBK-3' },
+
+    { id: 'CBK-1', type: 'ConferenceBooking', slotId: 'CSLOT-3', teacherId: 'S-3003', date: CONF_D1, startTime: '15:30', endTime: '15:45', familyId: 'FAM-G-1101', childId: 'C-1101', mode: 'In person', note: '', status: 'Upcoming', createdAt: new Date().toISOString(), cancelledAt: null, cancelReason: null },
+    { id: 'CBK-2', type: 'ConferenceBooking', slotId: 'CSLOT-7', teacherId: 'S-3002', date: CONF_D1, startTime: '16:15', endTime: '16:30', familyId: 'FAM-G-1106', childId: 'C-1106', mode: 'Video', note: 'Discuss reading progress.', status: 'Upcoming', createdAt: new Date().toISOString(), cancelledAt: null, cancelReason: null },
+    { id: 'CBK-3', type: 'ConferenceBooking', slotId: 'CSLOT-11', teacherId: 'S-3003', date: CONF_PAST, startTime: '14:00', endTime: '14:15', familyId: 'FAM-G-2001', childId: 'C-1001', mode: 'In person', note: '', status: 'Completed', createdAt: CONF_PAST + 'T09:00:00.000Z', cancelledAt: null, cancelReason: null },
+    { id: 'CBK-4', type: 'ConferenceBooking', slotId: 'CSLOT-12', teacherId: 'S-3003', date: CONF_D2, startTime: '15:30', endTime: '15:45', familyId: 'FAM-G-1102', childId: 'C-1102', mode: 'In person', note: '', status: 'Cancelled', createdAt: new Date().toISOString(), cancelledAt: new Date().toISOString(), cancelReason: 'Family rescheduled for another week.' },
+
+    {
+      id: 'CREC-1', type: 'ConferenceRecord', bookingId: 'CBK-3', familyId: 'FAM-G-2001', childId: 'C-1001', teacherId: 'S-3003',
+      date: CONF_PAST, startTime: '14:00', mode: 'In person',
+      notes: "Amara has settled in wonderfully this term and shows strong confidence joining group activities. We discussed extending her outdoor exploration time and introducing more water play.",
+      actions: [
+        { id: 'ACT-1', description: 'Share updated outdoor-play photos with the family', owner: 'Meera Fernandes', dueDate: confIsoPlusDays(2), done: false },
+        { id: 'ACT-2', description: 'Adjust nap schedule to match home routine', owner: 'Osei Family', dueDate: confIsoPlusDays(-1), done: true },
+      ],
+      followUpDate: confIsoPlusDays(-1), sharedWithFamily: true, createdAt: CONF_PAST + 'T15:00:00.000Z', updatedAt: CONF_PAST + 'T15:00:00.000Z',
     },
   ];
 

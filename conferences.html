@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Parent–Teacher Conferences — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="classes.css" />
+<link rel="stylesheet" href="planner.css" />
+<link rel="stylesheet" href="announcements.css" />
+<link rel="stylesheet" href="conferences.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- locked state ---------- -->
+  <div id="confLocked" class="ws-skeleton" style="text-align:center; padding: var(--space-9) var(--space-6); max-width:440px; margin-inline:auto;" hidden>
+    <div id="confLockedIcon" style="width:48px; height:48px; margin:0 auto var(--space-4); border-radius:50%; background: color-mix(in srgb, var(--color-accent-yellow) 20%, transparent); color: var(--color-accent-yellow-strong); display:grid; place-items:center;"></div>
+    <p style="font-size: var(--fs-body-sm); color: var(--color-text-secondary);">Conferences is included in the <b>Premium</b> plan as part of <b>Parent Communication Hub</b>.</p>
+    <div id="confLockedAction" style="margin-top: var(--space-4);"></div>
+  </div>
+
+  <!-- ---------- loading skeleton ---------- -->
+  <div id="confSkeleton" class="ws-skeleton">
+    <div class="card" style="height:150px;"></div>
+    <div class="card" style="height:90px; margin-top:var(--space-5);"></div>
+    <div class="card" style="height:400px; margin-top:var(--space-5);"></div>
+  </div>
+
+  <div id="confMain" hidden>
+    <div id="confBody" hidden>
+
+      <header class="ann-header">
+        <div class="ann-header__glow" aria-hidden="true"></div>
+        <div class="ann-header__top">
+          <div class="ann-header__intro">
+            <span class="eyebrow">Parent communication hub</span>
+            <h1 class="ann-header__heading">Parent–Teacher Conferences</h1>
+            <p class="ann-header__text">Coordinate meaningful conversations and keep every agreed action on track.</p>
+          </div>
+          <div class="ann-header__controls">
+            <button class="btn btn--secondary" type="button" id="confBookBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Book for a family</span>
+            </button>
+            <button class="btn btn--accent" type="button" id="confGenerateBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Generate slots</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="ann-summary" id="confSummary"></div>
+
+      <nav class="ann-tabs" id="confTabs" role="tablist" aria-label="Conference sections"></nav>
+
+      <div class="ann-tab-panel" id="confTabPanel" role="tabpanel"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generate slots modal ============ -->
+<div class="modal-backdrop" id="generateModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Generate slots">
+  <div class="modal ws-modal conf-generate-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Generate slots</h3>
+    <div class="ws-modal-scroll" id="generateBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="generateCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="generateConfirmBtn"><span class="btn__spinner" aria-hidden="true"></span><span>Create availability</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Book for a family modal ============ -->
+<div class="modal-backdrop" id="bookModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Book for a family">
+  <div class="modal ws-modal conf-book-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Book for a family</h3>
+    <div class="ws-modal-scroll" id="bookBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="bookCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="bookConfirmBtn"><span class="btn__spinner" aria-hidden="true"></span><span>Confirm booking</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Conference record editor ============ -->
+<div class="modal-backdrop" id="recordModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Conference record">
+  <div class="modal ws-modal conf-record-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="recordModalTitle">Conference record</h3>
+    <div class="ws-modal-scroll" id="recordBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="recordCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="recordSaveBtn"><span class="btn__spinner" aria-hidden="true"></span><span>Save record</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Generic confirmation modal ============ -->
+<div class="modal-backdrop" id="confirmModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm action">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="confirmTitle"></h3>
+    <p class="ann-confirm-text" id="confirmText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn--accent" type="button" id="confirmActionBtn"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Booking detail drawer ============ -->
+<div class="modal-backdrop ann-drawer-backdrop" id="bookingDrawerBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Booking details">
+  <div class="ann-drawer">
+    <div class="ann-drawer__head">
+      <h3 class="ann-drawer__title" id="bookingDrawerTitle"></h3>
+      <button class="modal__close" type="button" data-close aria-label="Close drawer">&times;</button>
+    </div>
+    <div class="ann-drawer__scroll" id="bookingDrawerBody"></div>
+    <div class="ann-drawer__actions" id="bookingDrawerActions"></div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="conferences.js"></script>
+</body>
+</html>
