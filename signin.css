@@ -73,32 +73,78 @@ html, body { height: 100%; }
   max-width: 32ch;
 }
 
-/* Hand-drawn brand sketch — inverted to white-on-black, tinted blue via
-   sepia+hue-rotate (the standard pure-CSS way to recolor a grayscale image),
-   then screen-blended so the black dissolves into the panel and only a
-   glowing blue line drawing reads, with a slow breathing glow for motion. */
+/* Study-themed illustration (open book + graduation cap + pencil + sparkle
+   marks), built entirely from inline SVG line-art so it matches the app's
+   existing icon language instead of a stock/sketch photo. Each piece floats
+   on its own independent, gently-looping animation for a calm, premium feel. */
 .signin-brand__art {
+  position: relative;
   width: 100%;
   max-width: 230px;
-  height: auto;
+  height: 190px;
   margin-left: var(--space-6);
-  filter: invert(1) sepia(1) saturate(6) hue-rotate(185deg) brightness(1.05) contrast(1.05);
-  mix-blend-mode: screen;
-  -webkit-mask-image: radial-gradient(ellipse 72% 82% at 50% 42%, #000 50%, transparent 90%);
-  mask-image: radial-gradient(ellipse 72% 82% at 50% 42%, #000 50%, transparent 90%);
-  opacity: 0;
   pointer-events: none;
+  opacity: 0;
   transform: translateY(14px);
-  animation: signinArtIn 650ms var(--ease-premium) 160ms forwards,
-             signinArtGlow 4.5s ease-in-out 850ms infinite;
+  animation: signinArtIn 650ms var(--ease-premium) 160ms forwards;
 }
-@keyframes signinArtIn { to { opacity: 0.8; transform: translateY(0); } }
-@keyframes signinArtGlow {
-  0%, 100% { opacity: 0.6; transform: translateY(0); }
-  50% { opacity: 0.95; transform: translateY(-8px); }
+@keyframes signinArtIn { to { opacity: 1; transform: translateY(0); } }
+
+.signin-art__book {
+  position: absolute;
+  left: 4px;
+  bottom: 6px;
+  width: 190px;
+  height: auto;
+  color: var(--color-brand-blue-soft);
+  filter: drop-shadow(0 8px 20px color-mix(in srgb, var(--color-brand-blue) 35%, transparent));
+}
+.signin-art__cap {
+  position: absolute;
+  right: 4px;
+  top: 2px;
+  width: 92px;
+  height: auto;
+  color: var(--color-accent-yellow);
+  filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--color-accent-yellow) 30%, transparent));
+  animation: signinArtFloat 6s ease-in-out infinite;
+}
+.signin-art__pencil {
+  position: absolute;
+  left: 8px;
+  top: 28px;
+  width: 24px;
+  height: auto;
+  color: var(--color-brand-blue);
+  transform: rotate(-24deg);
+  animation: signinArtFloatPencil 7s ease-in-out infinite 0.6s;
+}
+.signin-art__star {
+  position: absolute;
+  width: 16px;
+  height: auto;
+  color: var(--color-accent-yellow);
+  animation: signinArtTwinkle 3.2s ease-in-out infinite;
+}
+.signin-art__star--a { top: 10px; left: 86px; animation-delay: 0s; }
+.signin-art__star--b { top: 70px; right: 8px; color: var(--color-brand-blue-soft); animation-delay: 1s; }
+.signin-art__star--c { bottom: 40px; left: 150px; width: 12px; animation-delay: 1.9s; }
+
+@keyframes signinArtFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes signinArtFloatPencil {
+  0%, 100% { transform: rotate(-24deg) translateY(0); }
+  50% { transform: rotate(-24deg) translateY(-8px); }
+}
+@keyframes signinArtTwinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 0.9; transform: scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .signin-brand__art { animation: none; opacity: 0.8; transform: none; }
+  .signin-brand__art { animation: none; opacity: 1; transform: none; }
+  .signin-art__cap, .signin-art__pencil, .signin-art__star { animation: none; }
 }
 
 /* ---------- Form panel ---------- */
