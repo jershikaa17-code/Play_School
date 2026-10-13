@@ -43,7 +43,8 @@ html, body { height: 100%; }
   max-width: 420px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: var(--space-6);
 }
 .signin-brand__inner > * {
@@ -58,7 +59,7 @@ html, body { height: 100%; }
   .signin-brand__inner > * { opacity: 1; transform: none; animation: none; }
 }
 
-.signin-brand__logo { display: flex; align-items: center; gap: var(--space-4); }
+.signin-brand__logo { display: flex; align-items: center; justify-content: center; gap: var(--space-4); margin-top: calc(-1 * var(--space-5)); }
 .signin-brand__logo img { width: 64px; height: 64px; border-radius: var(--radius-md); flex-shrink: 0; }
 .signin-brand__logo span {
   font-family: var(--font-display);
@@ -71,80 +72,33 @@ html, body { height: 100%; }
   color: var(--color-text-secondary);
   line-height: var(--lh-relaxed);
   max-width: 32ch;
+  margin-top: var(--space-6);
+  margin-inline: auto;
 }
 
-/* Study-themed illustration (open book + graduation cap + pencil + sparkle
-   marks), built entirely from inline SVG line-art so it matches the app's
-   existing icon language instead of a stock/sketch photo. Each piece floats
-   on its own independent, gently-looping animation for a calm, premium feel. */
+/* Kids-playing illustration — clean navy line-art on a solid black
+   background, screen-blended so the black drops out against the dark panel.
+   Brightness/saturation are pushed up so it reads as a vivid, electric blue
+   rather than the source art's flatter navy ink. A one-time entrance (fade +
+   rise) is the only motion — no continuous pulsing. */
 .signin-brand__art {
-  position: relative;
   width: 100%;
-  max-width: 230px;
-  height: 190px;
-  margin-left: var(--space-6);
-  pointer-events: none;
+  max-width: 340px;
+  height: auto;
+  margin-inline: auto;
+  mix-blend-mode: lighten;
+  filter: brightness(1.05) saturate(1.7)
+    drop-shadow(0 0 10px color-mix(in srgb, var(--color-brand-blue) 40%, transparent));
+  -webkit-mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, #000 82%, transparent 100%);
+  mask-image: radial-gradient(ellipse 96% 96% at 50% 50%, #000 82%, transparent 100%);
   opacity: 0;
+  pointer-events: none;
   transform: translateY(14px);
   animation: signinArtIn 650ms var(--ease-premium) 160ms forwards;
 }
 @keyframes signinArtIn { to { opacity: 1; transform: translateY(0); } }
-
-.signin-art__book {
-  position: absolute;
-  left: 4px;
-  bottom: 6px;
-  width: 190px;
-  height: auto;
-  color: var(--color-brand-blue-soft);
-  filter: drop-shadow(0 8px 20px color-mix(in srgb, var(--color-brand-blue) 35%, transparent));
-}
-.signin-art__cap {
-  position: absolute;
-  right: 4px;
-  top: 2px;
-  width: 92px;
-  height: auto;
-  color: var(--color-accent-yellow);
-  filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--color-accent-yellow) 30%, transparent));
-  animation: signinArtFloat 6s ease-in-out infinite;
-}
-.signin-art__pencil {
-  position: absolute;
-  left: 8px;
-  top: 28px;
-  width: 24px;
-  height: auto;
-  color: var(--color-brand-blue);
-  transform: rotate(-24deg);
-  animation: signinArtFloatPencil 7s ease-in-out infinite 0.6s;
-}
-.signin-art__star {
-  position: absolute;
-  width: 16px;
-  height: auto;
-  color: var(--color-accent-yellow);
-  animation: signinArtTwinkle 3.2s ease-in-out infinite;
-}
-.signin-art__star--a { top: 10px; left: 86px; animation-delay: 0s; }
-.signin-art__star--b { top: 70px; right: 8px; color: var(--color-brand-blue-soft); animation-delay: 1s; }
-.signin-art__star--c { bottom: 40px; left: 150px; width: 12px; animation-delay: 1.9s; }
-
-@keyframes signinArtFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes signinArtFloatPencil {
-  0%, 100% { transform: rotate(-24deg) translateY(0); }
-  50% { transform: rotate(-24deg) translateY(-8px); }
-}
-@keyframes signinArtTwinkle {
-  0%, 100% { opacity: 0.25; transform: scale(0.85); }
-  50% { opacity: 0.9; transform: scale(1); }
-}
 @media (prefers-reduced-motion: reduce) {
   .signin-brand__art { animation: none; opacity: 1; transform: none; }
-  .signin-art__cap, .signin-art__pencil, .signin-art__star { animation: none; }
 }
 
 /* ---------- Form panel ---------- */
