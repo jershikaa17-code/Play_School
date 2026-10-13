@@ -3,23 +3,219 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>T00 Design System — Play School</title>
-<meta http-equiv="refresh" content="0; url=design-system.html" />
-<link rel="canonical" href="design-system.html" />
+<title>Play School — The smarter way to manage your school</title>
+<meta name="description" content="One beautiful place to connect families, support teachers, and keep your school running smoothly." />
 <link rel="stylesheet" href="styles.css" />
-<style>
-  body {
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    background: var(--color-background);
-    color: var(--color-text-secondary);
-    font-family: var(--font-ui);
-  }
-</style>
-<script>location.replace('design-system.html');</script>
+<link rel="stylesheet" href="landing.css" />
 </head>
-<body>
-  <p>Redirecting to the <a href="design-system.html" style="color: var(--color-primary-soft);">T00 Design System</a>…</p>
+<body class="land-body">
+
+<a class="land-skip-link" href="#landMain">Skip to content</a>
+
+<header class="land-nav" id="landNav">
+  <div class="land-nav__inner">
+    <a class="land-nav__brand" href="index.html">
+      <img class="land-nav__logo" src="logo.png" alt="" />
+      <span class="land-nav__brand-text">
+        <span class="land-nav__name">Play School</span>
+        <span class="land-nav__descriptor">SCHOOL MANAGEMENT</span>
+      </span>
+    </a>
+
+    <nav class="land-nav__links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="land-nav__actions">
+      <a class="land-btn land-btn--primary land-btn--sm" href="signin.html">Sign In</a>
+      <button class="land-nav__toggle" type="button" id="landMenuToggle" aria-expanded="false" aria-controls="landMobileMenu" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="land-mobile-menu" id="landMobileMenu">
+    <a href="#features">Features</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a class="land-btn land-btn--primary" href="signin.html">Sign In</a>
+  </div>
+</header>
+
+<main id="landMain">
+
+  <!-- ========================= HERO ========================= -->
+  <section class="land-hero">
+    <div class="land-hero__glow" aria-hidden="true"></div>
+    <div class="land-hero__inner">
+      <div class="land-hero__content land-reveal">
+        <span class="land-hero__badge">THE SMARTER WAY TO MANAGE YOUR SCHOOL</span>
+        <h1 class="land-hero__title">Little Steps.<br /><span class="land-hero__title-accent">A Brighter Future.</span></h1>
+        <p class="land-hero__desc">One beautiful place to connect families, support teachers, and keep your school running smoothly.</p>
+        <div class="land-hero__actions">
+          <a class="land-btn land-btn--primary land-btn--lg" href="signin.html">Sign In to Your School</a>
+          <a class="land-btn land-btn--outline land-btn--lg" href="#features">Explore Features</a>
+        </div>
+        <ul class="land-hero__trust">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Designed for growing schools</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Connected school community</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Simple everyday management</li>
+        </ul>
+      </div>
+
+      <div class="land-hero__visual land-reveal" style="--land-reveal-delay: 120ms;">
+        <div class="land-mock" aria-hidden="true">
+          <div class="land-mock__blob land-mock__blob--a"></div>
+          <div class="land-mock__blob land-mock__blob--b"></div>
+
+          <div class="land-mock__card land-mock__card--main">
+            <div class="land-mock__titlebar">
+              <span class="land-mock__dot"></span><span class="land-mock__dot"></span><span class="land-mock__dot"></span>
+              <span class="land-mock__titlebar-label">Good morning, Sunflower Room</span>
+            </div>
+            <div class="land-mock__grid">
+              <div class="land-mock__widget land-mock__widget--attendance">
+                <span class="land-mock__widget-label">Attendance today</span>
+                <div class="land-mock__ring"><span>96%</span></div>
+                <span class="land-mock__widget-sub">27 of 28 children checked in</span>
+              </div>
+              <div class="land-mock__widget land-mock__widget--activity">
+                <span class="land-mock__widget-label">This week's activities</span>
+                <div class="land-mock__bars">
+                  <span style="--h:40%"></span><span style="--h:65%"></span><span style="--h:50%"></span><span style="--h:85%"></span><span style="--h:60%"></span>
+                </div>
+                <span class="land-mock__widget-sub">Outdoor play trending up</span>
+              </div>
+            </div>
+            <div class="land-mock__widget land-mock__widget--messages">
+              <span class="land-mock__widget-label">Family messages</span>
+              <div class="land-mock__chat">
+                <div class="land-mock__chat-row">
+                  <span class="land-mock__avatar">MF</span>
+                  <span class="land-mock__bubble">Amara had a wonderful day exploring the garden 🌿</span>
+                </div>
+                <div class="land-mock__chat-row land-mock__chat-row--reply">
+                  <span class="land-mock__bubble land-mock__bubble--reply">Thank you for the update!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="land-mock__float land-mock__float--avatars">
+            <span class="land-mock__avatar land-mock__avatar--ring" style="--ring:var(--color-brand-blue-soft);">AO</span>
+            <span class="land-mock__avatar land-mock__avatar--ring" style="--ring:var(--color-accent-yellow);">LT</span>
+            <span class="land-mock__avatar land-mock__avatar--ring" style="--ring:var(--color-brand-blue);">RK</span>
+          </div>
+          <div class="land-mock__float land-mock__float--status">
+            <span class="land-mock__status-dot"></span>
+            <span>On track for today</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= TRUST STRIP ========================= -->
+  <section class="land-strip land-reveal" aria-label="Key benefits">
+    <div class="land-strip__inner">
+      <div class="land-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg><span>School Operations</span></div>
+      <div class="land-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg><span>Family Communication</span></div>
+      <div class="land-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1Z"/><path d="M12 6v13"/></svg><span>Learning &amp; Activities</span></div>
+      <div class="land-strip__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg><span>Attendance &amp; Daily Updates</span></div>
+    </div>
+  </section>
+
+  <!-- ========================= FEATURES ========================= -->
+  <section class="land-features" id="features">
+    <div class="land-features__head land-reveal">
+      <span class="land-eyebrow">What you get</span>
+      <h2>Everything your school needs. Beautifully connected.</h2>
+      <p>Less time managing tasks. More time supporting little learners.</p>
+    </div>
+
+    <div class="land-features__grid">
+      <article class="land-feature-card land-reveal">
+        <span class="land-feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg></span>
+        <h3>School Management</h3>
+        <p>Organize classes, teachers, children, and everyday school operations.</p>
+        <span class="land-feature-card__accent"></span>
+      </article>
+      <article class="land-feature-card land-reveal" style="--land-reveal-delay: 80ms;">
+        <span class="land-feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg></span>
+        <h3>Family Connection</h3>
+        <p>Keep parents informed with announcements, messages, and daily updates.</p>
+        <span class="land-feature-card__accent"></span>
+      </article>
+      <article class="land-feature-card land-reveal" style="--land-reveal-delay: 160ms;">
+        <span class="land-feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1Z"/><path d="M12 6v13"/></svg></span>
+        <h3>Learning Journey</h3>
+        <p>Plan activities, record observations, and support each child's progress.</p>
+        <span class="land-feature-card__accent"></span>
+      </article>
+      <article class="land-feature-card land-reveal" style="--land-reveal-delay: 240ms;">
+        <span class="land-feature-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span>
+        <h3>Daily Insights</h3>
+        <p>Review attendance, important updates, and school activity in one place.</p>
+        <span class="land-feature-card__accent"></span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========================= ABOUT (lightweight, supports nav anchor) ========================= -->
+  <section class="land-about land-reveal" id="about">
+    <div class="land-about__inner">
+      <span class="land-eyebrow">About Play School</span>
+      <h2>Built for calm, organized school days.</h2>
+      <p>Play School brings classes, families, teachers, and daily operations into one connected, premium experience — so your team spends less time switching tools and more time with children.</p>
+    </div>
+  </section>
+
+  <!-- ========================= FINAL CTA ========================= -->
+  <section class="land-cta land-reveal">
+    <div class="land-cta__glow" aria-hidden="true"></div>
+    <div class="land-cta__inner">
+      <h2>Your school. One connected experience.</h2>
+      <p>Bring everyday school management together in one simple place.</p>
+      <a class="land-btn land-btn--primary land-btn--lg" href="signin.html">Sign In to Continue</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="land-footer" id="contact">
+  <div class="land-footer__top">
+    <div class="land-footer__brand">
+      <div class="land-nav__brand" style="pointer-events:none;">
+        <img class="land-nav__logo" src="logo.png" alt="" />
+        <span class="land-nav__brand-text">
+          <span class="land-nav__name">Play School</span>
+          <span class="land-nav__descriptor">SCHOOL MANAGEMENT</span>
+        </span>
+      </div>
+      <p>A calm, connected way to run your early-years school — for staff and families alike.</p>
+    </div>
+    <div class="land-footer__col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="signin.html">Sign In</a>
+    </div>
+    <div class="land-footer__col">
+      <h4>Company</h4>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="land-footer__col">
+      <h4>Legal</h4>
+      <span class="land-footer__placeholder">Privacy policy — coming soon</span>
+    </div>
+  </div>
+  <div class="land-footer__bottom">
+    <span>© <span id="landYear"></span> Play School. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="landing.js"></script>
 </body>
 </html>
