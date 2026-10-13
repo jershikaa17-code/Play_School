@@ -32,12 +32,27 @@
     const targets = document.querySelectorAll('.land-reveal');
     if (!targets.length) return;
     if (!('IntersectionObserver' in window)) { targets.forEach((t) => t.classList.add('is-in')); return; }
+
+    // Reveal anything already on screen immediately, rather than waiting on
+    // the observer's first callback — some browsing contexts (a backgrounded
+    // tab, aggressive power-saving throttling) can delay that callback, and
+    // real content must never be left permanently invisible because of it.
+    const revealIfVisible = (el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('is-in');
+    };
+    targets.forEach(revealIfVisible);
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) { entry.target.classList.add('is-in'); io.unobserve(entry.target); }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    targets.forEach((t) => io.observe(t));
+    targets.forEach((t) => { if (!t.classList.contains('is-in')) io.observe(t); });
+
+    // Belt-and-suspenders: force-reveal everything after a short delay so a
+    // throttled/suspended observer can never strand content off-screen.
+    window.setTimeout(() => targets.forEach((t) => t.classList.add('is-in')), 2000);
   }
 
   function wireSmoothAnchors() {
