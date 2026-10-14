@@ -209,6 +209,9 @@
 .land-footer { background: var(--color-background); border-top: 1px solid var(--color-border-subtle); padding: 56px 20px 28px; }
 .land-footer__top { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
 .land-footer__brand p { margin-top: 14px; font-size: 0.88rem; color: var(--color-text-secondary); max-width: 34ch; line-height: 1.5; }
+.land-footer__contact-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 0.88rem; font-weight: 600; color: var(--color-text-primary); transition: color 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.land-footer__contact-link svg { width: 16px; height: 16px; color: var(--color-brand-blue-soft); flex-shrink: 0; }
+.land-footer__contact-link:hover { color: var(--color-brand-blue-soft); }
 .land-footer__col h4 { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; color: var(--color-text-primary); margin-bottom: 14px; }
 .land-footer__col a, .land-footer__placeholder { display: block; margin-bottom: 10px; font-size: 0.88rem; color: var(--color-text-secondary); }
 .land-footer__col a:hover { color: var(--color-brand-blue-soft); }
