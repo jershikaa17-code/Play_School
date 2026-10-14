@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Applicant — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="applicant-profile.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <nav class="breadcrumbs" style="margin-bottom: var(--space-5);" aria-label="Breadcrumb">
+    <a class="breadcrumbs__link" href="dashboard.html">Dashboard</a>
+    <span class="breadcrumbs__sep">/</span>
+    <a class="breadcrumbs__link" href="admissions.html">Admissions</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current" id="apBreadcrumb" aria-current="page">Applicant</span>
+  </nav>
+
+  <div id="apHeader"></div>
+  <div id="apStageTracker"></div>
+
+  <!-- ---------- mobile tab nav (section 14) ---------- -->
+  <nav class="ap-mobile-tabs" id="apMobileTabs" role="tablist" aria-label="Applicant sections">
+    <button class="ap-mobile-tabs__btn" type="button" data-ap-tab="timeline" role="tab" aria-selected="true">Timeline</button>
+    <button class="ap-mobile-tabs__btn" type="button" data-ap-tab="details" role="tab" aria-selected="false">Details</button>
+    <button class="ap-mobile-tabs__btn" type="button" data-ap-tab="documents" role="tab" aria-selected="false">Documents</button>
+    <button class="ap-mobile-tabs__btn" type="button" data-ap-tab="tasks" role="tab" aria-selected="false">Tasks</button>
+  </nav>
+
+  <div class="ap-grid">
+    <section class="ap-col-left" data-ap-tab="timeline">
+      <div id="apComposer"></div>
+      <div id="apTimeline"></div>
+    </section>
+    <div class="ap-col-right">
+      <section data-ap-tab="details" id="apDetailsSection"></section>
+      <section data-ap-tab="documents" id="apDocumentsSection"></section>
+      <section data-ap-tab="tasks" id="apTasksSection"></section>
+    </div>
+  </div>
+</div>
+
+<div class="state-panel" id="apNotFound" hidden>
+  <div class="state-panel__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+  <div class="state-panel__title">Applicant not found</div>
+  <p class="state-panel__text">This enquiry may have been removed.</p>
+  <div class="state-panel__action"><a class="btn btn--accent" href="admissions.html">Back to Admissions</a></div>
+</div>
+
+<!-- ============ Move stage modal ============ -->
+<div class="modal-backdrop" id="apMoveStageBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move stage">
+  <div class="modal" style="max-width: 420px;">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Move stage</h3>
+    <p class="modal__text">Choose the applicant's new stage.</p>
+    <div class="ap-stage-options" id="apStageOptions" style="margin-top: var(--space-4);"></div>
+  </div>
+</div>
+
+<!-- ============ Lost reason modal ============ -->
+<div class="modal-backdrop" id="apLostBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move to Lost">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <h3 class="modal__title">Mark enquiry as lost</h3>
+    <p class="modal__text">Let us know why so the team can learn from it.</p>
+    <form id="apLostForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="apLostReason">Reason <span class="req">*</span></label>
+        <select class="select" id="apLostReason">
+          <option value="">Choose a reason…</option>
+          <option value="Chose another school">Chose another school</option>
+          <option value="Fees">Fees</option>
+          <option value="Location">Location</option>
+          <option value="No response">No response</option>
+          <option value="Other">Other</option>
+        </select>
+        <p class="field__error" id="err-apLostReason" hidden></p>
+      </div>
+      <div class="field" id="apLostOtherWrap" hidden>
+        <label class="field__label" for="apLostOther">Please explain <span class="req">*</span></label>
+        <textarea class="textarea" id="apLostOther" placeholder="A short explanation…"></textarea>
+        <p class="field__error" id="err-apLostOther" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="apLostConfirm">Move to Lost</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Enrol confirmation modal ============ -->
+<div class="modal-backdrop" id="apEnrolBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm enrolment handoff">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="modal__title">Ready to enrol this child?</h3>
+    <p class="modal__text">Continue to complete the enrolment details.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="apEnrolConfirm">Continue to enrolment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Edit family details modal ============ -->
+<div class="modal-backdrop" id="apFamilyModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Edit family details">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Edit family details</h3>
+    <form id="apFamilyForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="apfName">Parent / guardian name <span class="req">*</span></label>
+        <input class="input" id="apfName" type="text" />
+        <p class="field__error" id="err-apfName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="apfPhone">Phone number <span class="req">*</span></label>
+          <input class="input" id="apfPhone" type="tel" />
+          <p class="field__error" id="err-apfPhone" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="apfEmail">Email address <span class="req">*</span></label>
+          <input class="input" id="apfEmail" type="email" />
+          <p class="field__error" id="err-apfEmail" hidden></p>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="apfOwner">Admissions owner</label>
+        <select class="select" id="apfOwner"></select>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="apFamilySave">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Edit child details modal ============ -->
+<div class="modal-backdrop" id="apChildModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Edit child details">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Edit child details</h3>
+    <form id="apChildForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="apcName">Child's name <span class="req">*</span></label>
+        <input class="input" id="apcName" type="text" />
+        <p class="field__error" id="err-apcName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="apcDob">Date of birth</label>
+          <input class="input" id="apcDob" type="date" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="apcProgram">Program / class</label>
+          <select class="select" id="apcProgram"></select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="apcStart">Preferred start</label>
+          <input class="input" id="apcStart" type="date" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="apcSource">Source</label>
+          <select class="select" id="apcSource">
+            <option value="Website">Website</option>
+            <option value="Walk-in">Walk-in</option>
+            <option value="Referral">Referral</option>
+            <option value="Social">Social</option>
+            <option value="Event">Event</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="apcNotes">Admission notes</label>
+        <textarea class="textarea" id="apcNotes"></textarea>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="apChildSave">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Link sibling modal ============ -->
+<div class="modal-backdrop" id="apSiblingModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Link existing sibling">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Link existing sibling</h3>
+    <p class="modal__text">Search for a child already enrolled at the school.</p>
+    <div class="field" style="margin-top: var(--space-4);">
+      <input class="input" id="apSiblingSearch" type="text" placeholder="Search by child name…" />
+    </div>
+    <div id="apSiblingResults" style="margin-top: var(--space-3); max-height: 260px; overflow-y: auto;"></div>
+  </div>
+</div>
+
+<!-- ============ Add follow-up modal ============ -->
+<div class="modal-backdrop" id="apTaskModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add follow-up">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add follow-up</h3>
+    <form id="apTaskForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="aptTitle">Task title <span class="req">*</span></label>
+        <input class="input" id="aptTitle" type="text" />
+        <p class="field__error" id="err-aptTitle" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="aptDate">Due date <span class="req">*</span></label>
+          <input class="input" id="aptDate" type="date" />
+          <p class="field__error" id="err-aptDate" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="aptAssignee">Assignee</label>
+          <select class="select" id="aptAssignee"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="aptNotes">Notes (optional)</label>
+        <textarea class="textarea" id="aptNotes"></textarea>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="apTaskSave">Add follow-up</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Send offer modal (3 steps) ============ -->
+<div class="modal-backdrop" id="apOfferBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Send offer">
+  <div class="modal ap-offer-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Send offer</h3>
+    <div class="ap-offer-steps" id="apOfferSteps">
+      <span class="ap-offer-step is-current" data-step="1">1. Editor</span>
+      <span class="ap-offer-step" data-step="2">2. Preview</span>
+      <span class="ap-offer-step" data-step="3">3. Send</span>
+    </div>
+    <div id="apOfferBody" class="ap-offer-body"></div>
+    <div class="modal__actions" id="apOfferActions"></div>
+  </div>
+</div>
+
+<!-- ============ Delete confirmation modal ============ -->
+<div class="modal-backdrop" id="apDeleteBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Delete enquiry">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title">Delete this enquiry?</h3>
+    <p class="modal__text">This permanently removes the applicant record, including its timeline, documents and follow-ups. This cannot be undone.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="apDeleteConfirm">Delete enquiry</button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="applicant-profile.js"></script>
+</body>
+</html>

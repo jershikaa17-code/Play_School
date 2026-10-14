@@ -241,19 +241,6 @@
 .adm-duplicate-banner__actions { display: flex; gap: var(--space-3); }
 .adm-duplicate-banner__link { color: var(--color-brand-blue); font-weight: 700; background: none; border: none; cursor: pointer; padding: 0; font-size: inherit; }
 
-/* ---------- applicant drawer ---------- */
-.adm-drawer-section { display: flex; flex-direction: column; gap: var(--space-2); }
-.adm-drawer-section__title { font-size: var(--fs-overline); font-weight: 700; letter-spacing: var(--ls-wide); text-transform: uppercase; color: var(--color-text-muted); }
-.adm-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-body-sm); padding-block: 6px; border-bottom: 1px solid var(--color-border-subtle); }
-.adm-drawer-row:last-child { border-bottom: none; }
-.adm-drawer-row__label { color: var(--color-text-muted); }
-.adm-drawer-row__value { color: var(--color-text-primary); font-weight: 600; text-align: right; }
-.adm-timeline { display: flex; flex-direction: column; gap: var(--space-3); }
-.adm-timeline__item { display: flex; gap: var(--space-3); font-size: var(--fs-body-sm); }
-.adm-timeline__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-brand-blue); margin-top: 6px; flex-shrink: 0; }
-.adm-timeline__body { flex: 1; }
-.adm-timeline__time { color: var(--color-text-muted); font-size: var(--fs-caption); }
-.adm-drawer-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 
 /* ==========================================================================
    Responsive

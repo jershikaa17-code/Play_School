@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PLAY SCHOOL — Admissions Pipeline (S07)
+   PLAY SCHOOL — Admissions Pipeline
    Reuses: store.js ('Enquiry' records via PlayStore.addRecord/updateRecord/
    getByType — same flat records array as every other page), modules.js
    (plan/entitlements), shell.js (sidebar/header/bell/toast/role switcher/
@@ -8,11 +8,9 @@
    never actually throws here); see the final build report for what that
    means in practice.
 
-   S07 (applicant detail) does not exist as a dedicated page anywhere in
-   this project — grepped the whole repo, it is an unused codename. Rather
-   than inventing a fake route, applicant detail is a drawer on this same
-   page (the existing .drawer pattern from class-workspace.html/calendar.html),
-   deep-linkable via admissions.html?enquiryId=ENQ-xxxx.
+   Applicant detail lives on its own page, applicant-profile.html (S07) —
+   cards/rows here navigate there with ?id=ENQ-xxxx instead of opening an
+   in-page drawer.
 
    S14 (enroll.html) *does* exist — "Move to Enrolled" hands off to it via
    ?enquiryId=, and enroll.js has been given a small, explicit prefill step
@@ -88,7 +86,6 @@
   let duplicateMatchId = null;
   let duplicateAcknowledged = false;
   let enqSubmitting = false;
-  let currentDrawerId = null;
 
   document.addEventListener('DOMContentLoaded', init);
 
@@ -107,10 +104,8 @@
     wireLostModal();
     wireEnrolModal();
     wireModals();
-    wireDrawer();
 
     render();
-    maybeHandleDeepLink();
   }
 
   /* ---------- data access ---------- */
@@ -858,7 +853,7 @@
         title: 'New admissions enquiry',
         text: `${record.childName} (${record.parentName}) enquired about ${record.program || 'a program'}.`,
         forRole: 'Admin', module: 'admissions', mention: true,
-        recordRoute: 'admissions.html?enquiryId=' + id,
+        recordRoute: 'applicant-profile.html?id=' + id,
       });
       render();
       if (!passesFilters(record)) {
@@ -867,83 +862,6 @@
     }, 450);
   }
 
-  /* ---------- applicant detail drawer (S07 fallback) ---------- */
-  function wireDrawer() {
-    $('admDrawerBackdrop').addEventListener('click', closeDrawer);
-    document.querySelector('[data-close-drawer]').addEventListener('click', closeDrawer);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('admDrawer').classList.contains('is-open')) closeDrawer(); });
-  }
-  function openDrawer(id) {
-    const e = getById(id);
-    if (!e) return;
-    currentDrawerId = id;
-    $('admDrawerTitle').textContent = e.childName;
-    $('admDrawerBody').innerHTML = drawerBodyHtml(e);
-    wireDrawerActions(e);
-    $('admDrawer').classList.add('is-open');
-    $('admDrawerBackdrop').classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeDrawer() {
-    $('admDrawer').classList.remove('is-open');
-    $('admDrawerBackdrop').classList.remove('is-open');
-    document.body.style.overflow = '';
-    currentDrawerId = null;
-    if (window.location.search.includes('enquiryId')) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('enquiryId');
-      window.history.replaceState({}, '', url.toString());
-    }
-  }
-  function drawerBodyHtml(e) {
-    const age = ageAtStart(e.dob, e.preferredStart);
-    const days = daysInStage(e);
-    const ageCls = stageAgeClass(days);
-    return `
-      <div class="adm-drawer-section">
-        <div class="adm-drawer-section__title">Overview</div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Stage</span><span class="adm-drawer-row__value"><span class="badge ${stageBadgeClass(e.stage)}">${escapeHtml(e.stage)}</span></span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Days in stage</span><span class="adm-drawer-row__value"><span class="adm-age adm-age--${ageCls}">${days}d</span></span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Age at start</span><span class="adm-drawer-row__value">${age ? escapeHtml(age) : 'Unknown'}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Program</span><span class="adm-drawer-row__value">${escapeHtml(e.program || '—')}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Preferred start</span><span class="adm-drawer-row__value">${escapeHtml(formatMonth(e.preferredStart))}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Source</span><span class="adm-drawer-row__value">${escapeHtml(e.source)}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Owner</span><span class="adm-drawer-row__value">${escapeHtml(e.ownerName || 'Unassigned')}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Next follow-up</span><span class="adm-drawer-row__value">${e.nextFollowUp ? escapeHtml(formatDate(e.nextFollowUp)) : '—'}</span></div>
-        ${e.stage === 'Lost' ? `<div class="adm-drawer-row"><span class="adm-drawer-row__label">Lost reason</span><span class="adm-drawer-row__value">${escapeHtml(e.lostReason || '—')}</span></div>` : ''}
-      </div>
-      <div class="adm-drawer-section">
-        <div class="adm-drawer-section__title">Contact</div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Parent / guardian</span><span class="adm-drawer-row__value">${escapeHtml(e.parentName)}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Phone</span><span class="adm-drawer-row__value">${escapeHtml(e.phone || '—')}</span></div>
-        <div class="adm-drawer-row"><span class="adm-drawer-row__label">Email</span><span class="adm-drawer-row__value">${escapeHtml(e.email || '—')}</span></div>
-      </div>
-      ${e.notes ? `<div class="adm-drawer-section"><div class="adm-drawer-section__title">Notes</div><p class="card__text" style="font-size: var(--fs-body-sm);">${escapeHtml(e.notes)}</p></div>` : ''}
-      <div class="adm-drawer-section">
-        <div class="adm-drawer-section__title">Timeline</div>
-        <div class="adm-timeline">${(e.history || []).slice().reverse().map((h) => `
-          <div class="adm-timeline__item"><span class="adm-timeline__dot"></span><div class="adm-timeline__body">
-            <div>${h.from ? `Moved from <strong>${escapeHtml(h.from)}</strong> to <strong>${escapeHtml(h.to)}</strong>` : `Entered pipeline at <strong>${escapeHtml(h.to)}</strong>`}${h.actor ? ' · ' + escapeHtml(h.actor) : ''}</div>
-            <div class="adm-timeline__time">${formatDateTime(h.at)}</div>
-          </div></div>`).join('') || '<p class="card__text" style="font-size:var(--fs-caption);">No history yet.</p>'}</div>
-      </div>
-      <div class="adm-drawer-section">
-        <div class="adm-drawer-section__title">Actions</div>
-        <div class="adm-drawer-actions">
-          ${STAGES.filter((s) => s.key !== e.stage).map((s) => `<button class="btn btn--secondary btn--sm" type="button" data-drawer-move="${escapeHtml(s.key)}">Move to ${escapeHtml(s.label)}</button>`).join('')}
-        </div>
-      </div>`;
-  }
-  function wireDrawerActions(e) {
-    $('admDrawerBody').querySelectorAll('[data-drawer-move]').forEach((btn) => {
-      btn.addEventListener('click', () => { attemptStageChange(e.id, btn.dataset.drawerMove); closeDrawer(); });
-    });
-  }
-
-  /* ---------- deep link (?enquiryId=) ---------- */
-  function maybeHandleDeepLink() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('enquiryId');
-    if (id && getById(id)) openDrawer(id);
-  }
+  /* ---------- applicant detail (S07 — dedicated page) ---------- */
+  function openDrawer(id) { window.location.href = 'applicant-profile.html?id=' + encodeURIComponent(id); }
 })();
