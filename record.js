@@ -561,9 +561,55 @@
       </div>`;
   }
 
-  /* ---------- Learning & Portfolio ---------- */
+  /* ---------- Learning & Portfolio (S28 portfolio + S27 outcome evidence) ----------
+     Reads the exact same 'Observation' records the Learning Observations page
+     (observations.js) writes. A published Observation that tags this child
+     under an outcome IS the portfolio entry / outcome evidence — there is no
+     separate join record to keep in sync. */
+  function publishedObservationsFor(childId) {
+    return window.PlayStore.getByType('Observation')
+      .filter((o) => o.status === 'Published' && (o.childIds || []).includes(childId))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }
+  function formatObsDateTime(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
   function renderLearningTab() {
-    $('profileTabPanel').innerHTML = `<div class="profile-card profile-card--wide">${emptyStateHtml("No learning observations or portfolio entries recorded yet — this demo doesn't have a Curriculum module built out beyond its plan listing.")}</div>`;
+    const observations = publishedObservationsFor(record.id);
+    const outcomeIds = new Set();
+    observations.forEach((o) => (o.outcomeIds || []).forEach((id) => outcomeIds.add(id)));
+    const outcomes = [...outcomeIds].map((id) => window.PlayStore.getById(id)).filter(Boolean);
+    const areaGroups = new Map();
+    outcomes.forEach((o) => {
+      let node = o.parentId ? window.PlayStore.getById(o.parentId) : null;
+      let area = node;
+      while (area && area.parentId) area = window.PlayStore.getById(area.parentId);
+      const areaName = area ? area.name : 'Other';
+      if (!areaGroups.has(areaName)) areaGroups.set(areaName, []);
+      areaGroups.get(areaName).push(o);
+    });
+    $('profileTabPanel').innerHTML = `
+      <div class="profile-card profile-card--wide">
+        <div class="profile-card__head"><span class="profile-card__title">Framework outcomes with evidence</span><a class="btn btn--text btn--sm" href="framework.html">Open Learning Framework</a></div>
+        ${areaGroups.size ? `<div style="display:flex; flex-direction:column; gap: var(--space-3);">${[...areaGroups.entries()].map(([area, items]) => `
+          <div>
+            <div style="font-weight:600; font-size: var(--fs-caption); color: var(--color-text-muted); margin-bottom:6px;">${escapeHtml(area)}</div>
+            <div class="badge-row">${items.map((o) => `<span class="badge badge--success" title="${escapeHtml(o.label)}">${escapeHtml(o.code)}</span>`).join('')}</div>
+          </div>`).join('')}</div>` : emptyStateHtml('No published observations are linked to a framework outcome yet.')}
+      </div>
+      <div class="profile-card profile-card--wide" style="margin-top: var(--space-5);">
+        <div class="profile-card__head"><span class="profile-card__title">Learning observations</span><a class="btn btn--secondary btn--sm" href="observations.html?child=${encodeURIComponent(record.id)}">${ICON.plus}<span>&nbsp;Open Learning Observations</span></a></div>
+        ${observations.length ? `<div class="profile-list">${observations.map((o) => `
+          <div class="profile-list-row">
+            <div>
+              <div class="profile-list-row__title">${escapeHtml((o.note || '').length > 140 ? o.note.slice(0, 140) + '…' : (o.note || ''))}</div>
+              <div class="profile-list-row__meta">${escapeHtml(o.authorName || 'Unknown')} · ${formatObsDateTime(o.createdAt)}${o.sharedWithFamily ? ' · Shared with family' : ''}${(o.photos || []).length ? ' · ' + o.photos.length + ' photo' + (o.photos.length === 1 ? '' : 's') : ''}</div>
+            </div>
+            <a class="btn btn--text btn--sm" href="observations.html?child=${encodeURIComponent(record.id)}">${ICON.eye}</a>
+          </div>`).join('')}</div>` : emptyStateHtml('No published learning observations yet for this child.')}
+      </div>`;
   }
 
   /* ---------- Incidents ---------- */

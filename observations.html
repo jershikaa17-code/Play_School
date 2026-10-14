@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Learning Observations — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="observations.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <div class="obs-header">
+    <div class="obs-header__text">
+      <h1 class="obs-header__title">Learning Observations</h1>
+      <p class="obs-header__subtitle">Capture the little moments that make a big difference.</p>
+    </div>
+    <div class="obs-header__stats" id="obsStats"></div>
+    <div class="obs-header__actions">
+      <div class="obs-view-toggle" id="obsViewToggle">
+        <button class="obs-view-toggle__btn is-active" type="button" data-view="grid" aria-label="Grid view" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </button>
+        <button class="obs-view-toggle__btn" type="button" data-view="list" aria-label="List view" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="btn btn--accent" type="button" id="obsNewBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>&nbsp;New Observation</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="obs-toolbar">
+    <div class="input-wrap obs-search">
+      <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="input" id="obsSearch" type="text" placeholder="Search observations…" />
+    </div>
+    <div class="obs-toolbar__filters" id="obsFiltersDesktop"></div>
+    <button class="btn btn--secondary btn--sm obs-filter-mobile-btn" type="button" id="obsFilterMobileBtn">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      <span>&nbsp;Filters</span>
+    </button>
+  </div>
+
+  <div class="obs-active-chips" id="obsActiveChips"></div>
+  <div class="obs-results-count" id="obsResultsCount"></div>
+
+  <div class="obs-feed" id="obsFeed"></div>
+  <div id="obsFeedEmpty" hidden></div>
+
+</div>
+
+<!-- ============ New / Edit Observation ============ -->
+<div class="modal-backdrop" id="obsComposerBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="New observation">
+  <div class="modal obs-wide-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="obsComposerTitle">New observation</h3>
+    <div id="obsComposerBody" style="margin-top: var(--space-4);"></div>
+  </div>
+</div>
+
+<!-- ============ Observation details ============ -->
+<div class="modal-backdrop" id="obsDetailBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Observation details">
+  <div class="modal obs-wide-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Observation</h3>
+    <div id="obsDetailBody" style="margin-top: var(--space-4);"></div>
+  </div>
+</div>
+
+<!-- ============ Delete confirmation ============ -->
+<div class="modal-backdrop" id="obsDeleteBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Delete observation">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title">Delete this observation?</h3>
+    <p class="modal__text" id="obsDeleteText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="obsConfirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Share with family ============ -->
+<div class="modal-backdrop" id="obsShareBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Share with family">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6 12 13 2 6"/><path d="M2 6h20v12H2z"/></svg>
+    </div>
+    <h3 class="modal__title">Share with family?</h3>
+    <p class="modal__text" id="obsShareText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="obsConfirmShareBtn">Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Lightbox ============ -->
+<div class="obs-lightbox-backdrop" id="obsLightboxBackdrop">
+  <button class="obs-lightbox-close" type="button" id="obsLightboxClose" aria-label="Close">&times;</button>
+  <button class="obs-lightbox-nav obs-lightbox-nav--prev" type="button" id="obsLightboxPrev" aria-label="Previous photo">&#8249;</button>
+  <img id="obsLightboxImg" alt="Observation photo" />
+  <button class="obs-lightbox-nav obs-lightbox-nav--next" type="button" id="obsLightboxNext" aria-label="Next photo">&#8250;</button>
+</div>
+
+<!-- ============ Mobile filter sheet ============ -->
+<div class="sheet-backdrop" id="obsFilterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filters">
+    <div class="sheet__handle"></div>
+    <div id="obsFilterSheetBody"></div>
+  </div>
+</div>
+
+<!-- ============ Mobile camera-first capture ============ -->
+<button class="obs-fab" type="button" id="obsFabBtn" aria-label="Capture new observation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+</button>
+<input type="file" id="obsCameraInput" accept="image/*" capture="environment" multiple hidden />
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="observations.js"></script>
+</body>
+</html>

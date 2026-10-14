@@ -50,6 +50,7 @@
     { id: 'application-builder', navLabel: 'Online Application', href: 'application-builder.html', requiredPlan: 'Starter', core: true },
     { id: 'marketing', navLabel: 'Marketing & Referrals', href: 'marketing.html', requiredPlan: 'Starter', core: true },
     { id: 'framework', navLabel: 'Learning Framework', href: 'framework.html', requiredPlan: 'Starter', core: true },
+    { id: 'observations', navLabel: 'Observations', href: 'observations.html', requiredPlan: 'Starter', core: true },
     { id: 'families', navLabel: 'Families', href: 'families.html', requiredPlan: 'Starter', core: true },
     { id: 'staff', navLabel: 'Staff', href: 'dashboard.html#staff', requiredPlan: 'Starter', core: true },
     { id: 'billing', navLabel: 'Billing', href: 'payroll.html', requiredPlan: 'Starter', core: true },

@@ -1095,6 +1095,40 @@
   }
   ensureFrameworkChangeLogSeed();
 
+  /* ---------- learning observations (Learning Observations & Documentation) ----------
+     Real, single data model consumed by three places: the Learning
+     Observations page (observations.js), the "Learning & Portfolio" tab in
+     record.js (S28 — child portfolio), and the outcome-evidence view also in
+     record.js (S27). There is no separate "evidence" or "portfolio" record
+     type: a PUBLISHED Observation that tags a child under an outcome IS that
+     child's evidence for that outcome. Both S28 and S27 simply query
+     published Observations filtered by childId/outcomeId — which makes
+     publishing naturally idempotent (there is nothing to duplicate on
+     retry) and means a delete can never leave a dangling evidence reference,
+     since the reference is derived live rather than stored separately. */
+  function ensureObservationSeed() {
+    if (records.some((r) => r.type === 'Observation')) return;
+    const now = new Date();
+    function iso(daysAgo, h, m) { const d = new Date(now); d.setDate(d.getDate() - daysAgo); d.setHours(h, m, 0, 0); return d.toISOString(); }
+    const seeds = [
+      { id: 'OBS-1', note: 'Amara spent almost twenty minutes at the pouring station this morning, carefully transferring water between two jugs without spilling. She repeated the sequence four times, adjusting her grip each time and said "I did it again!" when she finished cleanly.', childIds: ['C-1001'], outcomeIds: ['OUT-1', 'OUT-2'], authorId: 'S-3003', authorName: 'Meera Fernandes', status: 'Published', sharedWithFamily: true, daysAgo: 1 },
+      { id: 'OBS-2', note: 'During circle time, Ananya and Rhea worked together to sort the colour tablets by shade, debating gently over two tablets that looked almost identical before agreeing on the order together.', childIds: ['C-1002', 'C-1005'], outcomeIds: ['OUT-3'], authorId: 'S-3002', authorName: 'Rhea Kapoor', status: 'Published', sharedWithFamily: true, daysAgo: 2 },
+      { id: 'OBS-3', note: 'Leo asked to use the sandpaper letters again today and traced "L", "E", "O" unprompted, naming the sound of each one as he went.', childIds: ['C-1003'], outcomeIds: ['OUT-5'], authorId: 'S-3005', authorName: 'Arjun Mehta', status: 'Draft', sharedWithFamily: false, daysAgo: 0 },
+      { id: 'OBS-4', note: 'Small group outdoor session — the children collected leaves of different sizes and Amara began lining them up from smallest to largest without being asked.', childIds: ['C-1001', 'C-1002'], outcomeIds: ['OUT-9'], authorId: 'S-3001', authorName: 'Nithya', status: 'Published', sharedWithFamily: false, daysAgo: 4 },
+      { id: 'OBS-5', note: 'Ananya counted out five number rods unaided this afternoon and matched each to its numeral card correctly on the first attempt.', childIds: ['C-1005'], outcomeIds: ['OUT-7'], authorId: 'S-3002', authorName: 'Rhea Kapoor', status: 'Draft', sharedWithFamily: false, daysAgo: 1 },
+      { id: 'OBS-6', note: 'Noticed Rhea offering to help a younger child with the dressing frames during free work time, patiently demonstrating the button sequence twice.', childIds: ['C-1002'], outcomeIds: ['OUT-2'], authorId: 'S-3003', authorName: 'Meera Fernandes', status: 'Published', sharedWithFamily: true, daysAgo: 6 },
+    ];
+    seeds.forEach((s) => {
+      const createdAt = iso(s.daysAgo, 9 + (s.daysAgo % 3), 15);
+      addRecord({
+        id: s.id, type: 'Observation', note: s.note, photos: [], childIds: s.childIds, outcomeIds: s.outcomeIds,
+        authorId: s.authorId, authorName: s.authorName, status: s.status, sharedWithFamily: s.sharedWithFamily,
+        createdAt, updatedAt: createdAt, publishedAt: s.status === 'Published' ? createdAt : null, sharedAt: s.sharedWithFamily ? createdAt : null,
+      });
+    });
+  }
+  ensureObservationSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

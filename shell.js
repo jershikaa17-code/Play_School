@@ -199,6 +199,7 @@
     { id: 'application-builder', label: 'Online Application', href: 'application-builder.html' },
     { id: 'marketing', label: 'Marketing & Referrals', href: 'marketing.html' },
     { id: 'framework', label: 'Learning Framework', href: 'framework.html' },
+    { id: 'observations', label: 'Observations', href: 'observations.html' },
     { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
