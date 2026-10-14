@@ -198,6 +198,7 @@
     { id: 'waitlist', label: 'Waitlist', href: 'waitlist.html' },
     { id: 'application-builder', label: 'Online Application', href: 'application-builder.html' },
     { id: 'marketing', label: 'Marketing & Referrals', href: 'marketing.html' },
+    { id: 'framework', label: 'Learning Framework', href: 'framework.html' },
     { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },

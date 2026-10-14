@@ -1033,6 +1033,68 @@
   }
   ensureCampaignSeed();
 
+  /* ---------- learning framework hierarchy (Learning Framework Management) ----------
+     The existing 'FrameworkOutcome' records (seeded above for the Weekly &
+     Monthly Planner — S27) are flat: {id, code, area, label}, keyed to a
+     LEARNING_AREAS string in planner.js. Rather than replacing that model
+     (which would break planner.js's existing outcome picker), this wraps
+     those SAME records in a real hierarchy: a 'Framework' record (the named,
+     versioned whole) and 'FrameworkArea' records (one per existing LEARNING_AREAS
+     key) that each existing outcome is retroactively linked to via a new
+     `parentId` field — added onto the outcome record, alongside its
+     untouched `area`/`code`/`label` fields, so planner.js keeps working
+     exactly as before. New fields (`visible`, `ageBand`, `description`,
+     `order`, `updatedAt`) are additive.
+
+     Honest limitation: this project has no real "S25 Observations" or
+     "P15 template library" feature — grepped the whole repo; S25 doesn't
+     exist anywhere, and record.js's own comment says the Curriculum module
+     isn't "built out beyond its plan listing". The Learning Framework page
+     is built directly against this real FrameworkOutcome/Activity model
+     (the actual S27 integration), and "Import from Library" uses a small
+     built-in template set clearly labelled as such, not a fabricated P15
+     backend. */
+  function ensureFrameworkHierarchySeed() {
+    const nowIso = new Date().toISOString();
+    if (!records.some((r) => r.type === 'Framework')) {
+      addRecord({ id: 'FRM-1', type: 'Framework', name: 'Montessori Foundations', version: '1.0', isActive: true, montessori: true, source: 'custom', createdAt: '2026-08-01T09:00:00.000Z', updatedAt: nowIso });
+      const AREA_DEFS = [
+        { key: 'practical-life', name: 'Practical Life' },
+        { key: 'sensorial', name: 'Sensorial' },
+        { key: 'language', name: 'Language & Literacy' },
+        { key: 'mathematics', name: 'Mathematics' },
+        { key: 'creative', name: 'Creative & Outdoor' },
+      ];
+      AREA_DEFS.forEach((a, i) => {
+        addRecord({ id: 'FAREA-' + a.key, type: 'FrameworkArea', frameworkId: 'FRM-1', parentId: null, name: a.name, areaKey: a.key, order: i, visible: true, montessoriMaterials: [], createdAt: '2026-08-01T09:00:00.000Z', updatedAt: nowIso });
+      });
+      const sampleMaterials = { 'practical-life': ['Pouring jugs', 'Dressing frames'], sensorial: ['Pink Tower', 'Colour Tablets'], language: ['Sandpaper Letters', 'Movable Alphabet'], mathematics: ['Number Rods', 'Golden Beads'], creative: ['Easel & paints', 'Nature loose parts'] };
+      Object.keys(sampleMaterials).forEach((key) => {
+        const area = records.find((r) => r.id === 'FAREA-' + key);
+        if (area) area.montessoriMaterials = sampleMaterials[key];
+      });
+    }
+    // Retroactive migration of the flat S27 FrameworkOutcome records into the
+    // hierarchy. Only runs ONCE per outcome (guarded by frameworkId) and uses
+    // updateRecord (not a raw Object.assign) so the migration itself persists
+    // to localStorage overrides — otherwise frameworkId would vanish on the
+    // next reload, the guard would re-fire forever, and it would keep
+    // clobbering genuine later edits (e.g. a hidden/renamed outcome) back to
+    // their defaults. Existing area/code/label fields are never touched.
+    const AGE_BANDS = { 'practical-life': '18mo–3y', sensorial: '2.5–6y', language: '3–6y', mathematics: '4–6y', creative: '18mo–6y' };
+    records.filter((r) => r.type === 'FrameworkOutcome' && !r.frameworkId).forEach((o, i) => {
+      updateRecord(o.id, {
+        frameworkId: 'FRM-1', parentId: 'FAREA-' + o.area, description: '', ageBand: AGE_BANDS[o.area] || '', visible: true, order: i, updatedAt: nowIso,
+      });
+    });
+  }
+  ensureFrameworkHierarchySeed();
+  function ensureFrameworkChangeLogSeed() {
+    if (records.some((r) => r.type === 'FrameworkChangeLog')) return;
+    addRecord({ id: 'FCL-1', type: 'FrameworkChangeLog', frameworkId: 'FRM-1', action: 'Framework activated', itemId: 'FRM-1', itemName: 'Montessori Foundations', actor: 'Nithya', at: '2026-08-01T09:00:00.000Z', before: null, after: null });
+  }
+  ensureFrameworkChangeLogSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

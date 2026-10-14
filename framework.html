@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Learning Framework — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="framework.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="fw-page-header">
+    <div class="fw-page-header__main">
+      <span class="fw-page-header__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.5-5-2-8-1v13c3-1 6-.5 8 1 2-1.5 5-2 8-1V5c-3-1-6-.5-8 1Z"/><path d="M12 6v13"/></svg>
+      </span>
+      <div>
+        <h1 class="fw-page-header__heading">Learning Framework</h1>
+        <p class="fw-page-header__text">Shape your school's learning framework and connect observations to meaningful outcomes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fw-active-card" id="fwActiveCard"></div>
+
+  <!-- ---------- mobile notice ---------- -->
+  <div class="state-panel" id="fwMobileBanner" hidden>
+    <div class="state-panel__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <div class="state-panel__title">Edit on a larger screen</div>
+    <p class="state-panel__text">You can browse and inspect the framework here, but editing needs a tablet or desktop.</p>
+  </div>
+
+  <!-- ---------- workspace ---------- -->
+  <div class="fw-workspace" id="fwWorkspace">
+    <aside class="fw-tree-panel">
+      <div class="input-wrap" style="margin-bottom: var(--space-3);">
+        <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="input" id="fwTreeSearch" type="text" placeholder="Search areas or outcomes…" />
+      </div>
+      <div id="fwTreeHost"></div>
+    </aside>
+    <section class="fw-details-panel" id="fwDetailsPanel">
+      <div class="state-panel-mini" id="fwDetailsEmpty">
+        <div class="state-panel-mini__icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></div>
+        <p>Select an item in the tree to view and edit its details.</p>
+      </div>
+      <div id="fwDetailsBody" hidden></div>
+    </section>
+  </div>
+
+</div>
+
+<!-- ============ Change Framework modal ============ -->
+<div class="modal-backdrop" id="fwChangeBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Change framework">
+  <div class="modal fw-wide-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Change active framework</h3>
+    <p class="modal__text">Switching frameworks does not delete anything — historical observations and milestones linked to the current framework's items are preserved and remain readable.</p>
+    <div id="fwChangeList" style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-3);"></div>
+  </div>
+</div>
+
+<!-- ============ Import from Library modal ============ -->
+<div class="modal-backdrop" id="fwImportBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Import from library">
+  <div class="modal fw-wide-modal fw-import-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Import from library</h3>
+    <p class="modal__text" style="font-size:var(--fs-caption); color:var(--color-warning);">This project doesn't have a real platform template service (P15) — these are a small built-in starter set, clearly separate from your school's saved frameworks.</p>
+    <div id="fwImportBody" style="margin-top: var(--space-4);"></div>
+  </div>
+</div>
+
+<!-- ============ Delete confirmation modal ============ -->
+<div class="modal-backdrop" id="fwDeleteBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Delete item">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+    </div>
+    <h3 class="modal__title" id="fwDeleteTitle">Delete this item?</h3>
+    <p class="modal__text" id="fwDeleteText"></p>
+    <div class="modal__actions" id="fwDeleteActions"></div>
+  </div>
+</div>
+
+<!-- ============ Change History drawer ============ -->
+<div class="drawer-backdrop" id="fwHistoryBackdrop"></div>
+<aside class="drawer fw-drawer" id="fwHistoryDrawer" role="dialog" aria-modal="true" aria-label="Change history">
+  <div class="drawer__head">
+    <h3 class="drawer__title">Change history</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="fwHistoryBody"></div>
+</aside>
+
+<!-- ============ mobile details sheet ============ -->
+<div class="sheet-backdrop" id="fwMobileSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Item details">
+    <div class="sheet__handle"></div>
+    <div id="fwMobileSheetBody"></div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="framework.js"></script>
+</body>
+</html>

@@ -855,7 +855,7 @@
         <div class="field"><label class="field__label" for="actAgeMin">Min age (months)</label><input class="input" id="actAgeMin" type="number" min="0" value="${a && a.ageRangeMonths ? a.ageRangeMonths[0] : ''}" /></div>
         <div class="field"><label class="field__label" for="actAgeMax">Max age (months)</label><input class="input" id="actAgeMax" type="number" min="0" value="${a && a.ageRangeMonths ? a.ageRangeMonths[1] : ''}" /></div>
       </div>
-      <div class="field"><label class="field__label">Framework outcomes</label><div class="pl-outcome-picker">${outcomes.map((o) => `<label class="pl-outcome-pick"><input type="checkbox" value="${o.id}" ${a && (a.outcomeIds || []).includes(o.id) ? 'checked' : ''} /><span><b>${escapeHtml(o.code)}</b> ${escapeHtml(o.label)}</span></label>`).join('')}</div></div>
+      <div class="field"><label class="field__label">Framework outcomes</label><div class="pl-outcome-picker">${outcomes.filter((o) => o.visible !== false || (a && (a.outcomeIds || []).includes(o.id))).map((o) => `<label class="pl-outcome-pick"><input type="checkbox" value="${o.id}" ${a && (a.outcomeIds || []).includes(o.id) ? 'checked' : ''} /><span><b>${escapeHtml(o.code)}</b> ${escapeHtml(o.label)}${o.visible === false ? ' <i style="color:var(--color-text-muted);">(hidden in framework)</i>' : ''}</span></label>`).join('')}</div></div>
       <div class="field"><label class="field__label" for="actNotes">Teacher notes</label><textarea class="textarea" id="actNotes" rows="2">${a ? escapeHtml(a.notes || '') : ''}</textarea></div>`;
     $('actDetailFooter').innerHTML = `<button class="btn btn--accent" type="button" id="actSaveBtn">Save activity</button>`;
     $('actSaveBtn').addEventListener('click', () => {
