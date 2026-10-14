@@ -46,6 +46,7 @@
     { id: 'children', navLabel: 'Children', href: 'children.html', requiredPlan: 'Starter', core: true },
     { id: 'admissions', navLabel: 'Admissions', href: 'admissions.html', requiredPlan: 'Starter', core: true },
     { id: 'tours', navLabel: 'Tours', href: 'tours.html', requiredPlan: 'Starter', core: true },
+    { id: 'waitlist', navLabel: 'Waitlist', href: 'waitlist.html', requiredPlan: 'Starter', core: true },
     { id: 'families', navLabel: 'Families', href: 'families.html', requiredPlan: 'Starter', core: true },
     { id: 'staff', navLabel: 'Staff', href: 'dashboard.html#staff', requiredPlan: 'Starter', core: true },
     { id: 'billing', navLabel: 'Billing', href: 'payroll.html', requiredPlan: 'Starter', core: true },

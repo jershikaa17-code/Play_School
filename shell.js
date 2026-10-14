@@ -195,6 +195,7 @@
     { id: 'children', label: 'Children', href: 'children.html' },
     { id: 'admissions', label: 'Admissions', href: 'admissions.html' },
     { id: 'tours', label: 'Tours', href: 'tours.html' },
+    { id: 'waitlist', label: 'Waitlist', href: 'waitlist.html' },
     { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },

@@ -911,6 +911,54 @@
   }
   ensureTourSeed();
 
+  /* ---------- waitlist (S17 Waitlist Management) ----------
+     A waitlisted family is already represented as a 'Child' record with
+     status 'Waitlisted' (see enroll.js's own comment acknowledging this is
+     a status flag, not a tracked queue) — rather than inventing a parallel
+     record type, this adds a `waitlist` object onto that same Child record
+     (position, priority flags, notes, requested start, history) so every
+     existing consumer of Child records is unaffected and nothing needs
+     migrating. `waitlist.active` (not `child.status`) is what the Waitlist
+     page actually queries by, so offering/removing a place never has to
+     touch the status vocabulary children.js and enroll.js already rely on. */
+  function ensureWaitlistSeed() {
+    if (records.some((r) => r.type === 'Child' && r.waitlist)) return;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    function daysAgoISO(n) { const d = new Date(today); d.setDate(d.getDate() - n); return d.getFullYear() + '-' + tourPad2(d.getMonth() + 1) + '-' + tourPad2(d.getDate()); }
+    function monthsAheadISO(n) { const d = new Date(today); d.setMonth(d.getMonth() + n, 1); return d.getFullYear() + '-' + tourPad2(d.getMonth() + 1) + '-' + tourPad2(d.getDate()); }
+    const seed = [
+      { room: 'Sunflower Room', name: 'Ibrahim Siddiqui', dob: '2023-05-14', guardian: 'Zoya Siddiqui', addedDaysAgo: 40, requestedIn: 1, priority: { sibling: true, staffChild: false, returning: false }, notes: 'Older sibling already in Sunflower Room.' },
+      { room: 'Sunflower Room', name: 'Mira Kulkarni', dob: '2023-08-02', guardian: 'Anjali Kulkarni', addedDaysAgo: 25, requestedIn: 2, priority: {}, notes: '' },
+      { room: 'Marigold Room', name: 'Veer Chauhan', dob: '2022-10-20', guardian: 'Pallavi Chauhan', addedDaysAgo: 55, requestedIn: 1, priority: { sibling: false, staffChild: true, returning: false }, notes: 'Parent is Daisy Room staff.' },
+      { room: 'Marigold Room', name: 'Saanvi Thakur', dob: '2022-12-05', guardian: 'Rekha Thakur', addedDaysAgo: 18, requestedIn: 2, priority: {}, notes: 'Flexible on exact start date.' },
+      { room: 'Marigold Room', name: 'Devansh Rao', dob: '2023-01-30', guardian: 'Lakshmi Rao', addedDaysAgo: 8, requestedIn: 3, priority: { sibling: false, staffChild: false, returning: true }, notes: 'Previously enrolled, family relocated and is now back.' },
+      { room: 'Daisy Room', name: 'Alia Fernandez', dob: '2020-03-11', guardian: 'Carlos Fernandez', addedDaysAgo: 30, requestedIn: 1, priority: {}, notes: '' },
+    ];
+    const byRoom = {};
+    seed.forEach((s, i) => {
+      byRoom[s.room] = (byRoom[s.room] || 0) + 1;
+      const position = byRoom[s.room];
+      const n = 1007 + i;
+      const childId = 'C-' + n; const guardianId = 'G-' + (2000 + n);
+      const dateAdded = daysAgoISO(s.addedDaysAgo);
+      addRecord({
+        id: guardianId, type: 'Guardian', name: s.guardian, relation: 'Parent of ' + s.name, status: 'Active',
+        contact: s.guardian.toLowerCase().replace(/[^a-z ]/g, '').replace(/\s+/g, '.') + '@example.com',
+      });
+      addRecord({
+        id: childId, type: 'Child', name: s.name, room: s.room, status: 'Waitlisted', guardianId,
+        dob: s.dob, alerts: [], authorizedPickups: [],
+        waitlist: {
+          active: true, position, priority: s.priority, notes: s.notes,
+          requestedStart: monthsAheadISO(s.requestedIn), dateAdded,
+          history: [{ action: 'Added to waitlist', at: dateAdded + 'T09:00:00.000Z', actor: 'Nithya', reason: null }],
+          removedReason: null, removedAt: null, offer: null, offerSentAt: null,
+        },
+      });
+    });
+  }
+  ensureWaitlistSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

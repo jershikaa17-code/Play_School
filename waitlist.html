@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Waitlist Management — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="waitlist.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="wl-page-header">
+    <div class="wl-page-header__main">
+      <span class="wl-page-header__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </span>
+      <div>
+        <h1 class="wl-page-header__heading">Waitlist Management</h1>
+        <p class="wl-page-header__text">Keep every family's next step clear, fair, and organized.</p>
+      </div>
+    </div>
+    <div class="wl-page-header__summary" id="wlHeaderSummary"></div>
+    <div class="wl-page-header__actions">
+      <button class="btn btn--accent" id="wlOfferBtn" type="button" disabled>Offer place</button>
+    </div>
+  </div>
+
+  <!-- ---------- class tabs (desktop/tablet) ---------- -->
+  <div class="wl-class-tabs" id="wlClassTabs"></div>
+  <!-- ---------- class dropdown (mobile) ---------- -->
+  <div class="wl-class-select-wrap" id="wlClassSelectWrap">
+    <select class="select" id="wlClassSelect"></select>
+  </div>
+
+  <!-- ---------- seat summary ---------- -->
+  <div id="wlSeatSummary"></div>
+
+  <!-- ---------- toolbar ---------- -->
+  <div class="wl-toolbar">
+    <div class="input-wrap wl-toolbar__search">
+      <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="input" id="wlSearch" type="text" placeholder="Search child or parent name" aria-label="Search child or parent name" />
+    </div>
+    <div class="wl-toolbar__filters" id="wlFiltersDesktop"></div>
+    <button class="btn btn--secondary btn--sm wl-toolbar__filter-btn" id="wlFilterSheetBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      Filters
+      <span class="wl-toolbar__filter-count" id="wlFilterCountBadge" hidden>0</span>
+    </button>
+  </div>
+  <div class="wl-chip-row" id="wlChipRow" hidden></div>
+  <div class="wl-result-count" id="wlResultCount"></div>
+
+  <!-- ---------- ordered list ---------- -->
+  <div id="wlListHost"></div>
+
+  <!-- ---------- empty / no-results state ---------- -->
+  <div class="state-panel" id="wlEmptyState" hidden>
+    <div class="state-panel__icon" id="wlEmptyIcon"></div>
+    <div class="state-panel__title" id="wlEmptyTitle"></div>
+    <p class="state-panel__text" id="wlEmptyText"></p>
+  </div>
+
+</div>
+
+<!-- ============ mobile filter sheet ============ -->
+<div class="sheet-backdrop" id="wlFilterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filter waitlist">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Filter waitlist</div>
+    <div id="wlFilterSheetBody"></div>
+    <div class="sheet__actions">
+      <button class="btn btn--ghost" type="button" id="wlFilterSheetClear">Clear all</button>
+      <button class="btn btn--accent" type="button" id="wlFilterSheetApply">Show results</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ reorder reason modal ============ -->
+<div class="modal-backdrop" id="wlReorderBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm reorder">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Confirm queue reorder</h3>
+    <p class="modal__text" id="wlReorderText"></p>
+    <form id="wlReorderForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="wlReorderReason">Reason <span class="req">*</span></label>
+        <textarea class="textarea" id="wlReorderReason" placeholder="Why is this family moving in the queue?"></textarea>
+        <p class="field__error" id="err-wlReorderReason" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="wlReorderCancel">Cancel</button>
+      <button class="btn btn--accent" type="button" id="wlReorderConfirm">Confirm reorder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ remove from waitlist modal ============ -->
+<div class="modal-backdrop" id="wlRemoveBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Remove from waitlist">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <h3 class="modal__title">Remove from waitlist</h3>
+    <p class="modal__text" id="wlRemoveText">This removes the family from the active queue. The record is kept in history.</p>
+    <form id="wlRemoveForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="wlRemoveReason">Reason <span class="req">*</span></label>
+        <select class="select" id="wlRemoveReason">
+          <option value="">Choose a reason…</option>
+          <option value="Family withdrew request">Family withdrew request</option>
+          <option value="Family no longer needs the place">Family no longer needs the place</option>
+          <option value="Duplicate entry">Duplicate entry</option>
+          <option value="Unable to contact">Unable to contact</option>
+          <option value="Other">Other</option>
+        </select>
+        <p class="field__error" id="err-wlRemoveReason" hidden></p>
+      </div>
+      <div class="field" id="wlRemoveOtherWrap" hidden>
+        <label class="field__label" for="wlRemoveOther">Please explain <span class="req">*</span></label>
+        <textarea class="textarea" id="wlRemoveOther"></textarea>
+        <p class="field__error" id="err-wlRemoveOther" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="wlRemoveConfirm">Remove from waitlist</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Offer place modal (3 steps, mirrors S07) ============ -->
+<div class="modal-backdrop" id="wlOfferBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Offer place">
+  <div class="modal wl-offer-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Offer place</h3>
+    <div class="wl-offer-steps" id="wlOfferSteps">
+      <span class="wl-offer-step is-current" data-step="1">1. Editor</span>
+      <span class="wl-offer-step" data-step="2">2. Preview</span>
+      <span class="wl-offer-step" data-step="3">3. Send</span>
+    </div>
+    <div id="wlOfferBody" class="wl-offer-body"></div>
+    <div class="modal__actions" id="wlOfferActions"></div>
+  </div>
+</div>
+
+<!-- ============ details drawer ============ -->
+<div class="drawer-backdrop" id="wlDrawerBackdrop"></div>
+<aside class="drawer wl-drawer" id="wlDrawer" role="dialog" aria-modal="true" aria-label="Waitlist entry details">
+  <div class="drawer__head">
+    <h3 class="drawer__title" id="wlDrawerTitle">Waitlist entry</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="wlDrawerBody"></div>
+</aside>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="waitlist.js"></script>
+</body>
+</html>
