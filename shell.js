@@ -197,6 +197,7 @@
     { id: 'tours', label: 'Tours', href: 'tours.html' },
     { id: 'waitlist', label: 'Waitlist', href: 'waitlist.html' },
     { id: 'application-builder', label: 'Online Application', href: 'application-builder.html' },
+    { id: 'marketing', label: 'Marketing & Referrals', href: 'marketing.html' },
     { id: 'families', label: 'Families', href: 'families.html' },
     { id: 'staff', label: 'Staff', href: 'dashboard.html#staff' },
     { id: 'billing', label: 'Billing', href: 'payroll.html' },
@@ -411,4 +412,36 @@
     markNotificationRead, markNotificationsRead, dismissNotification,
     deleteNotifications, getUnreadCount,
   };
+
+  /** Referral reward auto-earning (Marketing & Referrals — S06 integration).
+      Runs once per page load, on every page (this file is loaded everywhere
+      store.js is) — not just marketing.html — so a Referral-sourced
+      Enquiry reaching Enrolled is caught regardless of which page performed
+      that stage change (admissions.html, applicant-profile.html, or
+      waitlist.html's "Offer place" → S14 handoff all eventually set
+      stage: 'Enrolled' on the same Enquiry record).
+      Idempotent by construction: the Pending → Earned transition is the
+      guard itself, so re-running this on the next page load is a no-op for
+      any referral already Earned or Given — no separate "already notified"
+      flag needed, and no duplicate notification is possible. */
+  function ensureReferralRewardsSync() {
+    if (!window.PlayStore) return;
+    window.PlayStore.getByType('Enquiry').filter((e) => e.source === 'Referral').forEach((e) => {
+      let referral = e.referral;
+      if (!referral) {
+        referral = { referringFamilyId: null, referringFamilyName: null, rewardDescription: 'One week fee credit', rewardStatus: 'Pending', earnedAt: null, givenAt: null, givenBy: null, creditNoteId: null };
+        window.PlayStore.updateRecord(e.id, { referral });
+      }
+      if (e.stage === 'Enrolled' && referral.rewardStatus === 'Pending') {
+        const nowIso = new Date().toISOString();
+        window.PlayStore.updateRecord(e.id, { referral: Object.assign({}, referral, { rewardStatus: 'Earned', earnedAt: nowIso }) });
+        addNotification({
+          title: 'Referral reward earned',
+          text: `${e.childName}'s family enrolled — the referring family has earned "${referral.rewardDescription}".`,
+          forRole: 'Admin', module: 'marketing', mention: true, recordRoute: 'marketing.html',
+        });
+      }
+    });
+  }
+  ensureReferralRewardsSync();
 })();

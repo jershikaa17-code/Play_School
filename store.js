@@ -1002,6 +1002,37 @@
   }
   ensureApplicationFormSeed();
 
+  /* ---------- family referrals + marketing campaigns (S42 Marketing & Referrals) ----------
+     Referral reward state lives directly on the same 'Enquiry' record
+     (source: 'Referral') rather than a parallel record type — see
+     shell.js's ensureReferralRewardsSync for the auto-earn logic that
+     runs on every page load. This seeds two of the already-existing
+     Referral-sourced enquiries with a real referring family link (derived
+     from their own seed notes, not invented), and a couple of demo
+     'Campaign' records (a wholly new record type — recurring-pattern-free,
+     just name/dates/source tag, matched against real Enquiry source +
+     createdAt at render time, never stored as a manually-incremented
+     counter). */
+  function ensureReferralLinkSeed() {
+    const devPatel = records.find((r) => r.id === 'ENQ-1002');
+    if (devPatel && !devPatel.referral) {
+      updateRecord('ENQ-1002', { referral: { referringFamilyId: 'FAM-G-2002', referringFamilyName: 'Kapoor Family', rewardDescription: 'One week fee credit', rewardStatus: 'Pending', earnedAt: null, givenAt: null, givenBy: null, creditNoteId: null } });
+    }
+    const advait = records.find((r) => r.id === 'ENQ-1011');
+    if (advait && !advait.referral) {
+      updateRecord('ENQ-1011', { referral: { referringFamilyId: 'FAM-G-2002', referringFamilyName: 'Kapoor Family', rewardDescription: 'One week fee credit', rewardStatus: 'Pending', earnedAt: null, givenAt: null, givenBy: null, creditNoteId: null } });
+    }
+  }
+  ensureReferralLinkSeed();
+
+  function ensureCampaignSeed() {
+    if (records.some((r) => r.type === 'Campaign')) return;
+    addRecord({ id: 'CAMP-1', type: 'Campaign', name: 'Autumn Open House', startDate: admIsoPlusDays(-20), endDate: admIsoPlusDays(10), sourceTag: 'Event', notes: 'Promoted via local community boards and the autumn newsletter.', pausedManually: false, createdAt: admStamp(-25) });
+    addRecord({ id: 'CAMP-2', type: 'Campaign', name: 'Spring Social Push', startDate: admIsoPlusDays(15), endDate: admIsoPlusDays(60), sourceTag: 'Social', notes: 'Instagram and Facebook boosted posts ahead of spring enrolment.', pausedManually: false, createdAt: admStamp(-2) });
+    addRecord({ id: 'CAMP-3', type: 'Campaign', name: 'Website SEO Refresh', startDate: admIsoPlusDays(-60), endDate: admIsoPlusDays(-21), sourceTag: 'Website', notes: 'Landing page refresh completed last term.', pausedManually: false, createdAt: admStamp(-62) });
+  }
+  ensureCampaignSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

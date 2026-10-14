@@ -1,0 +1,99 @@
+/* ==========================================================================
+   PLAY SCHOOL — Marketing, Campaigns & Family Referrals (S42)
+   Depends on tokens + shared components from styles.css, the app shell from
+   shell.css, the KPI/filter-dropdown/toolbar conventions from admissions.css
+   (.adm-kpi-grid/.adm-kpi-card, .filter-dropdown), the bar-chart from
+   dashboard.css (.bar-chart), and record.css's drawer rows. Only
+   marketing-specific layout lives here.
+   ========================================================================== */
+
+/* ---------- page header ---------- */
+.mk-page-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-6); }
+.mk-page-header__main { display: flex; align-items: flex-start; gap: var(--space-4); }
+.mk-page-header__icon {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-brand-blue) 14%, var(--color-surface-primary));
+  color: var(--color-brand-blue); box-shadow: var(--shadow-sm);
+}
+.mk-page-header__icon svg { width: 22px; height: 22px; }
+.mk-page-header__heading { font-family: var(--font-display); font-weight: 560; font-size: var(--fs-h1); color: var(--color-text-primary); }
+.mk-page-header__text { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--fs-body-sm); max-width: 54ch; }
+.mk-page-header__actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.mk-page-header__actions .select { width: auto; min-width: 150px; }
+
+/* ---------- generic section card ---------- */
+.mk-card { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle); }
+.mk-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+.mk-card__title { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-h3); color: var(--color-text-primary); }
+
+/* ---------- analytics row ---------- */
+.mk-analytics-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-5); align-items: start; }
+
+/* ---------- source bar chart (extends .bar-chart) ---------- */
+.mk-chart-card .bar-chart { height: 180px; }
+.mk-bar-col { cursor: pointer; }
+.mk-bar-col .bar-chart__bar { position: relative; }
+.mk-bar-col.is-highlighted .bar-chart__bar { background: linear-gradient(180deg, var(--color-accent-yellow), var(--color-accent-yellow-strong)); }
+.mk-bar-value { font-size: var(--fs-caption); font-weight: 700; color: var(--color-text-primary); }
+.mk-bar-col .bar-chart__label { text-align: center; max-width: 72px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- conversion table ---------- */
+.mk-table { width: 100%; border-collapse: collapse; }
+.mk-table th { text-align: left; font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: var(--ls-wide); color: var(--color-text-muted); padding: var(--space-2) var(--space-3); cursor: pointer; }
+.mk-table td { padding: var(--space-3); border-top: 1px solid var(--color-border-subtle); font-size: var(--fs-body-sm); vertical-align: middle; }
+.mk-table tr.is-highlighted td { background: color-mix(in srgb, var(--color-brand-blue) 8%, transparent); }
+.mk-conv-bar-wrap { display: flex; align-items: center; gap: var(--space-2); }
+.mk-conv-bar { flex: 1; height: 6px; border-radius: var(--radius-pill); background: var(--color-surface-secondary); overflow: hidden; min-width: 60px; }
+.mk-conv-bar__fill { height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, var(--color-brand-blue-soft), var(--color-brand-blue)); transition: width 500ms var(--ease-premium); }
+
+/* ---------- campaigns ---------- */
+.mk-campaign-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+.mk-campaign-card { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); cursor: pointer; transition: transform var(--dur-normal) var(--ease-premium), box-shadow var(--dur-normal) var(--ease-premium); }
+.mk-campaign-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.mk-campaign-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); }
+.mk-campaign-card__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.mk-campaign-card__meta { font-size: var(--fs-caption); color: var(--color-text-muted); margin-bottom: var(--space-3); }
+.mk-campaign-card__stats { display: flex; gap: var(--space-4); font-size: var(--fs-caption); }
+.mk-campaign-card__stats strong { display: block; font-size: var(--fs-body); color: var(--color-text-primary); }
+.mk-campaign-card__actions { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+
+/* ---------- reward badges ---------- */
+.mk-reward-badge--pending { background: color-mix(in srgb, var(--color-warning) 18%, transparent); color: var(--color-warning); }
+.mk-reward-badge--earned { background: color-mix(in srgb, var(--color-brand-blue) 18%, transparent); color: var(--color-brand-blue); }
+.mk-reward-badge--given { background: var(--color-surface-glass-light); color: var(--color-text-secondary); }
+
+/* ---------- referrals toolbar + table ---------- */
+.mk-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+.mk-toolbar__search { flex: 1 1 240px; min-width: 200px; }
+.mk-toolbar .select { width: auto; min-width: 160px; }
+.mk-referral-card { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); margin-bottom: var(--space-3); }
+.mk-referral-card__row { display: flex; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-body-sm); padding-block: 3px; }
+.mk-referral-card__label { color: var(--color-text-muted); }
+.mk-referral-card__actions { display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; }
+
+/* ---------- given confirmation body ---------- */
+.mk-given-body { margin-top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.mk-given-row { display: flex; justify-content: space-between; font-size: var(--fs-body-sm); padding-block: 4px; border-bottom: 1px solid var(--color-border-subtle); }
+.mk-given-row:last-child { border-bottom: none; }
+
+/* ---------- drawer ---------- */
+.mk-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-body-sm); padding-block: 6px; border-bottom: 1px solid var(--color-border-subtle); }
+.mk-drawer-row:last-child { border-bottom: none; }
+.mk-drawer-row__label { color: var(--color-text-muted); }
+.mk-drawer-row__value { font-weight: 600; text-align: right; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1023px) {
+  .mk-analytics-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .mk-page-header { flex-direction: column; align-items: stretch; }
+  .mk-page-header__actions { width: 100%; }
+  .mk-page-header__actions .select, .mk-page-header__actions .btn { width: 100%; }
+  .mk-toolbar { flex-direction: column; align-items: stretch; }
+  .mk-table { display: none; }
+}
+@media (min-width: 768px) {
+  .mk-campaign-grid--mobile-only, .mk-referral-cards { display: none; }
+}

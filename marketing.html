@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marketing &amp; Referrals — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="dashboard.css" />
+<link rel="stylesheet" href="admissions.css" />
+<link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="marketing.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="mk-page-header">
+    <div class="mk-page-header__main">
+      <span class="mk-page-header__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 0 1-5.8-1.6"/></svg>
+      </span>
+      <div>
+        <h1 class="mk-page-header__heading">Marketing &amp; Referrals</h1>
+        <p class="mk-page-header__text">Understand what brings families to your school and reward the families who spread the word.</p>
+      </div>
+    </div>
+    <div class="mk-page-header__actions">
+      <select class="select" id="mkDateRange">
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="year">This year</option>
+        <option value="all" selected>All time</option>
+      </select>
+      <button class="btn btn--accent" type="button" id="mkNewCampaignBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>New Campaign</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- KPI strip ---------- -->
+  <div class="adm-kpi-grid" id="mkKpiGrid"></div>
+
+  <!-- ---------- analytics row ---------- -->
+  <div class="mk-analytics-grid">
+    <section class="mk-card mk-chart-card" id="mkChartCard">
+      <div class="mk-card__head"><h2 class="mk-card__title">Enquiries by Source</h2></div>
+      <div id="mkChartHost"></div>
+    </section>
+    <section class="mk-card" id="mkConversionCard">
+      <div class="mk-card__head"><h2 class="mk-card__title">Conversion by Source</h2></div>
+      <div id="mkConversionHost"></div>
+    </section>
+  </div>
+
+  <!-- ---------- campaigns ---------- -->
+  <section class="mk-card" style="margin-top: var(--space-6);">
+    <div class="mk-card__head"><h2 class="mk-card__title">Campaigns</h2></div>
+    <div id="mkCampaignsHost"></div>
+  </section>
+
+  <!-- ---------- referrals ---------- -->
+  <section class="mk-card" style="margin-top: var(--space-6);">
+    <div class="mk-card__head">
+      <h2 class="mk-card__title">Family Referrals</h2>
+    </div>
+    <div class="mk-toolbar">
+      <div class="input-wrap mk-toolbar__search">
+        <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="input" id="mkReferralSearch" type="text" placeholder="Search referring family or child" />
+      </div>
+      <select class="select" id="mkRewardStatusFilter">
+        <option value="">All reward statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Earned">Earned</option>
+        <option value="Given">Given</option>
+      </select>
+      <select class="select" id="mkStageFilter">
+        <option value="">All stages</option>
+      </select>
+    </div>
+    <div id="mkReferralsHost"></div>
+  </section>
+
+</div>
+
+<!-- ============ New Campaign modal ============ -->
+<div class="modal-backdrop" id="mkCampaignBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="New campaign">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="mkCampaignModalTitle">New campaign</h3>
+    <form id="mkCampaignForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="mkcName">Campaign name <span class="req">*</span></label>
+        <input class="input" id="mkcName" type="text" />
+        <p class="field__error" id="err-mkcName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="mkcStart">Start date <span class="req">*</span></label>
+          <input class="input" id="mkcStart" type="date" />
+          <p class="field__error" id="err-mkcStart" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="mkcEnd">End date <span class="req">*</span></label>
+          <input class="input" id="mkcEnd" type="date" />
+          <p class="field__error" id="err-mkcEnd" hidden></p>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="mkcSource">Source tag <span class="req">*</span></label>
+        <select class="select" id="mkcSource"></select>
+        <p class="field__text" style="font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: var(--space-2);">Enquiries with this source are counted toward the campaign automatically — nothing is counted manually.</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="mkcNotes">Notes (optional)</label>
+        <textarea class="textarea" id="mkcNotes"></textarea>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="mkCampaignSave"><span class="btn__spinner" aria-hidden="true"></span><span id="mkCampaignSaveLabel">Create campaign</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Mark reward as Given modal ============ -->
+<div class="modal-backdrop" id="mkGivenBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Mark reward as given">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="modal__title">Confirm this reward has been given</h3>
+    <div id="mkGivenBody" class="mk-given-body"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="mkGivenConfirm"><span class="btn__spinner" aria-hidden="true"></span><span>Confirm &amp; mark Given</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Link referring family modal ============ -->
+<div class="modal-backdrop" id="mkLinkFamilyBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Link referring family">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Link referring family</h3>
+    <p class="modal__text">Search for the family who referred this applicant.</p>
+    <div class="field" style="margin-top: var(--space-4);">
+      <input class="input" id="mkFamilySearch" type="text" placeholder="Search by family or guardian name…" />
+    </div>
+    <div id="mkFamilyResults" style="margin-top: var(--space-3); max-height: 260px; overflow-y: auto;"></div>
+  </div>
+</div>
+
+<!-- ============ Campaign details drawer ============ -->
+<div class="drawer-backdrop" id="mkDrawerBackdrop"></div>
+<aside class="drawer mk-drawer" id="mkDrawer" role="dialog" aria-modal="true" aria-label="Campaign details">
+  <div class="drawer__head">
+    <h3 class="drawer__title" id="mkDrawerTitle">Campaign</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="mkDrawerBody"></div>
+</aside>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="marketing.js"></script>
+</body>
+</html>
