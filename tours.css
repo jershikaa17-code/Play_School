@@ -1,0 +1,164 @@
+/* ==========================================================================
+   PLAY SCHOOL — School Tours (S06)
+   Depends on tokens + components from styles.css, the app shell from
+   shell.css, and the week time-grid from calendar.css (.cal-timegrid-wrap /
+   .cal-week-head / .cal-hour-label / .cal-day-col / .cal-hour-row /
+   .cal-event-block / .cal-now-line) — reused as-is for layout; only the
+   tour-specific slot/booking treatments live here.
+   ========================================================================== */
+
+/* ---------- page header ---------- */
+.tr-page-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
+.tr-page-header__main { display: flex; align-items: flex-start; gap: var(--space-4); }
+.tr-page-header__icon {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-brand-blue) 14%, var(--color-surface-primary));
+  color: var(--color-brand-blue);
+  box-shadow: var(--shadow-sm);
+}
+.tr-page-header__icon svg { width: 22px; height: 22px; }
+.tr-page-header__heading { font-family: var(--font-display); font-weight: 560; font-size: var(--fs-h1); color: var(--color-text-primary); }
+.tr-page-header__text { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--fs-body-sm); }
+
+/* ---------- week nav ---------- */
+.tr-week-nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface-glass); border: 1px solid var(--color-border-subtle); }
+.tr-week-nav__controls { display: flex; align-items: center; gap: var(--space-3); }
+.tr-week-nav__range { font-weight: 700; font-size: var(--fs-body); min-width: 190px; text-align: center; transition: opacity 160ms var(--ease-premium); }
+.tr-week-nav__range.is-changing { opacity: 0; }
+
+/* Hide the native scrollbar on the shared time-grid's internal scroll
+   container — scoped to this page only (calendar.html keeps its own
+   default appearance). */
+.tr-calendar-col .cal-timegrid-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.tr-calendar-col .cal-timegrid-scroll::-webkit-scrollbar { display: none; }
+
+/* ---------- two-column layout ---------- */
+.tr-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--space-5); align-items: start; }
+.tr-calendar-col { min-width: 0; }
+.tr-upcoming-col { min-width: 0; }
+.tr-upcoming-card { padding: var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle); }
+.tr-upcoming-card__title { font-weight: 700; font-size: var(--fs-body); margin-bottom: var(--space-4); }
+
+/* ---------- slot blocks (extend .cal-event-block) ---------- */
+.tr-slot {
+  display: flex; flex-direction: column; justify-content: center; gap: 1px;
+  line-height: 1.25;
+}
+.tr-slot--open {
+  background: var(--color-surface-primary);
+  border: 1.5px dashed var(--color-accent-yellow-strong);
+  color: var(--color-text-secondary);
+}
+.tr-slot--open:hover { background: color-mix(in srgb, var(--color-accent-yellow) 10%, var(--color-surface-primary)); border-color: var(--color-accent-yellow); }
+.tr-slot--partial {
+  background: var(--color-surface-primary);
+  border: 1.5px dashed var(--color-brand-blue);
+  color: var(--color-text-secondary);
+}
+.tr-slot--partial:hover { background: color-mix(in srgb, var(--color-brand-blue) 8%, var(--color-surface-primary)); }
+.tr-slot--full {
+  background: var(--color-brand-navy);
+  border: 1px solid var(--color-brand-navy-strong);
+  color: var(--raw-white);
+}
+.tr-slot--full:hover { background: var(--color-brand-navy-strong); }
+.tr-slot__time { font-weight: 700; font-size: 0.72rem; }
+.tr-slot__meta { font-size: 0.66rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tr-slot__capacity { font-size: 0.64rem; font-weight: 700; margin-top: 1px; }
+.tr-slot--full .tr-slot__capacity { color: var(--color-accent-yellow); }
+.tr-slot--open .tr-slot__capacity, .tr-slot--partial .tr-slot__capacity { color: var(--color-brand-blue); }
+
+/* ---------- upcoming tour item ---------- */
+.tr-upcoming-item {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) 0; border-top: 1px solid var(--color-border-subtle);
+  cursor: pointer; transition: background var(--dur-normal) var(--ease-premium);
+}
+.tr-upcoming-item:first-of-type { border-top: none; }
+.tr-upcoming-item:hover { background: var(--color-surface-glass-light); }
+.tr-upcoming-item__time { width: 64px; flex-shrink: 0; font-weight: 700; font-size: var(--fs-caption); color: var(--color-text-muted); }
+.tr-upcoming-item__body { flex: 1; min-width: 0; }
+.tr-upcoming-item__name { font-weight: 600; font-size: var(--fs-body-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tr-upcoming-item__meta { font-size: var(--fs-caption); color: var(--color-text-muted); margin-top: 1px; }
+
+/* ---------- mobile day selector ---------- */
+.tr-day-select { display: none; gap: var(--space-2); overflow-x: auto; margin-bottom: var(--space-4); scrollbar-width: none; -ms-overflow-style: none; }
+.tr-day-select::-webkit-scrollbar { display: none; }
+.tr-day-select__btn {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 14px; border-radius: var(--radius-md);
+  background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary); font-size: var(--fs-caption); font-weight: 700; cursor: pointer;
+}
+.tr-day-select__btn.is-active { background: var(--color-accent-yellow); color: var(--color-text-on-accent); border-color: var(--color-accent-yellow); }
+.tr-day-select__num { font-size: var(--fs-body); }
+
+/* ---------- mobile slot list (day view) ---------- */
+.tr-slot-row {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-4); border-radius: var(--radius-md);
+  background: var(--color-surface-primary); border: 1px solid var(--color-border-subtle);
+  margin-bottom: var(--space-3); cursor: pointer;
+}
+.tr-slot-row--open { border-style: dashed; border-color: var(--color-accent-yellow-strong); }
+.tr-slot-row--partial { border-style: dashed; border-color: var(--color-brand-blue); }
+.tr-slot-row--full { background: var(--color-brand-navy); color: var(--raw-white); border-color: var(--color-brand-navy-strong); }
+.tr-slot-row__time { font-weight: 700; min-width: 76px; }
+.tr-slot-row__body { flex: 1; min-width: 0; font-size: var(--fs-body-sm); }
+
+/* ---------- manage slots modal ---------- */
+.tr-manage-modal { max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; }
+.tr-manage-modal form {
+  display: flex; flex-direction: column; gap: var(--space-4);
+  overflow-y: auto; min-height: 0; padding-right: var(--space-2);
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.tr-manage-modal form::-webkit-scrollbar { display: none; }
+.tr-day-checks { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
+.tr-day-checks label { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-body-sm); cursor: pointer; }
+.tr-preview { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); font-size: var(--fs-body-sm); }
+.tr-preview__conflicts { margin-top: var(--space-2); color: var(--color-warning); font-size: var(--fs-caption); }
+
+/* ---------- book modal tabs ---------- */
+.tr-tabs { display: inline-flex; padding: 3px; border-radius: var(--radius-pill); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); margin: var(--space-4) 0; }
+.tr-tabs__tab { height: 32px; padding-inline: 16px; border-radius: var(--radius-pill); background: none; border: none; color: var(--color-text-muted); font-size: var(--fs-body-sm); font-weight: 600; cursor: pointer; transition: background var(--dur-normal) var(--ease-premium), color var(--dur-normal) var(--ease-premium); }
+.tr-tabs__tab[aria-pressed="true"] { background: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-sm); }
+
+/* ---------- book modal ---------- */
+.tr-book-modal { max-width: 540px; max-height: 85vh; display: flex; flex-direction: column; }
+.tr-book-summary { padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); font-size: var(--fs-body-sm); display: flex; flex-wrap: wrap; gap: var(--space-4); }
+#trBookBody { overflow-y: auto; min-height: 0; flex: 1; padding-right: var(--space-2); scrollbar-width: none; -ms-overflow-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+#trBookBody::-webkit-scrollbar { display: none; }
+.tr-search-result { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border-subtle); }
+.tr-search-result.is-selected { border-color: var(--color-brand-blue); background: color-mix(in srgb, var(--color-brand-blue) 8%, transparent); }
+
+/* ---------- drawer ---------- */
+.tr-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); font-size: var(--fs-body-sm); padding-block: 6px; border-bottom: 1px solid var(--color-border-subtle); }
+.tr-drawer-row:last-child { border-bottom: none; }
+.tr-drawer-row__label { color: var(--color-text-muted); }
+.tr-drawer-row__value { font-weight: 600; text-align: right; }
+.tr-booking-card { padding: var(--space-4); border-radius: var(--radius-md); background: var(--color-surface-secondary); border: 1px solid var(--color-border-subtle); margin-bottom: var(--space-3); }
+.tr-booking-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); }
+.tr-booking-card__name { font-weight: 700; font-size: var(--fs-body-sm); }
+.tr-booking-card__meta { font-size: var(--fs-caption); color: var(--color-text-muted); margin-bottom: var(--space-3); }
+.tr-booking-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.tr-reschedule-option { display: flex; align-items: center; justify-content: space-between; padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border-subtle); margin-bottom: var(--space-2); cursor: pointer; }
+.tr-reschedule-option:hover { border-color: var(--color-brand-blue); }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .tr-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 767px) {
+  .tr-page-header { flex-direction: column; align-items: stretch; }
+  .tr-page-header__actions .btn { width: 100%; justify-content: center; }
+  .tr-week-nav { flex-wrap: wrap; }
+  .tr-day-select { display: flex; }
+}
+@media (min-width: 768px) {
+  .tr-day-select { display: none !important; }
+}

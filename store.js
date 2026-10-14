@@ -831,6 +831,86 @@
   }
   ensureAdmissionsSeed();
 
+  /* ---------- tour scheduling (S06 School Tours) ----------
+     'TourSlot' (a bookable time slot generated from a recurring pattern)
+     and 'TourBooking' (one family's reservation against a slot, linked to
+     its Enquiry) are wholly new record types — same addRecord/updateRecord
+     convention as everything else. Seeded once, guarded the same way as
+     ensureAdmissionsSeed, and built entirely from enquiries already seeded
+     above rather than inventing new people. Dates are computed relative to
+     "today" by walking actual weekdays (not fixed offsets) so the seed is
+     correct regardless of what day the demo happens to be opened. */
+  function tourPad2(n) { return String(n).padStart(2, '0'); }
+  function tourIsoPlusDays(n) {
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + tourPad2(d.getMonth() + 1) + '-' + tourPad2(d.getDate());
+  }
+  /** Offset (in days from today) of the Nth occurrence of `targetDow`
+      (0=Sun..6=Sat); n>0 walks forward, n<0 walks backward. */
+  function tourNthWeekdayOffset(targetDow, n) {
+    const step = n >= 0 ? 1 : -1;
+    const target = Math.abs(n);
+    let count = 0, offset = 0;
+    while (count < target) {
+      offset += step;
+      const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + offset);
+      if (d.getDay() === targetDow) count++;
+    }
+    return offset;
+  }
+  function ensureTourSeed() {
+    if (records.some((r) => r.type === 'TourSlot')) return;
+    const GUIDE_A = { id: 'S-3003', name: 'Meera Fernandes' };
+    const GUIDE_B = { id: 'S-3005', name: 'Arjun Mehta' };
+    const SLOT_TIMES = [['09:00', '09:30'], ['09:45', '10:15']];
+
+    // Generate slots for every Tue/Thu/Sat from 3 weeks ago to 3 weeks ahead.
+    for (let offset = -21; offset <= 21; offset++) {
+      const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + offset);
+      const dow = d.getDay();
+      if (dow !== 2 && dow !== 4 && dow !== 6) continue;
+      const dateISO = tourIsoPlusDays(offset);
+      const guide = dow === 6 ? GUIDE_B : GUIDE_A;
+      SLOT_TIMES.forEach(([start, end]) => {
+        addRecord({
+          id: 'TSLOT-' + dateISO + '-' + start.replace(':', ''), type: 'TourSlot',
+          date: dateISO, startTime: start, endTime: end,
+          guideId: guide.id, guideName: guide.name, maxFamilies: 3,
+        });
+      });
+    }
+    function slotAt(dow, n, timeIdx) {
+      const offset = tourNthWeekdayOffset(dow, n);
+      const dateISO = tourIsoPlusDays(offset);
+      const [start, end] = SLOT_TIMES[timeIdx];
+      return { id: 'TSLOT-' + dateISO + '-' + start.replace(':', ''), dateISO, start, end, guide: dow === 6 ? GUIDE_B : GUIDE_A };
+    }
+    function seedBooking(bookingId, slot, enquiryId, status, createdOffsetDays) {
+      const enquiry = records.find((r) => r.id === enquiryId);
+      if (!enquiry) return;
+      const nowIso = tourIsoPlusDays(createdOffsetDays) + 'T10:00:00.000Z';
+      addRecord({
+        id: bookingId, type: 'TourBooking',
+        slotId: slot.id, enquiryId, childName: enquiry.childName, parentName: enquiry.parentName,
+        date: slot.dateISO, startTime: slot.start, endTime: slot.end,
+        guideId: slot.guide.id, guideName: slot.guide.name,
+        status, notes: '', noShowFollowUpCreated: status === 'No-show',
+        createdAt: nowIso,
+        history: [{ action: 'Booked', at: nowIso, actor: enquiry.ownerName || 'Nithya' }]
+          .concat(status !== 'Booked' ? [{ action: status, at: nowIso, actor: enquiry.ownerName || 'Nithya' }] : []),
+      });
+    }
+    // Upcoming, currently-booked tours (match ENQ-1003/1004's 'Tour booked' stage).
+    seedBooking('TBK-1001', slotAt(2, 1, 0), 'ENQ-1003', 'Booked', -6);
+    seedBooking('TBK-1002', slotAt(4, 1, 1), 'ENQ-1004', 'Booked', -9);
+    // Past tours for applicants who have since moved further along the pipeline.
+    seedBooking('TBK-1003', slotAt(2, -2, 0), 'ENQ-1005', 'Attended', -16);
+    seedBooking('TBK-1004', slotAt(4, -2, 1), 'ENQ-1007', 'Attended', -20);
+    seedBooking('TBK-1005', slotAt(6, -1, 0), 'ENQ-1006', 'No-show', -22);
+    seedBooking('TBK-1006', slotAt(4, -3, 1), 'ENQ-1012', 'Cancelled', -24);
+  }
+  ensureTourSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

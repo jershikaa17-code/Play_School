@@ -415,6 +415,7 @@
     stage: ICON.stage, note: ICON.note, call: ICON.call, email: ICON.mail,
     document: ICON.document, offer_sent: ICON.send, offer_prepared: ICON.send,
     followup_created: ICON.task, followup_completed: ICON.check, enrolment_started: ICON.enrol,
+    tour_booked: ICON.stage, tour_attended: ICON.check, tour_no_show: ICON.task, tour_cancelled: ICON.note, tour_rescheduled: ICON.stage,
   };
   function timelineItemHtml(e, i) {
     return `
