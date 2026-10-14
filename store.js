@@ -774,6 +774,63 @@
   }
   processDueScheduledAnnouncements();
 
+  /* ---------- admissions pipeline (S07 Admissions) ----------
+     'Enquiry' is a wholly new record type — a prospective family only
+     becomes a real Child/Guardian once admissions.html hands off to the
+     enrolment wizard (S14). Seeded once (guarded the same way as every
+     other ensureX helper here) using dates computed relative to "today"
+     so the KPI strip and stage-age colouring always look realistic
+     regardless of when the demo is opened. */
+  function admPad2(n) { return String(n).padStart(2, '0'); }
+  function admIsoPlusDays(n) {
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + admPad2(d.getMonth() + 1) + '-' + admPad2(d.getDate());
+  }
+  function admIsoPlusMonths(n) {
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + n, 1);
+    return d.getFullYear() + '-' + admPad2(d.getMonth() + 1) + '-' + admPad2(d.getDate());
+  }
+  function admStamp(dayOffset) { return admIsoPlusDays(dayOffset) + 'T09:00:00.000Z'; }
+  function ensureAdmissionsSeed() {
+    if (records.some((r) => r.type === 'Enquiry')) return;
+    const seed = [
+      { id: 'ENQ-1001', childName: 'Zara Ahmed', dob: '2023-04-12', parentName: 'Hina Ahmed', phone: '+91 98200 11122', email: 'hina.ahmed@example.com', program: 'Sunflower Room', preferredStart: admIsoPlusMonths(1), source: 'Website', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Enquiry', createdOffset: -1, stageOffset: -1, followUpOffset: 2, notes: 'Asked about settling-in sessions.' },
+      { id: 'ENQ-1002', childName: 'Dev Patel', dob: '2023-01-05', parentName: 'Riya Patel', phone: '+91 98201 22334', email: 'riya.patel@example.com', program: 'Marigold Room', preferredStart: admIsoPlusMonths(2), source: 'Referral', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Enquiry', createdOffset: -3, stageOffset: -3, followUpOffset: -1, notes: 'Referred by the Kapoor family.' },
+      { id: 'ENQ-1003', childName: 'Ishaan Verma', dob: '2022-11-20', parentName: 'Pooja Verma', phone: '+91 98202 33445', email: 'pooja.verma@example.com', program: 'Daisy Room', preferredStart: admIsoPlusMonths(1), source: 'Walk-in', ownerId: 'S-3006', ownerName: 'Kavya Iyer', stage: 'Tour booked', createdOffset: -6, stageOffset: -2, followUpOffset: 1, notes: 'Tour scheduled for Thursday morning.' },
+      { id: 'ENQ-1004', childName: 'Maya Joseph', dob: '2023-03-02', parentName: 'Anu Joseph', phone: '+91 98203 44556', email: 'anu.joseph@example.com', program: 'Sunflower Room', preferredStart: admIsoPlusMonths(3), source: 'Social', ownerId: 'S-3004', ownerName: 'Divya Shah', stage: 'Tour booked', createdOffset: -9, stageOffset: -8, followUpOffset: -2, notes: 'Wants a second tour with grandparents.' },
+      { id: 'ENQ-1005', childName: 'Arnav Shetty', dob: '2022-09-18', parentName: 'Kiran Shetty', phone: '+91 98204 55667', email: 'kiran.shetty@example.com', program: 'Daisy Room', preferredStart: admIsoPlusMonths(1), source: 'Event', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Applied', createdOffset: -14, stageOffset: -4, followUpOffset: 3, notes: 'Application form submitted, awaiting references.' },
+      { id: 'ENQ-1006', childName: 'Tara Nair', dob: '2023-05-30', parentName: 'Devika Nair', phone: '+91 98205 66778', email: 'devika.nair@example.com', program: 'Marigold Room', preferredStart: admIsoPlusMonths(2), source: 'Website', ownerId: 'S-3006', ownerName: 'Kavya Iyer', stage: 'Applied', createdOffset: -20, stageOffset: -16, followUpOffset: -5, notes: 'Waiting on immunisation records from parent.' },
+      { id: 'ENQ-1007', childName: 'Vivaan Rao', dob: '2022-12-08', parentName: 'Shalini Rao', phone: '+91 98206 77889', email: 'shalini.rao@example.com', program: 'Sunflower Room', preferredStart: admIsoPlusMonths(1), source: 'Referral', ownerId: 'S-3004', ownerName: 'Divya Shah', stage: 'Offer sent', createdOffset: -18, stageOffset: -5, followUpOffset: 2, notes: 'Offer sent — awaiting deposit to confirm the seat.' },
+      { id: 'ENQ-1008', childName: 'Diya Chawla', dob: '2023-02-14', parentName: 'Neha Chawla', phone: '+91 98207 88990', email: 'neha.chawla@example.com', program: 'Marigold Room', preferredStart: admIsoPlusMonths(3), source: 'Walk-in', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Offer sent', createdOffset: -26, stageOffset: -17, followUpOffset: -3, notes: 'Second follow-up call needed — no response yet.' },
+      { id: 'ENQ-1009', childName: 'Reyansh Bhatt', dob: '2022-07-21', parentName: 'Komal Bhatt', phone: '+91 98208 99001', email: 'komal.bhatt@example.com', program: 'Daisy Room', preferredStart: admIsoPlusMonths(1), source: 'Event', ownerId: 'S-3006', ownerName: 'Kavya Iyer', stage: 'Enrolled', createdOffset: -40, stageOffset: -3, followUpOffset: null, notes: 'Deposit received, enrolment confirmed.' },
+      { id: 'ENQ-1010', childName: 'Sara Khan', dob: '2023-06-02', parentName: 'Farah Khan', phone: '+91 98209 00112', email: 'farah.khan@example.com', program: 'Sunflower Room', preferredStart: admIsoPlusMonths(2), source: 'Website', ownerId: 'S-3004', ownerName: 'Divya Shah', stage: 'Enrolled', createdOffset: -33, stageOffset: -10, followUpOffset: null, notes: 'Starts next term alongside her cousin.' },
+      { id: 'ENQ-1011', childName: 'Advait Joshi', dob: '2022-10-09', parentName: 'Mugdha Joshi', phone: '+91 98210 11223', email: 'mugdha.joshi@example.com', program: 'Marigold Room', preferredStart: admIsoPlusDays(10), source: 'Referral', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Enrolled', createdOffset: -50, stageOffset: -20, followUpOffset: null, notes: 'Sibling of an existing Marigold Room child.' },
+      { id: 'ENQ-1012', childName: 'Ira Malhotra', dob: '2023-01-27', parentName: 'Simran Malhotra', phone: '+91 98211 22334', email: 'simran.malhotra@example.com', program: 'Daisy Room', preferredStart: admIsoPlusMonths(1), source: 'Social', ownerId: 'S-3006', ownerName: 'Kavya Iyer', stage: 'Lost', createdOffset: -22, stageOffset: -6, followUpOffset: null, lostReason: 'Chose another school', notes: 'Chose a school closer to their new home.' },
+      { id: 'ENQ-1013', childName: 'Kabir Das', dob: '2022-08-16', parentName: 'Ritu Das', phone: '+91 98212 33445', email: 'ritu.das@example.com', program: 'Sunflower Room', preferredStart: admIsoPlusMonths(2), source: 'Walk-in', ownerId: 'S-3004', ownerName: 'Divya Shah', stage: 'Lost', createdOffset: -31, stageOffset: -9, followUpOffset: null, lostReason: 'Fees', notes: 'Budget did not align with our fee structure.' },
+      { id: 'ENQ-1014', childName: 'Anika Sinha', dob: '2023-07-11', parentName: 'Rashmi Sinha', phone: '+91 98213 44556', email: 'rashmi.sinha@example.com', program: 'Marigold Room', preferredStart: admIsoPlusMonths(1), source: 'Website', ownerId: 'S-3001', ownerName: 'Nithya', stage: 'Enquiry', createdOffset: 0, stageOffset: 0, followUpOffset: 4, notes: 'Submitted the website enquiry form this morning.' },
+      { id: 'ENQ-1015', childName: 'Yusuf Qureshi', dob: '2022-06-25', parentName: 'Ayesha Qureshi', phone: '+91 98214 55667', email: 'ayesha.qureshi@example.com', program: 'Daisy Room', preferredStart: admIsoPlusMonths(2), source: 'Other', ownerId: 'S-3006', ownerName: 'Kavya Iyer', stage: 'Applied', createdOffset: -11, stageOffset: -15, followUpOffset: -4, notes: 'References received — ready for a decision.' },
+    ];
+    seed.forEach((e) => {
+      addRecord({
+        id: e.id, type: 'Enquiry',
+        childName: e.childName, dob: e.dob,
+        parentName: e.parentName, phone: e.phone, email: e.email,
+        program: e.program, preferredStart: e.preferredStart, source: e.source,
+        ownerId: e.ownerId, ownerName: e.ownerName,
+        stage: e.stage,
+        createdAt: admStamp(e.createdOffset),
+        stageEnteredAt: admStamp(e.stageOffset),
+        nextFollowUp: e.followUpOffset == null ? null : admIsoPlusDays(e.followUpOffset),
+        notes: e.notes || '',
+        lostReason: e.lostReason || null,
+        lostNote: e.lostNote || null,
+        convertedChildId: null,
+        history: [{ from: null, to: e.stage, at: admStamp(e.createdOffset), actor: e.ownerName }],
+      });
+    });
+  }
+  ensureAdmissionsSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */

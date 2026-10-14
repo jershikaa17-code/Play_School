@@ -83,8 +83,32 @@
       doctor: { name: '', practice: '', phone: '' },
       custodyAlerts: [],
       classId: '', scheduleStartDate: todayISO(), daysAttending: DAYS.slice(), session: 'Full day',
-      waitlisted: false, originalStatus: null,
+      waitlisted: false, originalStatus: null, sourceEnquiryId: null,
     };
+  }
+
+  /** Admissions Pipeline (S07) handoff — ?enquiryId= prefills the basics from
+      an Enquiry record so staff don't retype what's already known. The
+      Enquiry itself isn't touched until performFinalSave() below actually
+      completes, matching the admissions page's own "don't mark Enrolled
+      until S14 confirms" rule. */
+  function prefillFromEnquiry(enq) {
+    const f = formState;
+    const parts = (enq.childName || '').trim().split(/\s+/);
+    f.firstName = parts[0] || '';
+    f.lastName = parts.slice(1).join(' ');
+    f.dob = enq.dob || '';
+    const cls = classRecords().find((c) => c.name === enq.program);
+    if (cls) f.classId = cls.id;
+    if (enq.preferredStart) f.scheduleStartDate = enq.preferredStart;
+    if (enq.parentName) {
+      f.guardians = [{
+        id: uid('TMP'), name: enq.parentName, relation: 'Guardian',
+        phone: enq.phone || '', email: enq.email || '',
+        primary: true, livesWith: true, parentalResponsibility: true, household: 'A',
+      }];
+    }
+    f.sourceEnquiryId = enq.id;
   }
 
   document.addEventListener('DOMContentLoaded', init);
@@ -110,6 +134,12 @@
     } else {
       mode = 'new';
       $('enrollBreadcrumb').textContent = 'Enrol a child';
+      const enquiryId = params.get('enquiryId');
+      const enquiry = enquiryId ? window.PlayStore.getById(enquiryId) : null;
+      if (enquiry && enquiry.type === 'Enquiry') {
+        prefillFromEnquiry(enquiry);
+        $('enrollSubtitle').textContent = `Completing the enrolment handed off from the Admissions Pipeline for ${enquiry.childName}.`;
+      }
     }
 
     renderAll();
@@ -1010,6 +1040,15 @@
       } else {
         childId = uid('C');
         window.PlayStore.addRecord(Object.assign({ id: childId, type: 'Child' }, patch));
+      }
+
+      if (formState.sourceEnquiryId) {
+        const enq = window.PlayStore.getById(formState.sourceEnquiryId);
+        if (enq && enq.type === 'Enquiry') {
+          const nowIso = new Date().toISOString();
+          const history = (enq.history || []).concat([{ from: enq.stage, to: 'Enrolled', at: nowIso, actor: window.PlayShell.getDemoRole() }]);
+          window.PlayStore.updateRecord(enq.id, { stage: 'Enrolled', stageEnteredAt: nowIso, convertedChildId: childId, history });
+        }
       }
 
       const cls = classRecords().find((c) => c.id === formState.classId);

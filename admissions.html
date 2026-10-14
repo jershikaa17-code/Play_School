@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admissions Pipeline — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="admissions.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+
+  <!-- ---------- page header ---------- -->
+  <div class="adm-page-header">
+    <div class="adm-page-header__main">
+      <span class="adm-page-header__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 2 2.7 3 6 3s6-1 6-3v-5"/></svg>
+      </span>
+      <div>
+        <div class="adm-page-header__title-row">
+          <h1 class="adm-page-header__heading">Admissions Pipeline</h1>
+          <span class="adm-live-pill" id="admLivePill" hidden><span class="adm-live-pill__dot"></span><span id="admLivePillText"></span></span>
+        </div>
+        <p class="adm-page-header__text">Every family's journey to finding their place starts here.</p>
+      </div>
+    </div>
+    <div class="adm-page-header__actions">
+      <button class="btn btn--accent" id="admAddBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add enquiry</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- KPI strip ---------- -->
+  <div class="adm-kpi-grid" id="admKpiGrid">
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+    <div class="skeleton skeleton--card adm-kpi-skel"></div>
+  </div>
+
+  <!-- ---------- toolbar ---------- -->
+  <div class="adm-toolbar">
+    <div class="input-wrap adm-toolbar__search">
+      <svg class="input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="input" id="admSearch" type="text" placeholder="Search child, parent, phone or email" aria-label="Search child, parent, phone or email" />
+    </div>
+
+    <div class="adm-toolbar__filters" id="admFiltersDesktop">
+      <!-- filled by JS: program / source / preferred start / owner -->
+    </div>
+
+    <button class="btn btn--secondary btn--sm adm-toolbar__filter-btn" id="admFilterSheetBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      Filters
+      <span class="adm-toolbar__filter-count" id="admFilterCountBadge" hidden>0</span>
+    </button>
+
+    <div class="adm-view-toggle" id="admViewToggle" role="group" aria-label="Switch between Kanban and List view">
+      <button class="adm-view-toggle__btn" type="button" data-view="kanban" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="5" height="13" rx="1"/></svg>
+        <span>Kanban</span>
+      </button>
+      <button class="adm-view-toggle__btn" type="button" data-view="list" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        <span>List</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------- active filter chips ---------- -->
+  <div class="adm-chip-row" id="admChipRow" hidden></div>
+
+  <!-- ---------- result count ---------- -->
+  <div class="adm-result-count" id="admResultCount"></div>
+
+  <!-- ---------- mobile stage selector (Kanban, mobile only) ---------- -->
+  <div class="adm-stage-select-wrap" id="admStageSelectWrap">
+    <label class="field__label" for="admStageSelect">Stage</label>
+    <select class="select" id="admStageSelect"></select>
+  </div>
+
+  <!-- ---------- Kanban board ---------- -->
+  <div class="adm-board-wrap" id="admBoardWrap">
+    <div class="adm-board" id="admBoard"></div>
+  </div>
+
+  <!-- ---------- mobile vertical card list (single stage) ---------- -->
+  <div class="adm-mobile-list" id="admMobileList" hidden></div>
+
+  <!-- ---------- list view ---------- -->
+  <div class="table-wrap" id="admTableWrap" hidden>
+    <table class="table">
+      <thead>
+        <tr>
+          <th data-sort="childName">Child</th>
+          <th data-sort="parentName">Parent</th>
+          <th data-sort="program">Program</th>
+          <th data-sort="stage">Stage</th>
+          <th data-sort="preferredStart">Preferred start</th>
+          <th data-sort="source">Source</th>
+          <th data-sort="daysInStage">Days in stage</th>
+          <th data-sort="nextFollowUp">Next follow-up</th>
+          <th data-sort="ownerName">Owner</th>
+          <th style="width:40px;"></th>
+        </tr>
+      </thead>
+      <tbody id="admTableBody"></tbody>
+    </table>
+    <div class="table-card" id="admTableCards"></div>
+  </div>
+
+  <!-- ---------- empty / no-results state ---------- -->
+  <div class="state-panel" id="admEmptyState" hidden>
+    <div class="state-panel__icon" id="admEmptyIcon"></div>
+    <div class="state-panel__title" id="admEmptyTitle"></div>
+    <p class="state-panel__text" id="admEmptyText"></p>
+    <div class="state-panel__action" id="admEmptyAction"></div>
+  </div>
+
+</div>
+
+<!-- ============ mobile filter bottom sheet ============ -->
+<div class="sheet-backdrop" id="admFilterSheetBackdrop">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Filter enquiries">
+    <div class="sheet__handle"></div>
+    <div class="sheet__title">Filter enquiries</div>
+    <div id="admFilterSheetBody"></div>
+    <div class="sheet__actions">
+      <button class="btn btn--ghost" type="button" id="admFilterSheetClear">Clear all</button>
+      <button class="btn btn--accent" type="button" id="admFilterSheetApply">Show results</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Add enquiry modal ============ -->
+<div class="modal-backdrop" id="enqFormModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Add enquiry">
+  <div class="modal adm-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title">Add enquiry</h3>
+    <p class="modal__text">Capture a new family's enquiry. It will enter the pipeline at the Enquiry stage.</p>
+
+    <div class="adm-duplicate-banner" id="admDuplicateBanner" hidden></div>
+
+    <form id="enqForm" novalidate>
+      <p class="adm-form-group-label">Parent / guardian</p>
+      <div class="field">
+        <label class="field__label" for="efParentName">Full name <span class="req">*</span></label>
+        <input class="input" id="efParentName" type="text" autocomplete="off" />
+        <p class="field__error" id="err-efParentName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="efPhone">Phone number <span class="req">*</span></label>
+          <input class="input" id="efPhone" type="tel" autocomplete="off" />
+          <p class="field__error" id="err-efPhone" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="efEmail">Email address <span class="req">*</span></label>
+          <input class="input" id="efEmail" type="email" autocomplete="off" />
+          <p class="field__error" id="err-efEmail" hidden></p>
+        </div>
+      </div>
+
+      <p class="adm-form-group-label">Child</p>
+      <div class="field">
+        <label class="field__label" for="efChildName">Child's name <span class="req">*</span></label>
+        <input class="input" id="efChildName" type="text" autocomplete="off" />
+        <p class="field__error" id="err-efChildName" hidden></p>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="efDob">Date of birth</label>
+          <input class="input" id="efDob" type="date" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="efProgram">Program / class <span class="req">*</span></label>
+          <select class="select" id="efProgram"></select>
+          <p class="field__error" id="err-efProgram" hidden></p>
+        </div>
+      </div>
+
+      <p class="adm-form-group-label">Admissions</p>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="efStart">Preferred start month <span class="req">*</span></label>
+          <input class="input" id="efStart" type="date" />
+          <p class="field__error" id="err-efStart" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="efSource">Source <span class="req">*</span></label>
+          <select class="select" id="efSource">
+            <option value="Website">Website</option>
+            <option value="Walk-in">Walk-in</option>
+            <option value="Referral">Referral</option>
+            <option value="Social">Social</option>
+            <option value="Event">Event</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field__label" for="efOwner">Admissions owner</label>
+          <select class="select" id="efOwner"></select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="efFollowUp">Next follow-up</label>
+          <input class="input" id="efFollowUp" type="date" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="efNotes">Notes</label>
+        <textarea class="textarea" id="efNotes" placeholder="Anything useful for the next conversation…"></textarea>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="enqFormSubmit">
+        <span class="btn__spinner" aria-hidden="true"></span><span id="enqFormSubmitLabel">Add enquiry</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Move to Lost modal ============ -->
+<div class="modal-backdrop" id="enqLostModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Move to Lost">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <h3 class="modal__title">Mark enquiry as lost</h3>
+    <p class="modal__text" id="enqLostText">Let us know why so the team can learn from it.</p>
+    <form id="enqLostForm" novalidate style="margin-top: var(--space-4); display:flex; flex-direction:column; gap: var(--space-4);">
+      <div class="field">
+        <label class="field__label" for="enqLostReason">Reason <span class="req">*</span></label>
+        <select class="select" id="enqLostReason">
+          <option value="">Choose a reason…</option>
+          <option value="Chose another school">Chose another school</option>
+          <option value="Fees">Fees</option>
+          <option value="Location">Location</option>
+          <option value="No response">No response</option>
+          <option value="Other">Other</option>
+        </select>
+        <p class="field__error" id="err-enqLostReason" hidden></p>
+      </div>
+      <div class="field" id="enqLostOtherWrap" hidden>
+        <label class="field__label" for="enqLostOther">Please explain <span class="req">*</span></label>
+        <textarea class="textarea" id="enqLostOther" placeholder="A short explanation…"></textarea>
+        <p class="field__error" id="err-enqLostOther" hidden></p>
+      </div>
+    </form>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="enqLostConfirm">
+        <span class="btn__spinner" aria-hidden="true"></span><span>Move to Lost</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Enrol confirmation modal ============ -->
+<div class="modal-backdrop" id="enqEnrolModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm enrolment handoff">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="modal__title">Ready to enrol this child?</h3>
+    <p class="modal__text">Continue to complete the enrolment details.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="enqEnrolConfirm">Continue to enrolment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Applicant detail drawer (S07 fallback — no dedicated applicant-detail page exists yet) ============ -->
+<div class="drawer-backdrop" id="admDrawerBackdrop"></div>
+<aside class="drawer adm-drawer" id="admDrawer" role="dialog" aria-modal="true" aria-label="Applicant details">
+  <div class="drawer__head">
+    <h3 class="drawer__title" id="admDrawerTitle">Applicant</h3>
+    <button class="btn btn--icon" type="button" data-close-drawer aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="drawer__body" id="admDrawerBody"></div>
+</aside>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="admissions.js"></script>
+</body>
+</html>
