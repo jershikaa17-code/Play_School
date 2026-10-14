@@ -6,6 +6,17 @@
 <title>T00 Design System — Play School</title>
 <meta name="description" content="The living design system behind the Play School playschool management product: color, typography, components, interaction and responsive behavior." />
 <link rel="stylesheet" href="styles.css" />
+<style>
+  /* This page is long-form and meant to be scrolled, so (unlike the app
+     shell, where the sidebar is fixed and only its own content scrolls)
+     the viewport scrollbar is shown here — themed to match T00 instead of
+     the browser default, same thin/colored treatment as .command-palette__list. */
+  html, body { scrollbar-width: thin; scrollbar-color: var(--color-border-strong) transparent; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display: block; width: 10px; }
+  html::-webkit-scrollbar-track, body::-webkit-scrollbar-track { background: transparent; }
+  html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: var(--radius-pill); border: 2px solid var(--color-background); }
+  html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue-soft); }
+</style>
 </head>
 <body>
 
