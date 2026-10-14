@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Online Application Builder — Play School</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="shell.css" />
+<link rel="stylesheet" href="class-workspace.css" />
+<link rel="stylesheet" href="announcements.css" />
+<link rel="stylesheet" href="forms.css" />
+<link rel="stylesheet" href="application-builder.css" />
+</head>
+<body>
+
+<div id="pageContent" hidden>
+  <div id="abBody">
+
+    <!-- ====================== LIST SCENE ====================== -->
+    <section id="abListScene">
+      <header class="ann-header">
+        <div class="ann-header__glow" aria-hidden="true"></div>
+        <div class="ann-header__top">
+          <div class="ann-header__intro">
+            <span class="eyebrow">Admissions · S06</span>
+            <h1 class="ann-header__heading">Online Application &amp; Consent Forms</h1>
+            <p class="ann-header__text">Build the public application form families fill out before they ever speak to you.</p>
+          </div>
+          <div class="ann-header__controls">
+            <button class="btn btn--accent" type="button" id="abCreateBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>New form</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <div id="abListHost"></div>
+    </section>
+
+    <!-- ====================== BUILDER SCENE ====================== -->
+    <section id="abBuilderScene" hidden>
+
+      <!-- mobile notice — shown instead of the panels below 768px -->
+      <div id="abBuilderBlocked" class="state-panel" hidden>
+        <div class="state-panel__icon" id="abBlockedIcon"></div>
+        <div class="state-panel__title">Edit on a larger screen</div>
+        <p class="state-panel__text">The form builder works best on a tablet or desktop. On your phone you can still preview the form and copy its published link.</p>
+        <div class="state-panel__action" id="abBlockedActions"></div>
+      </div>
+
+      <div id="abBuilderDesktop">
+        <div class="frm-builder-topbar">
+          <button class="ws-icon-btn" type="button" id="abBackBtn" aria-label="Back to forms list" title="Back to forms list">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="frm-builder-topbar__fields">
+            <input class="frm-title-input" id="abTitleInput" type="text" placeholder="Online Application Form" />
+            <div class="frm-builder-topbar__meta">
+              <span class="badge" id="abStatusBadge"></span>
+              <span class="frm-qcount" id="abFieldCount">0 fields</span>
+              <span class="ab-unsaved" id="abUnsavedIndicator" hidden>Unsaved changes</span>
+            </div>
+          </div>
+          <div class="frm-builder-topbar__actions">
+            <button class="btn btn--secondary btn--icon" type="button" id="abUndoBtn" aria-label="Undo" title="Undo" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 3-7"/></svg>
+            </button>
+            <button class="btn btn--secondary btn--icon" type="button" id="abRedoBtn" aria-label="Redo" title="Redo" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M21 13a9 9 0 1 1-3-7"/></svg>
+            </button>
+            <button class="btn btn--secondary" type="button" id="abCopyLinkBtn" hidden>Copy link</button>
+            <button class="btn btn--secondary" type="button" id="abPreviewBtn">Preview</button>
+            <button class="btn btn--accent" type="button" id="abPublishBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <span id="abPublishBtnLabel">Publish</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="frm-builder-grid">
+          <aside class="frm-palette" id="abPalette">
+            <h3 class="frm-panel-title">Add a field</h3>
+            <div class="field" style="margin-bottom: var(--space-3);">
+              <input class="input" id="abPaletteSearch" type="text" placeholder="Search fields…" style="height:34px; font-size:var(--fs-caption);" />
+            </div>
+            <div class="frm-palette-list" id="abPaletteList"></div>
+          </aside>
+
+          <div class="frm-canvas" id="abCanvas"></div>
+
+          <aside class="frm-settings" id="abSettings">
+            <button class="frm-settings-close" type="button" id="abSettingsCloseBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to canvas
+            </button>
+            <div class="state-panel-mini" id="abSettingsEmpty">
+              <div class="state-panel-mini__icon" id="abSettingsEmptyIcon"></div>
+              <p>Select a field to edit its settings.</p>
+            </div>
+            <div id="abSettingsBody" hidden></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============ Confirm delete modal ============ -->
+<div class="modal-backdrop" id="abConfirmBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Confirm">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="abConfirmTitle"></h3>
+    <p class="modal__text" id="abConfirmText"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--destructive" type="button" id="abConfirmActionBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Publish confirmation modal ============ -->
+<div class="modal-backdrop" id="abPublishBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Publish form">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <h3 class="modal__title" id="abPublishTitle">Publish this form?</h3>
+    <div id="abPublishBody"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" type="button" id="abPublishConfirmBtn"><span class="btn__spinner" aria-hidden="true"></span><span>Publish</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Published success modal ============ -->
+<div class="modal-backdrop" id="abSuccessBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Form published">
+  <div class="modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="modal__icon modal__icon--info">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="modal__title">Your form is live</h3>
+    <p class="modal__text">Families can now open this link to apply.</p>
+    <div class="ab-link-row">
+      <input class="input" id="abSuccessLinkInput" type="text" readonly />
+      <button class="btn btn--secondary" type="button" id="abSuccessCopyBtn">Copy link</button>
+    </div>
+    <div class="modal__actions">
+      <a class="btn btn--ghost" id="abSuccessOpenBtn" target="_blank" rel="noopener">Open form</a>
+      <button class="btn btn--accent" type="button" data-close style="margin-left:auto;">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Preview modal (desktop/mobile toggle) ============ -->
+<div class="modal-backdrop" id="abPreviewBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Preview form">
+  <div class="modal ab-preview-modal">
+    <button class="modal__close" type="button" data-close aria-label="Close dialog">&times;</button>
+    <div class="ab-preview-head">
+      <h3 class="modal__title" style="margin:0;">Preview</h3>
+      <div class="ab-preview-toggle" role="group" aria-label="Preview device">
+        <button class="ab-preview-toggle__btn is-active" type="button" data-preview-mode="desktop">Desktop</button>
+        <button class="ab-preview-toggle__btn" type="button" data-preview-mode="mobile">Mobile</button>
+      </div>
+    </div>
+    <div class="ab-preview-stage" id="abPreviewStage">
+      <div class="frm-phone" id="abPreviewPhone" hidden>
+        <div class="frm-phone__notch"></div>
+        <div class="frm-phone__screen" id="abPreviewScreenMobile"></div>
+      </div>
+      <div class="ab-preview-desktop" id="abPreviewDesktop">
+        <div id="abPreviewScreenDesktop"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="modules.js"></script>
+<script src="shell.js"></script>
+<script src="application-builder.js"></script>
+</body>
+</html>

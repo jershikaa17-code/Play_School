@@ -959,6 +959,49 @@
   }
   ensureWaitlistSeed();
 
+  /* ---------- online application & consent forms ----------
+     'ApplicationForm' is a wholly new record type — a public, parent-facing
+     form (distinct from 'FormDef', which is for surveys/permissions sent to
+     already-enrolled Families, keyed by familyId). A submission creates a
+     real 'Enquiry' record (the same type admissions.js/applicant-profile.js
+     already use) with source 'Website form', not a parallel system. Seeded
+     once with one realistic, already-published form so the list isn't
+     empty on first load. */
+  function ensureApplicationFormSeed() {
+    if (records.some((r) => r.type === 'ApplicationForm')) return;
+    addRecord({
+      id: 'APPF-1', type: 'ApplicationForm', title: 'Online Application Form',
+      status: 'Live', publicSlug: 'playschool-application',
+      createdAt: '2026-09-01T09:00:00.000Z', updatedAt: '2026-09-02T11:00:00.000Z', publishedAt: '2026-09-02T11:00:00.000Z',
+      sections: [
+        {
+          id: 'SEC-1', title: 'Child details',
+          fields: [
+            { id: 'FLD-1', type: 'short', label: "Child's full name", placeholder: 'e.g. Amara Osei', helpText: '', required: true, profileMapping: 'childName' },
+            { id: 'FLD-2', type: 'date', label: 'Date of birth', helpText: '', required: true, profileMapping: 'childDob' },
+            { id: 'FLD-3', type: 'dropdown', label: 'Preferred program', helpText: '', required: true, profileMapping: 'program', options: [{ id: 'OPT-1', label: 'Sunflower Room' }, { id: 'OPT-2', label: 'Marigold Room' }, { id: 'OPT-3', label: 'Daisy Room' }] },
+          ],
+        },
+        {
+          id: 'SEC-2', title: 'Parent / guardian details',
+          fields: [
+            { id: 'FLD-4', type: 'short', label: 'Parent / guardian name', helpText: '', required: true, profileMapping: 'parentName' },
+            { id: 'FLD-5', type: 'email', label: 'Email address', helpText: "We'll send updates here.", required: true, profileMapping: 'parentEmail' },
+            { id: 'FLD-6', type: 'phone', label: 'Phone number', helpText: '', required: true, profileMapping: 'parentPhone' },
+          ],
+        },
+        {
+          id: 'SEC-3', title: 'Consent',
+          fields: [
+            { id: 'FLD-7', type: 'consent', label: 'I consent to Play School contacting me about this application and storing the information provided.', helpText: '', required: true, profileMapping: 'consent' },
+            { id: 'FLD-8', type: 'signature', label: 'Parent / guardian signature', helpText: '', required: true, profileMapping: 'none' },
+          ],
+        },
+      ],
+    });
+  }
+  ensureApplicationFormSeed();
+
   /* ---------- app settings (school profile, admin profile, academic year, preferences) ----------
      Single settings object — the de facto "S58 Settings" store for this demo,
      since no dedicated settings page/backend exists yet. */
